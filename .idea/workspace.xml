@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="64792235-44ae-4705-bdf4-1ada63ec6571" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/mybatisx/templates.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/Response.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/TaskResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/check/handler/CheckHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/check/handler/NumberCheckHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/check/handler/ObjectCheckHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/check/handler/StringCheckHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/config/GlobalConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/constant/Headers.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/constant/NumConstant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/constant/StrConstant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/constant/enums/CodeLanguage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/constant/enums/CodeResultType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/constant/enums/ErrorCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/constant/enums/QuestionSortField.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/constant/enums/ResponseCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/constant/enums/SortField.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/exception/ValidationException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/filter/CheckSourceFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/model/dto/request/question/AddQuestionRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/model/dto/request/question/SubmitCodeRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/model/dto/request/question/SubmitCodeResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/model/dto/request/question/UpdateQuestionRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/model/vo/PageRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/model/vo/PageResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/model/vo/QuestionIndex.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/util/IOUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/util/JSONUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/util/JwtUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/util/PrefixMatcher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/util/RedisCache.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/util/RedisJsonSerializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/util/StatusMap.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/util/StrUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/resources/META_INF/spring.factories" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/eureka-server/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/eureka-server/src/main/java/org/caesar/EurekaApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/eureka-server/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/ExecutorApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/config/MQConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/controller/ExecutorController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/sandbox/CodeSandbox.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/sandbox/CodeSandboxFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/sandbox/impl/CLangCodeSandbox.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/sandbox/impl/CPlusPlusCodeSandbox.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/sandbox/impl/GoCodeSandbox.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/sandbox/impl/JavaCodeSandbox.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/sandbox/impl/PythonCodeSandbox.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/service/ExecutorService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/service/impl/ExecutorServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/util/ExecProcessResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/main/resources/testCode/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/executor-service/src/test/java/MyTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/GatewayApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/client/UserClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/constant/GatewayHeaders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/constant/RedisPrefix.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/exception/GlobalWebExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/AuthorizeGlobalFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/ColoringGlobalFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/IdempotentGlobalFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/LogGlobalFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/RateLimiterGlobalFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/RequestHandlerFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/publisher/ExecuteMessagePublisher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/util/IPKeyResolver.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/main/resources/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-server/src/test/java/FeignTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/QuestionApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/client/ExecutorClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/config/MQConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/constant/RedisPrefix.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/consumer/ExecuteMessageConsumer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/controller/QuestionController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/mapper/QuestionMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/QuestionDOMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/dao/QuestionDO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/entity/Question.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/vo/JudgeParam.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/service/QuestionService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/service/impl/QuestionServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/util/QuestionJudgeManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/util/strategy/DefaultStrategy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/util/strategy/JudgeStrategy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/util/strategy/RoundStrategy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/util/strategy/UnorderedStrategy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/resources/mapper/QuestionMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/runner/QuestionRunner.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/QueryService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/impl/QuestionServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/search-service/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/search-service/src/test/java/MyTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/config/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/config/SpringConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/constant/PathList.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/constant/RedisPrefix.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/controller/CodeController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/controller/ImageController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/controller/LoginController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/controller/TestController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/controller/UserController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/filter/JwtAuthenticationFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/mapper/BaseUserMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/mapper/MenuMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/model/dto/AuthUser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/model/dto/TokenDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/model/entity/BaseUser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/model/entity/Menu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/model/vo/Response.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/security/provider/EmailAuthenticationProvider.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/security/provider/PhoneAuthenticationProvider.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/security/provider/UsernameAuthenticationProvider.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/security/token/EmailAuthenticationToken.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/security/token/PhoneAuthenticationToken.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/security/token/UsernameAuthenticationToken.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/service/CodeService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/service/LoginService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/service/UserService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/service/impl/CodeServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/service/impl/LoginServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/resources/imgs/tmpF0B8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/resources/mapper/BaseUserMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/resources/mapper/MenuMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/caesar/WhiteBoxApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/UserServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/caesar/constant/enums/Code.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/caesar/controller/RegisterController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/caesar/controller/TestController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/caesar/mapper/UserMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/caesar/model/dto/UserDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/caesar/model/entity/AuthUser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/caesar/model/entity/ExtraUser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/caesar/model/entity/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/caesar/model/vo/Response.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/caesar/model/vo/UserVo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/caesar/util/RedisUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/caesar/WhiteBoxApplicationTests.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="AnnotationType" />
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2U6tmfUIntynf4kx0XmT3CBdlmy" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;1.8&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Code/java/StudentInfoSystem&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;,
+    &quot;spring.configuration.checksum&quot;: &quot;738b0e928585a6fb92dc8ea9d5d4cbf3&quot;,
+    &quot;sql.rename.search.for.storage.occurrences&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
+    ]
+  }
+}</component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.caesar.service" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Code\java\whitebox\common\src\main\resources\META_INF" />
+      <recent name="D:\Code\java\whitebox\mq-test\src\main\resources\META-INF\spring" />
+      <recent name="D:\Code\java\whitebox\question-service\src\main\resources" />
+      <recent name="D:\Code\java\whitebox\gateway-server\src\main\resources" />
+      <recent name="D:\Code\java\whitebox\question-service\src\main\java\org\caesar\model\dto\response" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Code\java\whitebox\question-service\src\main\resources\mapper" />
+      <recent name="D:\Code\java\whitebox\question-service\src\main\java\org\caesar\service\impl" />
+      <recent name="D:\Code\java\whitebox\question-service\src\main\java\org\caesar\service" />
+      <recent name="D:\Code\java\whitebox\question-service\src\main\java\org\caesar\model\entity" />
+      <recent name="D:\Code\java\whitebox\question-service\src\main\java\org\caesar\mapper" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.caesar.constant" />
+      <recent name="" />
+      <recent name="org.caesar.listener" />
+      <recent name="org.caesar.util" />
+      <recent name="org.caesar.config" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="JUnit.MyTest.testMapStruct">
+    <configuration name="QuestionDOMapper" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.caesar.model.QuestionDOMapper" />
+      <module name="question-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.caesar.model.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MyTest.testMapStruct" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="question-service" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="MyTest" />
+      <option name="METHOD_NAME" value="testMapStruct" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="eureka-server" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.caesar.EurekaApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.caesar.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="gateway-server" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.caesar.GatewayApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.caesar.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="user-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.caesar.UserServiceApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.caesar.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.QuestionDOMapper" />
+      <item itemvalue="JUnit.MyTest.testMapStruct" />
+      <item itemvalue="Spring Boot.UserServiceApplication" />
+      <item itemvalue="Spring Boot.EurekaApplication" />
+      <item itemvalue="Spring Boot.GatewayApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.MyTest.testMapStruct" />
+        <item itemvalue="Application.QuestionDOMapper" />
+        <item itemvalue="Spring Boot.GatewayApplication" />
+        <item itemvalue="Spring Boot.UserServiceApplication" />
+        <item itemvalue="Spring Boot.EurekaApplication" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="64792235-44ae-4705-bdf4-1ada63ec6571" name="Changes" comment="" />
+      <created>1692237123651</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1692237123651</updated>
+      <workItem from="1692237124559" duration="3799000" />
+      <workItem from="1692272024183" duration="34000" />
+      <workItem from="1692272085850" duration="23000" />
+      <workItem from="1692272170816" duration="183000" />
+      <workItem from="1692272365749" duration="82000" />
+      <workItem from="1692272501424" duration="6024000" />
+      <workItem from="1692325222327" duration="6197000" />
+      <workItem from="1692355011425" duration="8770000" />
+      <workItem from="1692501334497" duration="7109000" />
+      <workItem from="1692519044815" duration="9000" />
+      <workItem from="1692582815731" duration="2883000" />
+      <workItem from="1692587494434" duration="3555000" />
+      <workItem from="1692702761037" duration="10870000" />
+      <workItem from="1692789157313" duration="1275000" />
+      <workItem from="1692843061824" duration="4137000" />
+      <workItem from="1692881394681" duration="1472000" />
+      <workItem from="1692960104125" duration="11381000" />
+      <workItem from="1693012685053" duration="1131000" />
+      <workItem from="1693015472113" duration="1137000" />
+      <workItem from="1693047811180" duration="610000" />
+      <workItem from="1693200101110" duration="3119000" />
+      <workItem from="1693230422241" duration="4638000" />
+      <workItem from="1693316771224" duration="6948000" />
+      <workItem from="1693359252075" duration="40000" />
+      <workItem from="1693359485713" duration="230000" />
+      <workItem from="1693360210674" duration="1862000" />
+      <workItem from="1693384408409" duration="4013000" />
+      <workItem from="1693404738801" duration="3911000" />
+      <workItem from="1693441920692" duration="3738000" />
+      <workItem from="1693466902109" duration="1323000" />
+      <workItem from="1693485642822" duration="6472000" />
+      <workItem from="1693528881329" duration="5833000" />
+      <workItem from="1693620462467" duration="2000" />
+      <workItem from="1693621779715" duration="465000" />
+      <workItem from="1693622669433" duration="397000" />
+      <workItem from="1693623450771" duration="665000" />
+      <workItem from="1693649307241" duration="12256000" />
+      <workItem from="1693661656220" duration="85000" />
+      <workItem from="1693661754945" duration="3194000" />
+      <workItem from="1693706631755" duration="5357000" />
+      <workItem from="1693712009163" duration="724000" />
+      <workItem from="1693712795050" duration="61000" />
+      <workItem from="1693712870089" duration="108000" />
+      <workItem from="1693740971602" duration="244000" />
+      <workItem from="1693741231253" duration="6814000" />
+      <workItem from="1693815758583" duration="1411000" />
+      <workItem from="1693836719444" duration="3500000" />
+      <workItem from="1693901784856" duration="1530000" />
+      <workItem from="1693961146177" duration="1433000" />
+      <workItem from="1693965407594" duration="104000" />
+      <workItem from="1693989841800" duration="4327000" />
+      <workItem from="1694050383661" duration="1943000" />
+      <workItem from="1694054019472" duration="1388000" />
+      <workItem from="1694056666339" duration="687000" />
+      <workItem from="1694057378187" duration="991000" />
+      <workItem from="1694099424733" duration="599000" />
+      <workItem from="1694132997840" duration="526000" />
+      <workItem from="1694136087646" duration="1572000" />
+      <workItem from="1694155755531" duration="4471000" />
+      <workItem from="1694160788711" duration="1673000" />
+      <workItem from="1694168618569" duration="4618000" />
+      <workItem from="1694223316301" duration="8209000" />
+      <workItem from="1694247237957" duration="2751000" />
+      <workItem from="1694302924102" duration="10937000" />
+      <workItem from="1694316089910" duration="915000" />
+      <workItem from="1694319618810" duration="1823000" />
+      <workItem from="1694345059085" duration="5613000" />
+      <workItem from="1694350697216" duration="220000" />
+      <workItem from="1694392689141" duration="363000" />
+      <workItem from="1694393082502" duration="3980000" />
+      <workItem from="1694399491426" duration="1581000" />
+      <workItem from="1694481172735" duration="2008000" />
+      <workItem from="1694564779072" duration="657000" />
+      <workItem from="1694590947286" duration="4943000" />
+      <workItem from="1694606296200" duration="235000" />
+      <workItem from="1694612082213" duration="213000" />
+      <workItem from="1694612622271" duration="1260000" />
+      <workItem from="1694658746376" duration="3433000" />
+      <workItem from="1694696632630" duration="1309000" />
+      <workItem from="1694740092908" duration="1255000" />
+      <workItem from="1694762119895" duration="824000" />
+      <workItem from="1694770354407" duration="9718000" />
+      <workItem from="1694828647324" duration="2216000" />
+      <workItem from="1694912924706" duration="5889000" />
+      <workItem from="1694998293922" duration="4282000" />
+      <workItem from="1695004668362" duration="2739000" />
+      <workItem from="1695112485581" duration="2000" />
+      <workItem from="1695112542538" duration="3372000" />
+      <workItem from="1695170465222" duration="2236000" />
+      <workItem from="1695194726523" duration="4565000" />
+      <workItem from="1695292765828" duration="163000" />
+      <workItem from="1695294809846" duration="403000" />
+      <workItem from="1695349170293" duration="2118000" />
+      <workItem from="1695442590977" duration="3071000" />
+      <workItem from="1695525558015" duration="1118000" />
+      <workItem from="1695531218640" duration="1260000" />
+      <workItem from="1695550734236" duration="3131000" />
+      <workItem from="1695608723989" duration="3135000" />
+      <workItem from="1695631197959" duration="788000" />
+      <workItem from="1695692624511" duration="514000" />
+      <workItem from="1695775408183" duration="2612000" />
+      <workItem from="1695778077497" duration="478000" />
+      <workItem from="1695784503089" duration="324000" />
+      <workItem from="1695821240750" duration="1881000" />
+      <workItem from="1695863614001" duration="3059000" />
+      <workItem from="1695947557471" duration="5058000" />
+      <workItem from="1696040872354" duration="4175000" />
+      <workItem from="1696130814357" duration="4998000" />
+      <workItem from="1696150935504" duration="9708000" />
+      <workItem from="1696212338506" duration="3197000" />
+      <workItem from="1696234556115" duration="759000" />
+      <workItem from="1696243523220" duration="4437000" />
+      <workItem from="1696296360964" duration="5158000" />
+      <workItem from="1696334930765" duration="2150000" />
+      <workItem from="1696386528970" duration="3917000" />
+      <workItem from="1696410583047" duration="7869000" />
+      <workItem from="1696472437708" duration="5029000" />
+      <workItem from="1696505215656" duration="352000" />
+      <workItem from="1696506649595" duration="27000" />
+      <workItem from="1696506690809" duration="1484000" />
+      <workItem from="1696558311360" duration="1930000" />
+      <workItem from="1696682966081" duration="603000" />
+      <workItem from="1696774049566" duration="791000" />
+      <workItem from="1696811479159" duration="892000" />
+      <workItem from="1696818932182" duration="1744000" />
+      <workItem from="1696820941413" duration="1782000" />
+      <workItem from="1696841046626" duration="1983000" />
+      <workItem from="1696855806084" duration="367000" />
+      <workItem from="1696858384935" duration="60000" />
+      <workItem from="1696858616965" duration="81000" />
+      <workItem from="1696905307383" duration="3607000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/common/src/main/java/org/caesar/common/util/StrUtil.java</url>
+          <line>83</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/user-service/src/test/java/MyTest.java</url>
+          <line>37</line>
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/publisher/ExecuteMessagePublisher.java</url>
+          <line>23</line>
+          <option name="timeStamp" value="62" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="feign.Response" memberName="headers" />
+      </pinned-members>
+    </pin-to-top-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="strFormat.getPattern()" language="JAVA" />
+      </configuration>
+    </watches-manager>
+  </component>
+</project>

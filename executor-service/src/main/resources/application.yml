@@ -1,0 +1,27 @@
+spring:
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6666
+      database: 0
+
+  application:
+    name: executor-service
+
+server:
+  port: 6789
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:18888/eureka
+
+rocketmq:
+  name-server: 192.168.10.130:9876
+  consumer:
+    topic: execute
+    group: question-service
+
+logging:
+  level:
+    org.apache.rocketmq: DEBUG

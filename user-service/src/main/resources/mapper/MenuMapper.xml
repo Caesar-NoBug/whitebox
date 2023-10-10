@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.caesar.mapper.MenuMapper">
+
+    <resultMap id="BaseResultMap" type="org.caesar.model.entity.Menu">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="permKey" column="perm_key" jdbcType="VARCHAR"/>
+            <result property="path" column="path" jdbcType="VARCHAR"/>
+            <result property="component" column="component" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="BIT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,`name`,perm_key,
+        `path`,component,status
+    </sql>
+    <select id="selectPermsByUserId" resultType="String">
+        SELECT DISTINCT path
+        FROM sys_menu m
+        WHERE m.id IN(
+            SELECT rm.menu_id
+            FROM sys_role_menu rm
+            WHERE rm.role_id IN(
+                SELECT ur.role_id
+                FROM sys_user_role ur
+                WHERE ur.user_id = #{userId}
+            )
+        ) AND m.status = 0
+
+    </select>
+
+    <select id="selectRolesByUserId" resultType="java.lang.Integer">
+        SELECT role_id
+        FROM sys_user_role
+        WHERE user_id = #{userId}
+    </select>
+    <select id="selectPermsByRoleId" resultType="java.lang.String">
+        SELECT DISTINCT path
+        FROM sys_menu m
+        WHERE m.id IN(
+            SELECT menu_id
+            FROM sys_role_menu
+            WHERE role_id = #{roleId}
+        )
+    </select>
+
+</mapper>

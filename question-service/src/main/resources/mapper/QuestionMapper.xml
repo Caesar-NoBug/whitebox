@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.caesar.mapper.QuestionMapper">
+
+    <resultMap id="BaseResultMap" type="org.caesar.model.dao.QuestionDO">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="inputCase" column="input_case" jdbcType="VARCHAR"/>
+            <result property="outputCase" column="output_case" jdbcType="VARCHAR"/>
+            <result property="qType" column="q_type" jdbcType="INTEGER"/>
+            <result property="tag" column="tag" jdbcType="VARCHAR"/>
+            <result property="difficulty" column="difficulty" jdbcType="TINYINT"/>
+            <result property="thumbNum" column="thumb_num" jdbcType="INTEGER"/>
+            <result property="favorNum" column="favor_num" jdbcType="INTEGER"/>
+            <result property="submitNum" column="submit_num" jdbcType="INTEGER"/>
+            <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,titile,content,
+        input_case,output_case,q_type,
+        tag,difficulty,thumb_num,favor_num,submit_num,
+        isDelete,createTime,updateTime
+    </sql>
+
+
+</mapper>

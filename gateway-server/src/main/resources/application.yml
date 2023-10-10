@@ -1,0 +1,38 @@
+spring:
+
+  application:
+    name: gateway-server
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+
+
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6666
+      database: 0
+
+server:
+  port: 7777
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:18888/eureka
+
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    group: gateway
+
+#logging:
+#  level:
+#logging:
+#  level:
+#    org.springframework.cloud.openfeign: trace
+#    reactor: trace
+#    org.springframework.cloud.gateway: debug

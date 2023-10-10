@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: search-service
+
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6666
+      database: 0
+
+  elasticsearch:
+    uris: localhost:9200
+
+server:
+  port: 14606
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:18888/eureka
+
+logging:
+  level:
+    org.springframework.data.elasticsearch: trace
+    org.elasticsearch: trace
