@@ -15,6 +15,6 @@ public interface UserClient {
 
     @GetMapping("/user/authorize")
     @ResponseBody
-    CompletableFuture<Response<String>> authorize(@RequestParam String jwt, @RequestParam String requestPath);
+    CompletableFuture<Response<Long>> authorize(@RequestParam String jwt, @RequestParam String requestPath);
     //Response<String> authorize(@RequestParam String jwt, @RequestParam String requestPath);
 }

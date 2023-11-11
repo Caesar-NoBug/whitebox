@@ -18,11 +18,12 @@ public class ImageController {
 
     @Autowired
     private ResourceLoader resourceLoader;
-//todo: 这个路径要改一下
+    //TODO: 改成 fastDFS
+    //todo: 这个路径要改一下
     @Value("${upload.path}") // 从配置文件中获取上传文件的存储路径
     private String uploadPath;
 
-    private String baseDir = System.getProperty("user.dir");
+    private final String baseDir = System.getProperty("user.dir");
 
     //上传图片
     @PostMapping("/upload")

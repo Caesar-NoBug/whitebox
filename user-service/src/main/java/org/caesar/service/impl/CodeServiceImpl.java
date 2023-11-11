@@ -1,8 +1,10 @@
 package org.caesar.service.impl;
 
+import org.caesar.common.exception.ThrowUtil;
 import org.caesar.constant.RedisPrefix;
-import org.caesar.model.dto.AuthUser;
-import org.caesar.model.vo.Response;
+import org.caesar.domain.constant.enums.ErrorCode;
+import org.caesar.model.entity.User;
+import org.caesar.repository.UserRepository;
 import org.caesar.service.CodeService;
 import org.caesar.service.UserService;
 import org.caesar.common.util.RedisCache;
@@ -30,17 +32,19 @@ public class CodeServiceImpl implements CodeService {
     private UserService userService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private RedisCache redisCache;
 
     @Override
-    public Response sendLoginEmailCode(String email){
+    public void sendLoginEmailCode(String email){
 
-        AuthUser authUser = userService.selectAuthUserByEmail(email);
+        User user = userRepository.selectUserByEmail(email);
         //查无此人
-        if(Objects.isNull(authUser))
-            return Response.error("该邮箱尚未注册");
+        ThrowUtil.throwIfNull(user, "该邮箱尚未注册");
 
-        String redisKey = RedisPrefix.LOGIN_CODE_EMAIL + email;
+        String redisKey = RedisPrefix.AUTH_CODE_EMAIL + email;
 
         String code = StrUtil.randNumCode(6);
         SimpleMailMessage message=new SimpleMailMessage();
@@ -53,30 +57,30 @@ public class CodeServiceImpl implements CodeService {
 
         redisCache.setCacheObject(redisKey, code, 5, TimeUnit.MINUTES);
 
-        return Response.ok(null, "成功发送验证码");
+        //return Response.ok(null, "成功发送验证码");
     }
 
     @Override
-    public Response sendLoginPhoneCode(String phone){
-        return null;
+    public void sendLoginPhoneCode(String phone){
+
     }
 
     @Override
-    public Response sendResetEmailCode(String email){
-        return null;
+    public void sendResetEmailCode(String email){
+
     }
 
     @Override
-    public Response sendResetPhoneCode(String phone){
-        return null;
+    public void sendResetPhoneCode(String phone){
+
     }
 
     @Override
-    public Response sendRegisterEmailCode(String email) {
-        AuthUser authUser = userService.selectAuthUserByEmail(email);
+    public void sendRegisterEmailCode(String email) {
+        User user = userRepository.selectUserByEmail(email);
         //该邮箱已注册
-        if(!Objects.isNull(authUser))
-            return Response.error("该邮箱已被注册，请重新注册");
+        ThrowUtil.throwIf(!Objects.isNull(user),
+                ErrorCode.ALREADY_EXIST_ERROR, "该邮箱已被注册，请重新注册");
 
         String redisKey = RedisPrefix.REGISTER_CODE_EMAIL + email;
 
@@ -91,6 +95,6 @@ public class CodeServiceImpl implements CodeService {
 
         redisCache.setCacheObject(redisKey, code, 5, TimeUnit.MINUTES);
 
-        return Response.ok(null, "成功发送验证码");
+        //return Response.ok(null, "成功发送验证码");
     }
 }

@@ -1,6 +1,5 @@
 package org.caesar.security.token;
-
-import org.caesar.model.dto.AuthUser;
+import org.caesar.model.dto.UserDTO;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 import java.util.Collections;
@@ -9,7 +8,7 @@ public class UsernameAuthenticationToken  extends AbstractAuthenticationToken {
     private String username;
     private String password;
 
-    public UsernameAuthenticationToken(AuthUser user) {
+    public UsernameAuthenticationToken(UserDTO user) {
         super(user.getAuthorities());
         setDetails(user);
     }

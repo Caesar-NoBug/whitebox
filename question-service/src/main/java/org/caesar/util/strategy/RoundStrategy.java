@@ -1,11 +1,13 @@
 package org.caesar.util.strategy;
 
-import org.caesar.common.util.StatusMap;
+import org.caesar.common.vo.StatusMap;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 //范围匹配，只要结果在一定范围内即可，适用于结果为浮点数的题目
 //TODO: 新增题目时校验特殊题目类型的输出用例
+@Component
 public class RoundStrategy implements JudgeStrategy {
 
     private RoundStrategy(){}

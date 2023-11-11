@@ -1,8 +1,7 @@
 package org.caesar.common.check.handler;
 
 import org.caesar.common.check.checker.StringChecker;
-import org.caesar.common.constant.enums.ErrorCode;
-import org.caesar.common.exception.BusinessException;
+import org.caesar.common.exception.ValidationException;
 import org.caesar.common.util.StrUtil;
 
 import java.lang.annotation.Annotation;
@@ -25,10 +24,10 @@ public class StringCheckHandler extends CheckHandler{
         StringChecker stringChecker = (StringChecker) checker;
 
         if (!StrUtil.checkString(value, stringChecker.maxLength()))
-            throw new BusinessException(ErrorCode.ILLEGAL_PARAM_ERROR, stringChecker.name() + ILLEGAL_STRING_MESSAGE);
+            throw new ValidationException(stringChecker.name() + ILLEGAL_STRING_MESSAGE);
 
         if(!StrUtil.checkFormat(value, stringChecker.format()))
-            throw new BusinessException(ErrorCode.ILLEGAL_PARAM_ERROR, stringChecker.name() + ILLEGAL_FORMAT_MESSAGE);
+            throw new ValidationException(stringChecker.name() + ILLEGAL_FORMAT_MESSAGE);
     }
 
 }

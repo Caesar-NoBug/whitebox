@@ -1,16 +1,18 @@
 package org.caesar.service.impl;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
-import org.caesar.common.constant.enums.SortField;
-import org.caesar.common.model.vo.PageResponse;
-import org.caesar.common.model.vo.QuestionIndex;
-import org.caesar.service.QueryService;
+import org.caesar.domain.constant.enums.DataSource;
+import org.caesar.domain.constant.enums.SortField;
+import org.caesar.domain.vo.search.QuestionIndex;
+import org.caesar.common.model.vo.Page;
+import org.caesar.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class QuestionServiceImpl implements QueryService<QuestionIndex> {
+public class QuestionServiceImpl implements SearchService<QuestionIndex> {
 
     @Autowired
     private ElasticsearchOperations operations;
@@ -31,8 +33,9 @@ public class QuestionServiceImpl implements QueryService<QuestionIndex> {
     public static final double MAX_BOOST = 0.4;
 
     //TODO: 添加update字段并在增删改时修改该字段的值
+    //TODO: es改成防腐层设计
     @Override
-    public PageResponse<QuestionIndex> query(String keyword, int from, int size) {
+    public Page<QuestionIndex> search(String keyword, int from, int size) {
         List<FunctionScore> functions = new ArrayList<>();
 
         functions.add(new FunctionScore.Builder().fieldValueFactor(f -> f.field("favorNum").factor(FAVOR_WEIGHT).modifier(FieldValueFactorModifier.Log1p)).build());
@@ -55,8 +58,7 @@ public class QuestionServiceImpl implements QueryService<QuestionIndex> {
 
         SearchHits<QuestionIndex> searchHits = operations.search(nativeQuery, QuestionIndex.class);
 
-
-        PageResponse<QuestionIndex> response = new PageResponse<>();
+        Page<QuestionIndex> response = new Page<>();
         response.setData(searchHits.getSearchHits().stream().map(SearchHit::getContent).collect(Collectors.toList()));
         response.setTotalSize(searchHits.getSearchHits().size());
 
@@ -64,18 +66,26 @@ public class QuestionServiceImpl implements QueryService<QuestionIndex> {
     }
 
     @Override
-    public PageResponse<QuestionIndex> sortQuery(String keyword, SortField field, int from, int size) {
+    public Page<QuestionIndex> sortSearch(String keyword, SortField field, int from, int size) {
         return null;
     }
 
     @Override
-    public boolean insertIndex(List<QuestionIndex> indexes) {
-        return false;
+    public boolean insertIndex(List<QuestionIndex> indices, DataSource source) {
+        operations.save(indices);
+        return true;
     }
 
     @Override
-    public boolean deleteIndex(List<Integer> ids) {
-        return false;
+    public boolean deleteIndex(List<Long> ids, DataSource source) {
+        Criteria criteria = new Criteria("id").in(ids);
+        operations.delete(criteria);
+        return true;
+    }
+
+    @Override
+    public DataSource getDataSource() {
+        return DataSource.QUESTION;
     }
 
 }

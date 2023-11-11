@@ -2,7 +2,7 @@ package org.caesar.filter;
 
 import org.caesar.constant.GatewayHeaders;
 import org.caesar.constant.RedisPrefix;
-import org.caesar.common.constant.enums.ErrorCode;
+import org.caesar.domain.constant.enums.ErrorCode;
 import org.caesar.common.exception.BusinessException;
 import org.caesar.common.util.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;

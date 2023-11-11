@@ -1,6 +1,6 @@
 package org.caesar.common.util;
 
-import org.caesar.common.constant.enums.StrFormat;
+import org.caesar.domain.constant.enums.StrFormat;
 
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -16,7 +16,7 @@ public class StrUtil {
     private static final Pattern PHONE_PATTERN = Pattern.compile("^1\\d{10}$");
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
     //默认允许的最大字符串长度为8192
-    public static final int DEFAULT_MAX_STRING_LENGTH = 128;
+    public static final int DEFAULT_MAX_STRING_LENGTH = 256;
 
     //生成随机纯数字字符串
     public static String randNumCode(int length) {
@@ -77,10 +77,11 @@ public class StrUtil {
     public static String getRandStr(int length) {
         byte[] bytes = new byte[length];
         SECURE_RANDOM.nextBytes(bytes);
-        return Base64.getEncoder().encodeToString(bytes);
+        return Base64.getEncoder().encodeToString(bytes).substring(0, length);
     }
 
     public static boolean checkFormat(String string, StrFormat strFormat) {
+        if(StrFormat.DEFAULT.equals(strFormat)) return true;
         return strFormat.getPattern().matcher(string).matches();
     }
 

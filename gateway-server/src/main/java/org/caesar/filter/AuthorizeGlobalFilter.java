@@ -2,8 +2,8 @@ package org.caesar.filter;
 
 import org.caesar.client.UserClient;
 import org.caesar.common.Response;
-import org.caesar.common.constant.Headers;
-import org.caesar.common.constant.enums.ErrorCode;
+import org.caesar.domain.constant.Headers;
+import org.caesar.domain.constant.enums.ErrorCode;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.util.PrefixMatcher;
 import org.springframework.beans.factory.ObjectProvider;
@@ -43,7 +43,7 @@ public class AuthorizeGlobalFilter implements GlobalFilter, Ordered {
         //若在白名单中，则无需鉴权
         if (prefixMatcher.match(uri))
             return chain.filter(exchange);
-
+        //TODO: 把snqg里的filter逻辑优化加进来
         //否则，校验用户是否有权限
         ServerHttpRequest request = exchange.getRequest();
         List<String> tokens = request.getHeaders().get(Headers.TOKEN_HEADER);
@@ -51,7 +51,7 @@ public class AuthorizeGlobalFilter implements GlobalFilter, Ordered {
 
         ThrowUtil.throwIf(Objects.isNull(tokens) || Objects.isNull(token = tokens.get(0)), ErrorCode.NOT_AUTHORIZED_ERROR, "请求未附带token");
 
-        CompletableFuture<Response<String>> future = userClientProvider.getIfAvailable().authorize(token, uri);
+        CompletableFuture<Response<Long>> future = userClientProvider.getIfAvailable().authorize(token, uri);
 
         return Mono.fromFuture(future)
                 .timeout(Duration.ofSeconds(5))
@@ -66,11 +66,11 @@ public class AuthorizeGlobalFilter implements GlobalFilter, Ordered {
 
                     ThrowUtil.throwIf(authorizeResponse.getCode() != ErrorCode.SUCCESS.getCode(), ErrorCode.NOT_AUTHORIZED_ERROR, "授权失败：用户无权限访问");
 
-                    String userId = authorizeResponse.getData();
+                    Long userId = authorizeResponse.getData();
 
                     ServerHttpRequest processedRequest = request.mutate()
                             .headers(h -> h.remove(Headers.TOKEN_HEADER))
-                            .header(Headers.USERID_HEADER, userId)
+                            .header(Headers.USERID_HEADER, String.valueOf(userId))
                             .build();
 
                     return chain.filter(exchange.mutate().request(processedRequest).build());

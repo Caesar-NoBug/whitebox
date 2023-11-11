@@ -1,6 +1,6 @@
 package org.caesar.controller;
 
-import org.caesar.model.vo.Response;
+import org.caesar.common.Response;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

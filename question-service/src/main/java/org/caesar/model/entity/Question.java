@@ -1,15 +1,15 @@
 package org.caesar.model.entity;
 
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.caesar.common.constant.enums.ErrorCode;
-import org.caesar.common.exception.BusinessException;
+import org.caesar.domain.constant.enums.CodeResultType;
 import org.caesar.common.exception.ThrowUtil;
+import org.caesar.domain.response.executor.ExecuteCodeResponse;
+import org.caesar.domain.response.question.JudgeCodeResponse;
 import org.caesar.common.util.JSONUtil;
-import org.caesar.constant.RedisPrefix;
+import org.caesar.common.vo.StatusMap;
+import org.caesar.model.vo.JudgeParam;
 import org.caesar.util.QuestionJudgeManager;
 
 import java.io.Serial;
@@ -29,6 +29,9 @@ public class Question implements Serializable {
 
     //默认空间限制为128MB
     public static final Long DEFAULT_MEMORY_LIMIT = 1L << 7;
+
+    //答案错误信息
+    public static final String WRONG_ANSWER_MESSAGE = "运行结果错误\n\t运行结果:\n%s\n\t目标结果:\n%s";
 
     /**
      * 问题主键
@@ -116,6 +119,10 @@ public class Question implements Serializable {
         ThrowUtil.validate(JSONUtil.checkJSONArray(inputCase) & JSONUtil.checkJSONArray(outputCase),
                 "非法输入，输入的输入用例和输出用例必须为JSON字符串数组格式");
 
+        List<String> outputArray = JSON.parseArray(getOutputCase(), String.class);
+
+        ThrowUtil.validate(QuestionJudgeManager.checkOutputCase(qType, outputArray), "非法输入，问题校验参数不符合要求");
+
         this.id = id;
         this.title = title;
         this.content = content;
@@ -133,4 +140,66 @@ public class Question implements Serializable {
         this.createTime = createTime;
         this.updateTime = updateTime;
     }
+
+    public List<String> getInputArray() {
+        return JSON.parseArray(getInputCase(), String.class);
+    }
+
+    public List<String> getOutputArray() {
+        return JSON.parseArray(getOutputCase(), String.class);
+    }
+
+    public JudgeCodeResponse judge(ExecuteCodeResponse executeResponse) {
+        List<CodeResultType> resultTypes = executeResponse.getType();
+        List<Long> time = executeResponse.getTime();
+        List<Long> memory = executeResponse.getMemory();
+        List<String> outputArray = getOutputArray();
+        //执行出现异常则直接返回
+        if (!executeResponse.isSuccess()) {
+            return new JudgeCodeResponse(false, executeResponse.getType(),  executeResponse.getMessage(), time, memory);
+        }
+
+        List<String> codeResult = executeResponse.getResult();
+
+        StatusMap map = QuestionJudgeManager.judge(new JudgeParam(codeResult, outputArray, qType));
+
+        boolean success = true;
+
+        JudgeCodeResponse judgeCodeResponse = new JudgeCodeResponse();
+        judgeCodeResponse.setTime(time);
+        judgeCodeResponse.setMemory(memory);
+
+        for (int i = 0; i < codeResult.size(); i++) {
+
+            //无异常则判断结果是否正确
+            if (CodeResultType.TEMPORARY_ACCEPTED.equals(resultTypes.get(i))) {
+                if (map.isFail(i)) {
+                    resultTypes.set(i, CodeResultType.WRONG_ANSWER);
+
+                    //记录第一个不匹配的错误信息
+                    if (success) {
+                        String wrongResult = codeResult.get(i);
+                        String correctResult = QuestionJudgeManager.generateAnswer(qType, outputArray.get(i));
+                        judgeCodeResponse.setMessage(String.format(WRONG_ANSWER_MESSAGE, wrongResult, correctResult));
+                        success = false;
+                    }
+
+                } else
+                    resultTypes.set(i, CodeResultType.ACCEPTED);
+            }
+            //有异常则直接返回
+            else if (success) {
+                judgeCodeResponse.setMessage(executeResponse.getMessage());
+                success = false;
+            }
+
+        }
+
+        judgeCodeResponse.setSuccess(success);
+
+        if(!success) judgeCodeResponse.setType(resultTypes);
+
+        return judgeCodeResponse;
+    }
+
 }

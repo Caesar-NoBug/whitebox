@@ -2,11 +2,12 @@ package org.caesar.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.caesar.constant.RedisPrefix;
-import org.caesar.model.dto.AuthUser;
 import org.caesar.model.dto.TokenDTO;
+import org.caesar.model.dto.UserDTO;
+import org.caesar.model.req.LoginRequest;
+import org.caesar.model.vo.UserVO;
 import org.caesar.security.token.EmailAuthenticationToken;
 import org.caesar.security.token.UsernameAuthenticationToken;
-import org.caesar.service.LoginService;
 import org.caesar.common.util.JwtUtil;
 import org.caesar.common.util.RedisCache;
 import org.caesar.common.util.StrUtil;import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +22,18 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
-public class LoginServiceImpl implements LoginService {
+public class LoginServiceImpl {
 
     public static final int DEFAULT_REFRESH_TOKEN_LENGTH = 32;
 
-    @Autowired
+   /* @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
     private RedisCache redisCache;
 
     @Override
-    public Map<String, Object> loginUsername(String username, String password) {
+    public UserVO loginUsername(String username, String password) {
 
         UsernameAuthenticationToken authenticationToken = new UsernameAuthenticationToken(username, password);
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
@@ -40,7 +41,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public Map<String, Object> loginEmail(String email, String code) {
+    public UserVO loginEmail(String email, String code) {
 
         EmailAuthenticationToken authenticationToken = new EmailAuthenticationToken(email, code);
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
@@ -48,9 +49,9 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public Map<String, Object> loginPhone(String phone, String code) {
+    public UserVO loginPhone(String phone, String code) {
         return null;
-    }
+    }*/
 
     //处理认证结果
     private Map<String, Object> handleAuthentication(Authentication authentication){
@@ -60,9 +61,9 @@ public class LoginServiceImpl implements LoginService {
             return null;
         }
 
-        AuthUser authUser = (AuthUser) authentication.getDetails();
+        UserDTO authUser = (UserDTO) authentication.getDetails();
 
-        long userId = authUser.getBaseUser().getId();
+        long userId = authUser.getUserPO().getId();
 
         String jwtToken = JwtUtil.createJWT(userId + "");
         String refreshToken = StrUtil.getRandStr(DEFAULT_REFRESH_TOKEN_LENGTH);
@@ -79,7 +80,7 @@ public class LoginServiceImpl implements LoginService {
         tokenDTO.setRefreshToken(refreshToken);
         tokenDTO.setJwt(jwtToken);
         map.put("token", tokenDTO);
-        map.put("user", authUser.getBaseUser());
+        map.put("user", authUser.getUserPO());
 
         return map;
     }

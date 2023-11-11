@@ -3,7 +3,7 @@ package org.caesar.common;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.caesar.common.constant.enums.ErrorCode;
+import org.caesar.domain.constant.enums.ErrorCode;
 
 @Data
 @NoArgsConstructor

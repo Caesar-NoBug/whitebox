@@ -6,11 +6,21 @@ spring:
     username: root
     password: 1234
 
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
   data:
     redis:
       host: 127.0.0.1
-      port: 6666
+      port: 6379
       database: 0
+
+  session:
+    redis:
+      flush-mode: immediate
+
   mail:
     protocol: smtp
     host: smtp.qq.com
@@ -24,10 +34,6 @@ spring:
 
 server:
   port: 12345
+
 upload:
   path: /whitebox/src/main/resources/imgs
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://127.0.0.1:18888/eureka

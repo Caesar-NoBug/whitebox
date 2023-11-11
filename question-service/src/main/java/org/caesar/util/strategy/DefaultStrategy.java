@@ -1,12 +1,14 @@
 package org.caesar.util.strategy;
 
-import org.caesar.common.util.StatusMap;
+import org.caesar.common.vo.StatusMap;
+import org.springframework.stereotype.Component;
 
 import java.util.BitSet;
 import java.util.List;
 import java.util.Objects;
 
 //默认判题策略：精准匹配
+@Component
 public class DefaultStrategy implements JudgeStrategy {
 
     private DefaultStrategy(){}

@@ -1,10 +1,9 @@
 package org.caesar.common.check.handler;
 
+import org.apache.commons.validator.ValidatorException;
 import org.caesar.common.check.CheckMethodInfo;
 import org.caesar.common.check.checker.ObjectChecker;
 import org.caesar.common.check.method.Checkable;
-import org.caesar.common.constant.enums.ErrorCode;
-import org.caesar.common.exception.BusinessException;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class ObjectCheckHandler extends CheckHandler{
             CheckMethodInfo info = getCheckMethodInfo(objectChecker.method());
 
             if (!(boolean) info.getMethod().invoke(info.getInstance(), attribute))
-                throw new BusinessException(ErrorCode.ILLEGAL_PARAM_ERROR, objectChecker.name() + ILLEGAL_OBJECT_MESSAGE);
+                throw new ValidatorException(objectChecker.name() + ILLEGAL_OBJECT_MESSAGE);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -1,11 +1,13 @@
 package org.caesar.util.strategy;
 
-import org.caesar.common.util.StatusMap;
+import org.caesar.common.vo.StatusMap;
+import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.List;
 
 //适用于输出结果是一组值（各不相同），且结果为标准答案的任意次序皆可
+@Component
 public class UnorderedStrategy implements JudgeStrategy {
 
     private UnorderedStrategy(){}

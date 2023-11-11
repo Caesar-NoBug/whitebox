@@ -8,13 +8,12 @@ spring:
   application:
     name: executor-service
 
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
 server:
   port: 6789
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://127.0.0.1:18888/eureka
 
 rocketmq:
   name-server: 192.168.10.130:9876

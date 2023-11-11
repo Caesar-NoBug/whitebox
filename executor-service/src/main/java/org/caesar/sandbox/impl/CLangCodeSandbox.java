@@ -1,13 +1,14 @@
 package org.caesar.sandbox.impl;
 
 import org.caesar.common.TaskResult;
-import org.caesar.common.constant.enums.CodeLanguage;
-import org.caesar.common.model.dto.response.executor.ExecuteCodeResponse;
+import org.caesar.domain.constant.enums.CodeLanguage;
+import org.caesar.domain.response.executor.ExecuteCodeResponse;
 import org.caesar.sandbox.CodeSandbox;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-
+@Component
 public class CLangCodeSandbox extends CodeSandbox {
 
     private CLangCodeSandbox(){}

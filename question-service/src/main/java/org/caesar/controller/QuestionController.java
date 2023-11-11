@@ -1,11 +1,15 @@
 package org.caesar.controller;
 
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.caesar.common.check.CheckManager;
 import org.caesar.common.Response;
 import org.caesar.common.exception.ThrowUtil;
-import org.caesar.common.model.dto.request.question.AddQuestionRequest;
-import org.caesar.common.model.dto.request.question.UpdateQuestionRequest;
+import org.caesar.domain.request.question.AddQuestionRequest;
+import org.caesar.domain.request.question.JudgeCodeRequest;
+import org.caesar.domain.request.question.UpdateQuestionRequest;
+import org.caesar.domain.response.question.JudgeCodeResponse;
 import org.caesar.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,11 +45,17 @@ public class QuestionController {
         return questionService.updateQuestion(request);
     }
 
-    /*@PostMapping("/submit")
-    public Response<SubmitCodeResponse> submitCode(@RequestBody SubmitCodeRequest request) {
+    @PostMapping("/submit")
+    public Response<String> submitCode(@RequestBody JudgeCodeRequest request) {
 
-        CheckManager.checkAll(request, SubmitCodeRequest.class);
+        CheckManager.checkThrowException(request, JudgeCodeRequest.class);
 
-        return questionService.submitCode(request);
-    }*/
+        return questionService.judgeCode(request);
+    }
+
+    @GetMapping("result/{id}")
+    public Response<JudgeCodeResponse> getSubmitResult(@Min(0) @PathVariable Long id) {
+
+    }
+
 }

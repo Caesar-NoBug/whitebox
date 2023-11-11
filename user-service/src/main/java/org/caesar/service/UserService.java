@@ -2,9 +2,10 @@ package org.caesar.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.caesar.model.dto.AuthUser;
-import org.caesar.model.entity.BaseUser;
-import org.caesar.model.vo.Response;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.caesar.model.req.RegisterRequest;
+import org.caesar.model.po.UserPO;
+import org.caesar.model.req.LoginRequest;
+import org.caesar.model.vo.UserVO;
 
 import java.time.LocalDateTime;
 
@@ -13,27 +14,23 @@ import java.time.LocalDateTime;
 * @description 针对表【sys_user_base】的数据库操作Service
 * @createDate 2023-05-01 09:36:22
 */
-public interface UserService extends IService<BaseUser> {
+public interface UserService extends IService<UserPO> {
 
-    BaseUser selectBaseUserById(Long id);
-
-    //根据用户查询带权限信息的用户信息
+    //TODO: servcie全部直接返回数据而不是response
+    /*
     AuthUser selectAuthUserByEmail(String email);
-
-    //根据用户查询带权限信息的用户信息
     AuthUser selectAuthUserById(Long id);
-
     AuthUser selectAuthUserByUsername(String username);
+    AuthUser selectAuthUserByPhone(String phone);*/
 
-    //根据用户查询带权限信息的用户信息
-    AuthUser selectAuthUserByPhone(String phone);
+    UserVO login(LoginRequest request);
 
-    //校验用户是否有权限访问该接口
-    Response<String> authorize(String jwt, String requestPath);
+    //校验用户是否有权限访问该接口,并返回用户id
+    Long authorize(String jwt, String requestPath);
 
-    Response refreshToken(long userId, String refreshToken, LocalDateTime lastUpdateTime);
+    String refreshToken(long userId, String refreshToken, LocalDateTime lastUpdateTime);
 
-    Response logout(String jwt);
+    void logout(String jwt);
 
-    Response register(BaseUser baseUser);
+    UserVO register(RegisterRequest request);
 }

@@ -1,25 +1,30 @@
 package org.caesar.service;
 
 import org.caesar.common.Response;
-import org.caesar.common.model.dto.response.question.SubmitCodeResponse;
-import org.caesar.common.model.dto.request.question.AddQuestionRequest;
-import org.caesar.common.model.dto.request.question.SubmitCodeRequest;
-import org.caesar.common.model.dto.request.question.UpdateQuestionRequest;
-import org.caesar.model.dao.QuestionDO;
+import org.caesar.domain.response.question.JudgeCodeResponse;
+import org.caesar.domain.request.question.AddQuestionRequest;
+import org.caesar.domain.request.question.JudgeCodeRequest;
+import org.caesar.domain.request.question.UpdateQuestionRequest;
+import org.caesar.model.entity.Question;
+import org.caesar.model.po.QuestionPO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * @author caesar
  * @description 针对表【question】的数据库操作Service
  * @createDate 2023-08-30 10:04:07
  */
-public interface QuestionService extends IService<QuestionDO> {
+public interface QuestionService extends IService<QuestionPO> {
     Response<Void> addQuestion(AddQuestionRequest request);
 
     Response<Void> deleteQuestion(Long qId);
 
     Response<Void> updateQuestion(UpdateQuestionRequest request);
 
-    SubmitCodeResponse submitCode(SubmitCodeRequest request);
+    Response<String> judgeCode(JudgeCodeRequest request);
+
+    @Async
+    void doJudgeCode(String submitId, JudgeCodeRequest request, Question question);
 }
 

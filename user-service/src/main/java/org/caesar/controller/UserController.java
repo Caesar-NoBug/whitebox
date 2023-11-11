@@ -1,8 +1,10 @@
 package org.caesar.controller;
 
+import org.caesar.common.Response;
 import org.caesar.model.dto.TokenDTO;
-import org.caesar.model.entity.BaseUser;
-import org.caesar.model.vo.Response;
+import org.caesar.model.req.LoginRequest;
+import org.caesar.model.req.RegisterRequest;
+import org.caesar.model.vo.UserVO;
 import org.caesar.service.UserService;
 import org.caesar.common.util.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +25,23 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/authorize")
-    public Response<String> authorize(@RequestParam String jwt, @RequestParam String requestPath) {
+    @PostMapping
+    public Response<UserVO> login(@RequestBody LoginRequest request) {
+        return Response.ok(userService.login(request));
+    }
 
-        System.out.println("认证接口被访问了");
+
+    //TODO: 将权限相关信息根据角色进行缓存,将角色信息存储至jwt中，把这些操作移动至gateway中，并想清楚同步机制
+    //TODO: 删除所有User模块中的跨域设置
+    //TODO: 缓存一下非法的token避免DDos
+    @GetMapping("/authorize")
+    public Response<Long> authorize(@RequestParam String jwt, @RequestParam String requestPath) {
+
         if (StrUtil.isBlank(jwt) || StrUtil.isBlank(requestPath)) {
             return Response.error("jwt或请求路径不合法");
         }
-
-        return userService.authorize(jwt, requestPath);
+        //TODO: 加上请求成功的信息
+        return Response.ok(userService.authorize(jwt, requestPath));
     }
 
     @PostMapping("/refreshToken")
@@ -43,24 +53,30 @@ public class UserController {
         if (StrUtil.isBlank(refreshToken) || Objects.isNull(lastUpdateTime))
             return Response.error("非法的请求参数，请重试");
 
-        return userService.refreshToken(userId, refreshToken, lastUpdateTime);
+        return Response.ok(userService.refreshToken(userId, refreshToken, lastUpdateTime));
     }
 
-    //TODO:优化用户模块请求，设计定制的请求类
+    //TODO: 注册也用登录的方式整合一下
+    //TODO: 加一个人机校验(captcha)
+    //TODO: 对邮箱做更严格的格式校验和处理，防止恶意邮箱注册
     @PostMapping("/register")
-    public Response register(@RequestBody BaseUser baseUser) {
+    public Response register(@RequestBody RegisterRequest request) {
 
-        if (StrUtil.isBlank(baseUser.getEmail()) || StrUtil.isBlank(baseUser.getUsername()) || StrUtil.isBlank(baseUser.getPassword()))
+        if (StrUtil.isBlank(request.getIdentity()) || StrUtil.isBlank(request.getUsername()) || StrUtil.isBlank(request.getPassword()))
             return Response.error("注册信息不完善，请重新填写！");
 
-        return userService.register(baseUser);
+        return Response.ok(userService.register(request));
     }
 
     @DeleteMapping("/logout")
-    public Response logout(@RequestBody TokenDTO tokenDTO) {
+    public Response<Void> logout(@RequestBody TokenDTO tokenDTO) {
+
         if (StrUtil.isBlank(tokenDTO.getJwt()))
             return Response.error("非法token，请重试");
-        return userService.logout(tokenDTO.getJwt());
+
+        userService.logout(tokenDTO.getJwt());
+
+        return Response.ok(null);
     }
 
     @RequestMapping("/reset/phone")

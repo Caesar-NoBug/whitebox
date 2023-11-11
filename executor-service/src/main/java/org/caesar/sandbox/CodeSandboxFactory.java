@@ -1,6 +1,6 @@
 package org.caesar.sandbox;
 
-import org.caesar.common.constant.enums.CodeLanguage;
+import org.caesar.domain.constant.enums.CodeLanguage;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

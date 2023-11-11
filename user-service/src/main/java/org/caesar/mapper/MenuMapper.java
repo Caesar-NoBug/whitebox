@@ -20,6 +20,8 @@ public interface MenuMapper extends BaseMapper<Menu> {
     List<Integer> selectRolesByUserId(long userId);
 
     List<String> selectPermsByRoleId(long roleId);
+
+    boolean insertUserRole(long userId, List<Integer> roleId);
 }
 
 

@@ -4,12 +4,13 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.resource.ResourceUtil;
 import org.caesar.common.TaskResult;
-import org.caesar.common.constant.enums.CodeLanguage;
-import org.caesar.common.constant.enums.CodeResultType;
-import org.caesar.common.model.dto.request.executor.ExecuteCodeRequest;
-import org.caesar.common.model.dto.response.executor.ExecuteCodeResponse;
+import org.caesar.domain.constant.enums.CodeLanguage;
+import org.caesar.domain.constant.enums.CodeResultType;
+import org.caesar.domain.request.executor.ExecuteCodeRequest;
+import org.caesar.domain.response.executor.ExecuteCodeResponse;
 import org.caesar.sandbox.CodeSandbox;
 import org.caesar.common.util.IOUtil;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
 import java.io.File;
@@ -21,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+@Component
 public class JavaCodeSandbox extends CodeSandbox {
 
     //TODO: 这些常量改成参数化配置的形式
@@ -120,11 +122,11 @@ public class JavaCodeSandbox extends CodeSandbox {
         try {
 
             StopWatch stopWatch = new StopWatch();
-            for (int i = 0; i < inputCase.size(); i++) {
+            for (String string : inputCase) {
 
                 try {
                     //TODO: 这里要确保input是以\n结尾，否则程序可能会卡死
-                    String input = inputCase.get(i);
+                    String input = string;
                     Process process = Runtime.getRuntime().exec(String.format(EXECUTE_CODE_COMMAND, userCodeDir));
 
                     OutputStreamWriter writer = new OutputStreamWriter(process.getOutputStream());
@@ -142,7 +144,7 @@ public class JavaCodeSandbox extends CodeSandbox {
                     else {
                         String message = IOUtil.readAll(process.getErrorStream());
                         type = CodeResultType.RUNTIME_ERROR;
-                        if(isSuccess) {
+                        if (isSuccess) {
                             executeResponse.setMessage(message);
                         }
                         isSuccess = false;

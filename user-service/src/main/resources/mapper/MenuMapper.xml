@@ -17,6 +17,7 @@
         id,`name`,perm_key,
         `path`,component,status
     </sql>
+
     <select id="selectPermsByUserId" resultType="String">
         SELECT DISTINCT path
         FROM sys_menu m

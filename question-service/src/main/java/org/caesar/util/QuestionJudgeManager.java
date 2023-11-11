@@ -1,6 +1,6 @@
 package org.caesar.util;
 
-import org.caesar.common.util.StatusMap;
+import org.caesar.common.vo.StatusMap;
 import org.caesar.model.vo.JudgeParam;
 import org.caesar.util.strategy.DefaultStrategy;
 import org.caesar.util.strategy.JudgeStrategy;

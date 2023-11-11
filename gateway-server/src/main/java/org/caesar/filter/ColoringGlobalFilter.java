@@ -1,7 +1,7 @@
 package org.caesar.filter;
 
 import lombok.extern.slf4j.Slf4j;
-import org.caesar.common.constant.Headers;
+import org.caesar.domain.constant.Headers;
 import org.caesar.constant.GatewayHeaders;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;

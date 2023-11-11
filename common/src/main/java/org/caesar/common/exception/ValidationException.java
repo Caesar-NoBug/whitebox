@@ -1,6 +1,6 @@
 package org.caesar.common.exception;
 
-import org.caesar.common.constant.enums.ErrorCode;
+import org.caesar.domain.constant.enums.ErrorCode;
 
 //参数校验异常
 public class ValidationException extends BusinessException{

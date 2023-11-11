@@ -6,7 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.caesar.constant.RedisPrefix;
-import org.caesar.common.constant.StrConstant;
+import org.caesar.domain.constant.StrConstant;
 import org.caesar.model.dto.AuthUser;
 import org.caesar.common.util.JwtUtil;
 import org.caesar.common.util.RedisCache;

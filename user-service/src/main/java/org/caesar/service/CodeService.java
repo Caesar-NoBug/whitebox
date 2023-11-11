@@ -1,15 +1,13 @@
 package org.caesar.service;
 
-import org.caesar.model.vo.Response;
-
 public interface CodeService {
-    Response sendLoginEmailCode(String email);
+    void sendLoginEmailCode(String email);
 
-    Response sendLoginPhoneCode(String email);
+    void sendLoginPhoneCode(String email);
 
-    Response sendResetEmailCode(String email);
+    void sendResetEmailCode(String email);
 
-    Response sendResetPhoneCode(String email);
+    void sendResetPhoneCode(String email);
 
-    Response sendRegisterEmailCode(String email);
+    void sendRegisterEmailCode(String email);
 }

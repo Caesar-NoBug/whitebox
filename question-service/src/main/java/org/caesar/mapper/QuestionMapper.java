@@ -1,8 +1,11 @@
 package org.caesar.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.caesar.model.dao.QuestionDO;
+import org.caesar.model.po.QuestionPO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
 * @author caesar
@@ -11,7 +14,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity org.caesar.model.entity.Question
 */
 @Mapper
-public interface QuestionMapper extends BaseMapper<QuestionDO> {
+public interface QuestionMapper extends BaseMapper<QuestionPO> {
+
+    List<QuestionPO> selectQuestionByUpdateTime(LocalDateTime afterTime);
 
 }
 

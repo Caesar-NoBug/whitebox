@@ -3,7 +3,7 @@ package org.caesar.exception;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.caesar.common.Response;
-import org.caesar.common.constant.enums.ErrorCode;
+import org.caesar.domain.constant.enums.ErrorCode;
 import org.caesar.common.exception.BusinessException;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.http.HttpStatus;

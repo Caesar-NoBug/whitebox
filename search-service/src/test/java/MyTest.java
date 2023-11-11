@@ -1,5 +1,4 @@
 import org.caesar.SearchServiceApplication;
-import org.caesar.common.model.vo.QuestionIndex;
 import org.caesar.service.impl.QuestionServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ public class MyTest {
         index.setSubmitNum(0);
         questionService.insertQuestionIndex(index);*/
 
-        List<QuestionIndex> query = questionService.query("表达式", 0, 10);
+        List<QuestionIndex> query = questionService.search("表达式", 0, 10);
     }
 
 }

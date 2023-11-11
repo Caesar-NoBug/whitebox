@@ -2,7 +2,7 @@ import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.caesar.GatewayApplication;
 import org.caesar.client.UserClient;
 import org.caesar.common.Response;
-import org.caesar.common.constant.enums.ErrorCode;
+import org.caesar.domain.constant.enums.ErrorCode;
 import org.caesar.common.exception.ThrowUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;

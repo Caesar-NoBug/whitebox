@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.caesar.mapper.BaseUserMapper">
 
-    <resultMap id="BaseResultMap" type="org.caesar.model.entity.BaseUser">
+    <resultMap id="BaseResultMap" type="org.caesar.model.po.UserPO">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>
@@ -14,13 +14,15 @@
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="state" column="state" jdbcType="INTEGER"/>
+            <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,username,password,
         phone,email,avatar_url,
-        create_time,update_time,state
+        create_time,update_time,state,is_delete
     </sql>
+
     <insert id="insertUser">
         insert into sys_user_base
             (id, username, password, email, avatar_url, create_time, update_time, state)

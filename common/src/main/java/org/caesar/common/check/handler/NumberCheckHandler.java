@@ -1,8 +1,7 @@
 package org.caesar.common.check.handler;
 
 import org.caesar.common.check.checker.NumberChecker;
-import org.caesar.common.constant.enums.ErrorCode;
-import org.caesar.common.exception.BusinessException;
+import org.caesar.common.exception.ValidationException;
 
 import java.lang.annotation.Annotation;
 
@@ -48,7 +47,7 @@ public class NumberCheckHandler extends CheckHandler {
         }
 
         if (!accept)
-            throw new BusinessException(ErrorCode.ILLEGAL_PARAM_ERROR, numberChecker.name() + OUT_OF_RANGE_MESSAGE);
+            throw new ValidationException(numberChecker.name() + OUT_OF_RANGE_MESSAGE);
     }
 
 }

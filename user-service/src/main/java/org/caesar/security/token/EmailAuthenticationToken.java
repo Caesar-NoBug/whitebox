@@ -1,17 +1,16 @@
 package org.caesar.security.token;
-
-import org.caesar.model.dto.AuthUser;
+import org.caesar.model.dto.UserDTO;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-
 import java.util.Collections;
+
 
 
 public class EmailAuthenticationToken extends AbstractAuthenticationToken {
     private String email;
     private String code;
-    private AuthUser user;
+    private UserDTO user;
 
-    public EmailAuthenticationToken(AuthUser user) {
+    public EmailAuthenticationToken(UserDTO user) {
         super(user.getAuthorities());
         setDetails(user);
     }

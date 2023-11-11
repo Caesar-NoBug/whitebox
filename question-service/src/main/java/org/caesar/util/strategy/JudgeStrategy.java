@@ -1,6 +1,6 @@
 package org.caesar.util.strategy;
 
-import org.caesar.common.util.StatusMap;
+import org.caesar.common.vo.StatusMap;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package org.caesar.common.config;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
-import org.caesar.common.constant.Headers;
+import org.caesar.domain.constant.Headers;
 import org.caesar.common.filter.CheckSourceFilter;
 import org.caesar.common.util.RedisJsonSerializer;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;

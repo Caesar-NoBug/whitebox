@@ -28,7 +28,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableFeignClients
 @Import(RocketMQAutoConfiguration.class)
 public class GatewayApplication {
-    //TODO: 配置跨域
+    //TODO: 测试跨域
+    //TODO: 添加统一缓存机制
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);
     }
