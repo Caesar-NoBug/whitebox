@@ -9,13 +9,13 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: 8.130.19.151:8848
 
-  data:
-    redis:
-      host: 127.0.0.1
-      port: 6379
-      database: 0
+  redis:
+    host: 8.130.19.151
+    port: 16379
+    database: 0
+    password: rIj12YF23S
 
   session:
     redis:

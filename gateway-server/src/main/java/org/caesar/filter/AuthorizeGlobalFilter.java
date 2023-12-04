@@ -1,11 +1,12 @@
 package org.caesar.filter;
 
-import org.caesar.client.UserClient;
-import org.caesar.common.Response;
+import org.caesar.common.client.UserClient;
+import org.caesar.common.exception.BusinessException;
+import org.caesar.common.vo.Response;
 import org.caesar.domain.constant.Headers;
-import org.caesar.domain.constant.enums.ErrorCode;
+import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.common.exception.ThrowUtil;
-import org.caesar.common.util.PrefixMatcher;
+import org.caesar.common.str.PrefixMatcher;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -37,6 +38,7 @@ public class AuthorizeGlobalFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
+        //TODO: jwt解析移动到gateway中，减少一次服务调用
         System.out.println("authorize filter");
         String uri = exchange.getRequest().getURI().getPath();
 
@@ -49,22 +51,21 @@ public class AuthorizeGlobalFilter implements GlobalFilter, Ordered {
         List<String> tokens = request.getHeaders().get(Headers.TOKEN_HEADER);
         String token = null;
 
-        ThrowUtil.throwIf(Objects.isNull(tokens) || Objects.isNull(token = tokens.get(0)), ErrorCode.NOT_AUTHORIZED_ERROR, "请求未附带token");
+        ThrowUtil.ifTrue(Objects.isNull(tokens) || Objects.isNull(token = tokens.get(0)), ErrorCode.NOT_AUTHORIZED_ERROR, "请求未附带token");
 
         CompletableFuture<Response<Long>> future = userClientProvider.getIfAvailable().authorize(token, uri);
 
         return Mono.fromFuture(future)
                 .timeout(Duration.ofSeconds(5))
-                .onErrorComplete(
-                        resp -> {
-                            System.out.println("错误：" + resp);
-                            return true;
-                        }
-                )
+                .onErrorResume(resp -> {
+                    // TODO: 改成日志调用
+                    // System.out.println("错误：" + resp);
+                    return Mono.error(new BusinessException(ErrorCode.NOT_AUTHORIZED_ERROR, "认证鉴权失败"));
+                })
                 .flatMap(
                 authorizeResponse -> {
 
-                    ThrowUtil.throwIf(authorizeResponse.getCode() != ErrorCode.SUCCESS.getCode(), ErrorCode.NOT_AUTHORIZED_ERROR, "授权失败：用户无权限访问");
+                    ThrowUtil.ifTrue(authorizeResponse.getCode() != ErrorCode.SUCCESS.getCode(), ErrorCode.NOT_AUTHORIZED_ERROR, "授权失败：用户无权限访问");
 
                     Long userId = authorizeResponse.getData();
 

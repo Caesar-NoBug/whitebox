@@ -2,18 +2,18 @@ package org.caesar.service.impl;
 
 import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.caesar.client.ExecutorClient;
-import org.caesar.common.Response;
+import org.caesar.common.client.ExecutorClient;
+import org.caesar.common.vo.Response;
 import org.caesar.common.repository.CacheRepository;
 import org.caesar.constant.CachePrefix;
-import org.caesar.domain.constant.enums.ErrorCode;
-import org.caesar.domain.request.executor.ExecuteCodeRequest;
-import org.caesar.domain.response.executor.ExecuteCodeResponse;
-import org.caesar.domain.response.question.JudgeCodeResponse;
+import org.caesar.domain.common.enums.ErrorCode;
+import org.caesar.domain.executor.request.ExecuteCodeRequest;
+import org.caesar.domain.executor.response.ExecuteCodeResponse;
+import org.caesar.domain.question.response.JudgeCodeResponse;
 import org.caesar.common.exception.ThrowUtil;
-import org.caesar.domain.request.question.AddQuestionRequest;
-import org.caesar.domain.request.question.JudgeCodeRequest;
-import org.caesar.domain.request.question.UpdateQuestionRequest;
+import org.caesar.domain.question.request.AddQuestionRequest;
+import org.caesar.domain.question.request.JudgeCodeRequest;
+import org.caesar.domain.question.request.UpdateQuestionRequest;
 import org.caesar.model.po.QuestionPO;
 import org.caesar.model.entity.Question;
 import org.caesar.repository.QuestionRepository;
@@ -59,7 +59,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, QuestionPO>
 
         boolean insertResult = questionRepository.addQuestion(question);
 
-        ThrowUtil.throwIf(!insertResult, ErrorCode.SYSTEM_ERROR, "添加问题失败");
+        ThrowUtil.ifTrue(!insertResult, ErrorCode.SYSTEM_ERROR, "添加问题失败");
 
         return Response.ok(null, "添加问题成功");
     }
@@ -93,7 +93,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, QuestionPO>
         //从数据库查询问题信息
         Question question = questionRepository.getQuestionById(request.getQId());
 
-        ThrowUtil.throwIfNull(question, "指定问题不存在");
+        ThrowUtil.ifNull(question, "指定问题不存在");
 
         String submitId = UUID.fastUUID().toString();
 
@@ -113,16 +113,18 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, QuestionPO>
         Response<ExecuteCodeResponse> response = executorClient.executeCode(executeRequest);
 
         //处理响应结果
-        ThrowUtil.throwIf(response.getCode() != ErrorCode.SUCCESS.getCode(),
+        ThrowUtil.ifTrue(response.getCode() != ErrorCode.SUCCESS.getCode(),
                 response.getCode(), response.getMsg());
 
         //执行判题逻辑
         JudgeCodeResponse judgeCodeResponse = question.judge(response.getData());
 
         //缓存判题结果
-        cacheRepository.setCacheObject(
+        cacheRepository.setObject(
                 CachePrefix.SUBMIT_RESULT + request.getUserId() + ":" + submitId,
                 judgeCodeResponse);
+
+        //TODO: 定时批量同步到MySQL
     }
 
 }

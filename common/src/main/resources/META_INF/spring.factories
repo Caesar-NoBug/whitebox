@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.caesar.config.GlobalConfig
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.caesar.common.GlobalConfig

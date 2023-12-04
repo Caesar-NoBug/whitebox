@@ -1,21 +1,16 @@
 package org.caesar.controller;
 
-import org.caesar.common.Response;
+import org.caesar.common.vo.Response;
+import org.caesar.common.captcha.vo.Captcha;
 import org.caesar.service.CodeService;
-import org.caesar.common.util.StrUtil;
+import org.caesar.common.str.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-@CrossOrigin(
-        origins = "http://localhost:8081",
-        allowedHeaders = {"token", "Content-Type"},
-        allowCredentials = "true"
-)
 @RestController
 @RequestMapping("/user/sendCode")
 public class CodeController {
 
-    //TODO: 登录验证码相关加一个人机验证
+    //TODO: 登录验证码相关加一个人机验证，把这个服务移动到authController中
     @Autowired
     private CodeService codeService;
 
@@ -39,6 +34,11 @@ public class CodeController {
         codeService.sendRegisterEmailCode(email);
 
         return Response.ok(null, "验证码已成功发送至邮箱，请查看");
+    }
+
+    @PostMapping("/captcha")
+    public Response<Captcha> genCaptcha() {
+        return null;
     }
 
     @PostMapping("/login/phone/{phone}")

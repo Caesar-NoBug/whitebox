@@ -4,12 +4,12 @@ package org.caesar.controller;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.caesar.common.check.CheckManager;
-import org.caesar.common.Response;
+import org.caesar.common.vo.Response;
 import org.caesar.common.exception.ThrowUtil;
-import org.caesar.domain.request.question.AddQuestionRequest;
-import org.caesar.domain.request.question.JudgeCodeRequest;
-import org.caesar.domain.request.question.UpdateQuestionRequest;
-import org.caesar.domain.response.question.JudgeCodeResponse;
+import org.caesar.domain.question.request.AddQuestionRequest;
+import org.caesar.domain.question.request.JudgeCodeRequest;
+import org.caesar.domain.question.request.UpdateQuestionRequest;
+import org.caesar.domain.question.response.JudgeCodeResponse;
 import org.caesar.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +32,7 @@ public class QuestionController {
     @DeleteMapping("/{qId}")
     public Response<Void> deleteQuestion(@PathVariable Long qId) {
 
-        ThrowUtil.throwIfNull(qId, "问题id为空");
+        ThrowUtil.ifNull(qId, "问题id为空");
 
         return questionService.deleteQuestion(qId);
     }

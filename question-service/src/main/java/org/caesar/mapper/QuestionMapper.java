@@ -14,6 +14,7 @@ import java.util.List;
 * @Entity org.caesar.model.entity.Question
 */
 @Mapper
+//TODO: 添加提交数和通过数的字段
 public interface QuestionMapper extends BaseMapper<QuestionPO> {
 
     List<QuestionPO> selectQuestionByUpdateTime(LocalDateTime afterTime);

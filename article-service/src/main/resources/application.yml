@@ -1,0 +1,32 @@
+spring:
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db_white_box
+    username: root
+    password: 1234
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 8.130.19.151:8848
+
+  redis:
+    host: 8.130.19.151
+    port: 16379
+    database: 0
+    password: rIj12YF23S
+
+  application:
+    name: article-service
+
+server:
+  port: 13456
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    org.springframework.cloud.openfeign: trace

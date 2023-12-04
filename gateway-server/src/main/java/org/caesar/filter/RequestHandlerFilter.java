@@ -2,7 +2,7 @@ package org.caesar.filter;
 
 import com.alibaba.fastjson.JSON;
 import org.caesar.domain.constant.Headers;
-import org.caesar.domain.request.question.JudgeCodeRequest;
+import org.caesar.domain.question.request.JudgeCodeRequest;
 import org.caesar.publisher.ExecuteMessagePublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;

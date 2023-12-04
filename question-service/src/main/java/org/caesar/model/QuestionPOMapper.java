@@ -1,6 +1,6 @@
 package org.caesar.model;
 
-import org.caesar.domain.vo.search.QuestionIndex;
+import org.caesar.domain.search.vo.QuestionIndex;
 import org.caesar.model.po.QuestionPO;
 import org.caesar.model.entity.Question;
 import org.mapstruct.Mapper;

@@ -2,13 +2,13 @@ package org.caesar.service.impl;
 
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.constant.RedisPrefix;
-import org.caesar.domain.constant.enums.ErrorCode;
+import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.model.entity.User;
 import org.caesar.repository.UserRepository;
 import org.caesar.service.CodeService;
 import org.caesar.service.UserService;
-import org.caesar.common.util.RedisCache;
-import org.caesar.common.util.StrUtil;
+import org.caesar.common.redis.RedisCache;
+import org.caesar.common.str.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -42,7 +42,7 @@ public class CodeServiceImpl implements CodeService {
 
         User user = userRepository.selectUserByEmail(email);
         //查无此人
-        ThrowUtil.throwIfNull(user, "该邮箱尚未注册");
+        ThrowUtil.ifNull(user, "该邮箱尚未注册");
 
         String redisKey = RedisPrefix.AUTH_CODE_EMAIL + email;
 
@@ -79,7 +79,7 @@ public class CodeServiceImpl implements CodeService {
     public void sendRegisterEmailCode(String email) {
         User user = userRepository.selectUserByEmail(email);
         //该邮箱已注册
-        ThrowUtil.throwIf(!Objects.isNull(user),
+        ThrowUtil.ifTrue(!Objects.isNull(user),
                 ErrorCode.ALREADY_EXIST_ERROR, "该邮箱已被注册，请重新注册");
 
         String redisKey = RedisPrefix.REGISTER_CODE_EMAIL + email;

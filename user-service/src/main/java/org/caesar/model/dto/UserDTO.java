@@ -7,9 +7,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.caesar.model.po.UserPO;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,14 +18,14 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 //包含用户基本信息和认证、授权相关信息
-public class UserDTO implements UserDetails {
+public class UserDTO /*implements UserDetails*/ {
 
     private UserPO userPO;
     private String refreshToken;
     private List<String> permissions = new ArrayList<>();
 
-    @JsonIgnore
-    private List<GrantedAuthority> authorities;
+    /*@JsonIgnore
+    private List<GrantedAuthority> authorities;*/
     //TODO: 第三方信息加在此处
 
     @Getter
@@ -40,7 +38,7 @@ public class UserDTO implements UserDetails {
         this.roles = roles;
     }
 
-    @Override
+   /* @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(authorities != null)
             return authorities;
@@ -78,5 +76,5 @@ public class UserDTO implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
+    }*/
 }

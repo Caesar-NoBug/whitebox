@@ -1,8 +1,8 @@
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.caesar.GatewayApplication;
-import org.caesar.client.UserClient;
-import org.caesar.common.Response;
-import org.caesar.domain.constant.enums.ErrorCode;
+import org.caesar.common.client.UserClient;
+import org.caesar.common.vo.Response;
+import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.common.exception.ThrowUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
@@ -54,7 +54,7 @@ public class FeignTest {
                 authorizeResponse -> {
 
                     System.out.println("异步回调");
-                    ThrowUtil.throwIf(authorizeResponse.getCode() != ErrorCode.SUCCESS.getCode(), ErrorCode.NOT_AUTHORIZED_ERROR, "授权失败：用户无权限访问");
+                    ThrowUtil.ifTrue(authorizeResponse.getCode() != ErrorCode.SUCCESS.getCode(), ErrorCode.NOT_AUTHORIZED_ERROR, "授权失败：用户无权限访问");
 
                     String userId = (String) authorizeResponse.getData();
 

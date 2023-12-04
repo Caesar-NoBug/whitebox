@@ -2,11 +2,11 @@ spring:
   application:
     name: search-service
 
-  data:
-    redis:
-      host: 127.0.0.1
-      port: 6379
-      database: 0
+  redis:
+    host: 8.130.19.151
+    port: 16379
+    database: 0
+    password: rIj12YF23S
 
   elasticsearch:
     uris: localhost:9200
@@ -14,10 +14,10 @@ spring:
 server:
   port: 14606
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://127.0.0.1:18888/eureka
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 8.130.19.151:8848
 
 logging:
   level:

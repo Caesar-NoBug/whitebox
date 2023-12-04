@@ -1,16 +1,19 @@
 package org.caesar.repository.impl;
 
-import jakarta.annotation.Resource;
+
 import org.caesar.mapper.BaseUserMapper;
 import org.caesar.mapper.MenuMapper;
 import org.caesar.model.MsUserStruct;
 import org.caesar.model.entity.User;
+import org.caesar.model.po.UserPO;
 import org.caesar.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -30,24 +33,24 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public List<User> selectUserByIds(List<Long> ids) {
+        return userMapper.selectBatchIds(ids).stream()
+                .map(userStruct::POtoDO).collect(Collectors.toList());
+    }
+
+    @Override
     public User selectUserByName(String username) {
-        return loadUserWithPermissions(
-                userStruct.POtoDO(userMapper.selectByUsername(username))
-        );
+        return loadUserWithPermissions(userMapper.selectByUsername(username));
     }
 
     @Override
     public User selectUserByEmail(String email) {
-        return loadUserWithPermissions(
-                userStruct.POtoDO(userMapper.selectByEmail(email))
-        );
+        return loadUserWithPermissions((userMapper.selectByEmail(email)));
     }
 
     @Override
     public User selectUserByPhone(String phone) {
-        return loadUserWithPermissions(
-                userStruct.POtoDO(userMapper.selectByPhone(phone))
-        );
+        return loadUserWithPermissions((userMapper.selectByPhone(phone)));
     }
 
     @Override
@@ -67,14 +70,18 @@ public class UserRepositoryImpl implements UserRepository {
         return userMapper.deleteById(id) > 0;
     }
 
-    //封装权限信息
-    private User loadUserWithPermissions(User user) {
+    //封装权限信息，并将PO转换成DO
+    private User loadUserWithPermissions(UserPO userPO) {
 
-        if (Objects.isNull(user)) return null;
+        User user = userStruct.POtoDO(userPO);
 
-        List<Integer> roles = menuMapper.selectRolesByUserId(user.getId());
+        if(Objects.isNull(user)) return null;
+
+        List<Integer> roles = menuMapper.selectRolesByUserId(userPO.getId());
+
         user.setRoles(roles);
 
         return user;
     }
+
 }

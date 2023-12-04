@@ -1,10 +1,10 @@
 package org.caesar.service.impl;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
-import org.caesar.domain.constant.enums.DataSource;
-import org.caesar.domain.constant.enums.SortField;
-import org.caesar.domain.vo.search.QuestionIndex;
-import org.caesar.common.model.vo.Page;
+import org.caesar.domain.search.enums.DataSource;
+import org.caesar.domain.search.enums.SortField;
+import org.caesar.domain.search.vo.QuestionIndex;
+import org.caesar.common.model.vo.PageVO;
 import org.caesar.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +35,7 @@ public class QuestionServiceImpl implements SearchService<QuestionIndex> {
     //TODO: 添加update字段并在增删改时修改该字段的值
     //TODO: es改成防腐层设计
     @Override
-    public Page<QuestionIndex> search(String keyword, int from, int size) {
+    public PageVO<QuestionIndex> search(String keyword, int from, int size) {
         List<FunctionScore> functions = new ArrayList<>();
 
         functions.add(new FunctionScore.Builder().fieldValueFactor(f -> f.field("favorNum").factor(FAVOR_WEIGHT).modifier(FieldValueFactorModifier.Log1p)).build());
@@ -58,7 +58,7 @@ public class QuestionServiceImpl implements SearchService<QuestionIndex> {
 
         SearchHits<QuestionIndex> searchHits = operations.search(nativeQuery, QuestionIndex.class);
 
-        Page<QuestionIndex> response = new Page<>();
+        PageVO<QuestionIndex> response = new PageVO<>();
         response.setData(searchHits.getSearchHits().stream().map(SearchHit::getContent).collect(Collectors.toList()));
         response.setTotalSize(searchHits.getSearchHits().size());
 
@@ -66,7 +66,7 @@ public class QuestionServiceImpl implements SearchService<QuestionIndex> {
     }
 
     @Override
-    public Page<QuestionIndex> sortSearch(String keyword, SortField field, int from, int size) {
+    public PageVO<QuestionIndex> sortSearch(String keyword, SortField field, int from, int size) {
         return null;
     }
 

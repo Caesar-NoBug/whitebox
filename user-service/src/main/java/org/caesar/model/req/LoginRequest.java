@@ -1,8 +1,10 @@
 package org.caesar.model.req;
 
-import jakarta.validation.constraints.NotNull;
+
 import lombok.Data;
 import org.caesar.enums.AuthenticationMethod;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 public class LoginRequest {

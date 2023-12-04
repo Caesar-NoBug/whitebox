@@ -2,7 +2,7 @@ package org.caesar.common.check.handler;
 
 import org.caesar.common.check.checker.StringChecker;
 import org.caesar.common.exception.ValidationException;
-import org.caesar.common.util.StrUtil;
+import org.caesar.common.str.StrUtil;
 
 import java.lang.annotation.Annotation;
 

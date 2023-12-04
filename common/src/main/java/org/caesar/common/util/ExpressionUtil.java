@@ -27,6 +27,7 @@ public class ExpressionUtil {
 
         for (int i = 0; i < numCount - 1; i++) {
 
+            //有50%的概率选择乘除
             if(op > 0.5) {
                 //只有可以整除时才选择除法,否则选择乘法
                 if(res % nums[i + 1] == 0) {
@@ -50,7 +51,7 @@ public class ExpressionUtil {
                     exp.append('-');
                 }
                 //重新生成运算符，且只能生成加减运算符
-                op = random.nextDouble(0.5);
+                op = random.nextDouble() / 2;
             }
 
             exp.append(nums[i + 1]);

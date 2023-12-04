@@ -1,10 +1,9 @@
 package org.caesar.service;
 
-import org.caesar.common.Response;
-import org.caesar.domain.response.question.JudgeCodeResponse;
-import org.caesar.domain.request.question.AddQuestionRequest;
-import org.caesar.domain.request.question.JudgeCodeRequest;
-import org.caesar.domain.request.question.UpdateQuestionRequest;
+import org.caesar.common.vo.Response;
+import org.caesar.domain.question.request.AddQuestionRequest;
+import org.caesar.domain.question.request.JudgeCodeRequest;
+import org.caesar.domain.question.request.UpdateQuestionRequest;
 import org.caesar.model.entity.Question;
 import org.caesar.model.po.QuestionPO;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -16,6 +15,7 @@ import org.springframework.scheduling.annotation.Async;
  * @createDate 2023-08-30 10:04:07
  */
 public interface QuestionService extends IService<QuestionPO> {
+    //TODO: 不要返回Response
     Response<Void> addQuestion(AddQuestionRequest request);
 
     Response<Void> deleteQuestion(Long qId);

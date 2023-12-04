@@ -1,0 +1,22 @@
+spring:
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 8.130.19.151:8848
+
+  redis:
+    host: 8.130.19.151
+    port: 16379
+    database: 0
+    password: rIj12YF23S
+
+  application:
+    name: aigc-service
+
+server:
+  port: 13131
+
+#logging:
+#  pattern:
+#    console: %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n

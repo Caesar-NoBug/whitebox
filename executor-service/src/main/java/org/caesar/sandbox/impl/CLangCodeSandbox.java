@@ -1,8 +1,8 @@
 package org.caesar.sandbox.impl;
 
-import org.caesar.common.TaskResult;
-import org.caesar.domain.constant.enums.CodeLanguage;
-import org.caesar.domain.response.executor.ExecuteCodeResponse;
+import org.caesar.common.vo.TaskResult;
+import org.caesar.domain.executor.enums.CodeLanguage;
+import org.caesar.domain.executor.response.ExecuteCodeResponse;
 import org.caesar.sandbox.CodeSandbox;
 import org.springframework.stereotype.Component;
 

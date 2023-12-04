@@ -1,7 +1,7 @@
 package org.caesar.runner;
 
 import org.caesar.domain.constant.StrConstant;
-import org.caesar.domain.vo.search.QuestionIndex;
+import org.caesar.domain.search.vo.QuestionIndex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

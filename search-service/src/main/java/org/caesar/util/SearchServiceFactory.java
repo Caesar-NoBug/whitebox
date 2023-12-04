@@ -1,7 +1,7 @@
 package org.caesar.util;
 
-import org.caesar.domain.constant.enums.DataSource;
-import org.caesar.domain.vo.search.Index;
+import org.caesar.domain.search.enums.DataSource;
+import org.caesar.domain.search.vo.Index;
 import org.caesar.service.SearchService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

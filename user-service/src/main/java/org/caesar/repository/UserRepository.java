@@ -2,9 +2,13 @@ package org.caesar.repository;
 
 import org.caesar.model.entity.User;
 
+import java.util.List;
+
 public interface UserRepository {
 
     User selectUserById(Long id);
+
+    List<User> selectUserByIds(List<Long> ids);
 
     User selectUserByName(String username);
 

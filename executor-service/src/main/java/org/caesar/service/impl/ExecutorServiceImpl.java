@@ -1,8 +1,8 @@
 package org.caesar.service.impl;
 
-import org.caesar.common.Response;
-import org.caesar.domain.request.executor.ExecuteCodeRequest;
-import org.caesar.domain.response.executor.ExecuteCodeResponse;
+import org.caesar.common.vo.Response;
+import org.caesar.domain.executor.request.ExecuteCodeRequest;
+import org.caesar.domain.executor.response.ExecuteCodeResponse;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.sandbox.CodeSandbox;
 import org.caesar.sandbox.CodeSandboxFactory;
@@ -26,13 +26,13 @@ public class ExecutorServiceImpl implements ExecutorService {
 
         CodeSandbox codeSandBox = factory.getCodeSandbox(request.getLanguage());
         //把所有Response.error改成抛异常再由ExceptionHandler处理的形式
-        ThrowUtil.throwIf(request.getTimeLimit() > MAX_TIME_LIMIT,
+        ThrowUtil.ifTrue(request.getTimeLimit() > MAX_TIME_LIMIT,
                  "代码运行时间超过允许的最大运行时间");
 
-        ThrowUtil.throwIf(request.getMemoryLimit() > MAX_MEMORY_LIMIT,
+        ThrowUtil.ifTrue(request.getMemoryLimit() > MAX_MEMORY_LIMIT,
             "代码运行内存超过允许的最大运行内存");
 
-        ThrowUtil.throwIfNull(codeSandBox, "不支持该语言的代码");
+        ThrowUtil.ifNull(codeSandBox, "不支持该语言的代码");
 
         return Response.ok(codeSandBox.executeCode(request));
     }

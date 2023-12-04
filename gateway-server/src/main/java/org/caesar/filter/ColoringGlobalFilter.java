@@ -2,7 +2,6 @@ package org.caesar.filter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.caesar.domain.constant.Headers;
-import org.caesar.constant.GatewayHeaders;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -27,7 +26,7 @@ public class ColoringGlobalFilter implements GlobalFilter, Ordered {
 
         ServerHttpRequest request = exchange.getRequest().mutate()
                 .header(Headers.SOURCE_HEADER, gatewaySource)
-                .header(GatewayHeaders.TRACE_ID_HEADER, UUID.randomUUID().toString())
+                .header(Headers.TRACE_ID_HEADER, UUID.randomUUID().toString())
                 .build();
 
         return chain.filter(exchange.mutate().request(request).build());

@@ -9,9 +9,11 @@ import reactor.core.publisher.Mono;
 
 //处理基本的限流操作
 //TODO： 熔断处理器, 用nacos加sentinel进行限流
+//TODO: 限制验证码访问频率
 @Component
 public class RateLimiterGlobalFilter implements GlobalFilter, Ordered {
 
+    //TODO: 加一个ip黑名单，用户id黑名单
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 

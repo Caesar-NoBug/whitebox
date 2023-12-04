@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -85,7 +84,6 @@ public class UserPO implements Serializable {
     @TableLogic
     private Integer isDelete;
 
-    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

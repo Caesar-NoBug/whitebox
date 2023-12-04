@@ -4,9 +4,9 @@ import lombok.Data;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.repository.CacheRepository;
 import org.caesar.domain.constant.StrConstant;
-import org.caesar.common.util.StrUtil;
+import org.caesar.common.str.StrUtil;
 import org.caesar.constant.RedisPrefix;
-import org.caesar.domain.constant.enums.ErrorCode;
+import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.model.req.RegisterRequest;
 import org.caesar.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -91,14 +91,14 @@ public class User {
         user.setEmail(request.getIdentity());
         boolean containsSimilar = userRepo.containsSimilarBindUser(user);
 
-        ThrowUtil.throwIf(containsSimilar, ErrorCode.ALREADY_EXIST_ERROR, "注册失败：已存在相同用户名或邮箱");
+        ThrowUtil.ifTrue(containsSimilar, ErrorCode.ALREADY_EXIST_ERROR, "注册失败：已存在相同用户名或邮箱");
 
         String redisKey = RedisPrefix.REGISTER_CODE_EMAIL + request.getIdentity();
-        String registerCode = (String) cacheRepo.getCacheObject(redisKey);
+        String registerCode = (String) cacheRepo.getObject(redisKey);
 
-        ThrowUtil.throwIf(StrUtil.isBlank(registerCode), "注册失败：验证码已失效，请重新发送验证码");
+        ThrowUtil.ifTrue(StrUtil.isBlank(registerCode), "注册失败：验证码已失效，请重新发送验证码");
 
-        ThrowUtil.throwIf(!registerCode.equals(request.getCredential()), "注册失败：验证码错误，请重新输入验证码");
+        ThrowUtil.ifTrue(!registerCode.equals(request.getCredential()), "注册失败：验证码错误，请重新输入验证码");
 
         String password = passwordEncoder.encode(request.getPassword());
 
@@ -111,8 +111,16 @@ public class User {
         user.setUpdateTime(now);
         user.setState(0);
 
-        ThrowUtil.throwIf(!userRepo.insertUser(user), ErrorCode.SYSTEM_ERROR, "注册失败：服务器错误！");
+        ThrowUtil.ifTrue(!userRepo.insertUser(user), ErrorCode.SYSTEM_ERROR, "注册失败：服务器错误！");
 
         return user;
     }
+
+    public Authorization getAuthorization() {
+        Authorization authorization = new Authorization();
+        authorization.setUserId(this.getId());
+        authorization.setRoles(this.getRoles());
+        return authorization;
+    }
+
 }

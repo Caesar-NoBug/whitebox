@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.caesar.mapper.CommentMapper">
+
+    <resultMap id="BaseResultMap" type="org.caesar.model.po.CommentPO">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="parentType" column="parent_type" jdbcType="TINYINT"/>
+            <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+            <result property="likeNum" column="like_num" jdbcType="INTEGER"/>
+            <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,parent_type,parent_id,
+        content,create_by,like_num,
+        is_delete
+    </sql>
+
+    <update id="markComment">
+        INSERT INTO comment_ops
+        (user_id, comment_id, mark)
+        VALUES (#{userId}, #{commentId}, #{mark})
+        ON DUPLICATE KEY UPDATE
+        <if test="mark != null">
+            mark = #{mark}
+        </if>
+    </update>
+
+    <delete id="deleteCommentOps">
+        DELETE
+        FROM comment_ops
+        WHERE comment_id = #{commentId}
+    </delete>
+
+    <select id="getCommentList" resultType="org.caesar.model.po.CommentPO">
+        SELECT id, parent_type, parent_id, content, create_by, create_at, like_num, mark
+        FROM comment
+                 JOIN comment_ops
+                      ON comment.id = comment_ops.comment_id
+                          AND comment.parent_id = #{parentId}
+                          AND comment.parent_type = #{parentType}
+                          AND comment.is_delete = 0
+        ORDER BY comment.like_num DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="hasDiffCommentMark" resultType="java.lang.Boolean">
+        SELECT COUNT(*)
+        FROM comment_ops
+        WHERE comment_id = #{commentId}
+          AND user_id = #{userId}
+          AND mark != #{mark}
+    </select>
+
+</mapper>

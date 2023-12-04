@@ -1,9 +1,9 @@
 package org.caesar.service;
 
-import org.caesar.domain.constant.enums.DataSource;
-import org.caesar.domain.constant.enums.SortField;
-import org.caesar.domain.vo.search.Index;
-import org.caesar.common.model.vo.Page;
+import org.caesar.domain.search.enums.DataSource;
+import org.caesar.domain.search.enums.SortField;
+import org.caesar.domain.search.vo.Index;
+import org.caesar.common.model.vo.PageVO;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ public interface SearchService<T extends Index> {
      * @param size 页大小
      * @return 查询结果
      */
-    Page<T> search(String keyword, int from, int size);
+    PageVO<T> search(String keyword, int from, int size);
 
-    Page<T> sortSearch(String keyword, SortField field, int from, int size);
+    PageVO<T> sortSearch(String keyword, SortField field, int from, int size);
 
     boolean insertIndex(List<T> indices, DataSource source);
 

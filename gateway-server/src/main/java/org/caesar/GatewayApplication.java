@@ -1,6 +1,5 @@
 package org.caesar;
 
-import jakarta.annotation.Resource;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
 import org.caesar.util.IPKeyResolver;
 import org.springframework.beans.factory.annotation.Autowired;

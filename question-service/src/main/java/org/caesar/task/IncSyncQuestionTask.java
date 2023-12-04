@@ -2,9 +2,9 @@ package org.caesar.task;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.caesar.client.SearchServiceClient;
-import org.caesar.domain.constant.enums.DataSource;
-import org.caesar.domain.vo.search.QuestionIndex;
+import org.caesar.common.client.SearchServiceClient;
+import org.caesar.domain.search.enums.DataSource;
+import org.caesar.domain.search.vo.QuestionIndex;
 import org.caesar.model.QuestionPOMapper;
 import org.caesar.model.entity.Question;
 import org.caesar.repository.QuestionRepository;

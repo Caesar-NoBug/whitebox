@@ -1,8 +1,8 @@
 package org.caesar.controller;
 
-import org.caesar.common.Response;
-import org.caesar.domain.request.executor.ExecuteCodeRequest;
-import org.caesar.domain.response.executor.ExecuteCodeResponse;
+import org.caesar.common.vo.Response;
+import org.caesar.domain.executor.request.ExecuteCodeRequest;
+import org.caesar.domain.executor.response.ExecuteCodeResponse;
 import org.caesar.service.ExecutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

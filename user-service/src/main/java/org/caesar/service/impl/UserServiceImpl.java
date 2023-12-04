@@ -1,15 +1,19 @@
 package org.caesar.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.jsonwebtoken.Claims;
-import jakarta.annotation.Resource;
-import org.caesar.common.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.caesar.common.exception.BusinessException;
 import org.caesar.common.exception.ThrowUtil;
+import org.caesar.common.repository.CacheRepository;
+import org.caesar.common.str.StrUtil;
 import org.caesar.domain.constant.NumConstant;
 import org.caesar.constant.RedisPrefix;
+import org.caesar.domain.common.enums.ErrorCode;
+import org.caesar.domain.user.vo.UserMinVO;
 import org.caesar.enums.AuthenticationMethod;
-import org.caesar.manager.AuthenticationManager;
+import org.caesar.auth.AuthenticationManager;
 import org.caesar.mapper.BaseUserMapper;
 import org.caesar.mapper.MenuMapper;
 import org.caesar.model.MsUserStruct;
@@ -22,12 +26,12 @@ import org.caesar.model.req.LoginRequest;
 import org.caesar.model.vo.UserVO;
 import org.caesar.repository.UserRepository;
 import org.caesar.service.UserService;
-import org.caesar.common.util.JwtUtil;
-import org.caesar.common.util.PrefixMatcher;
-import org.caesar.common.util.RedisCache;
+import org.caesar.common.str.JwtUtil;
+import org.caesar.common.str.PrefixMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +39,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author caesar
@@ -42,7 +47,10 @@ import java.util.concurrent.TimeUnit;
  * @createDate 2023-05-01 09:36:22
  */
 @Service
+@Slf4j
 public class UserServiceImpl extends ServiceImpl<BaseUserMapper, UserPO> implements UserService {
+
+    public static final int DEFAULT_REFRESH_TOKEN_LENGTH = 32;
 
     @Autowired
     private UserRepository userRepo;
@@ -54,7 +62,7 @@ public class UserServiceImpl extends ServiceImpl<BaseUserMapper, UserPO> impleme
     private MenuMapper menuMapper;
 
     @Autowired
-    private RedisCache redisCache;
+    private CacheRepository cacheRepo;
 
     @Autowired
     private AuthenticationManager authManager;
@@ -68,13 +76,31 @@ public class UserServiceImpl extends ServiceImpl<BaseUserMapper, UserPO> impleme
         String credential = request.getCredential();
         AuthenticationMethod method = request.getMethod();
 
+        // 验证用户身份
         authManager.authenticate(method, identity, credential);
 
+        //获取用户信息
         User user = authManager.getIdenticalUser(method, identity);
 
-        ThrowUtil.throwIfNull(user, "登录失败：该用户不存在！");
+        ThrowUtil.ifNull(user, "登录失败：该用户不存在！");
 
-        return userStruct.DOtoVO(user);
+        long userId = user.getId();
+        String authorization = JSON.toJSONString(user.getAuthorization());
+
+        String token = JwtUtil.createJWT(authorization);
+        String refreshToken = StrUtil.genRandStr(DEFAULT_REFRESH_TOKEN_LENGTH);
+
+        UserVO userVO = userStruct.DOtoVO(user);
+
+        userVO.setToken(token);
+        userVO.setRefreshToken(refreshToken);
+
+        cacheRepo.setObject(RedisPrefix.AUTH_REFRESH_TOKEN + userId, refreshToken, 7, TimeUnit.DAYS);
+        //redisCache.setCacheObject(RedisPrefix.LOGIN_USER + userId, authUser, 30, TimeUnit.DAYS);
+        //redisCache.setCacheObject(RedisPrefix.LOGIN_JWT + userId, token, 1, TimeUnit.HOURS);
+        log.info("用户登录成功：" + userId);
+
+        return userVO;
     }
 
     @Override
@@ -90,12 +116,12 @@ public class UserServiceImpl extends ServiceImpl<BaseUserMapper, UserPO> impleme
             throw new BusinessException(NumConstant.CODE_NOT_AUTHENTICATED, "非法jwt，请重新登录");
         }
 
-        String realJwt = redisCache.getCacheObject(RedisPrefix.LOGIN_JWT + userId);
+        String realJwt = cacheRepo.getObject(RedisPrefix.AUTH_REFRESH_TOKEN + userId);
 
         //jwt已失效
-        ThrowUtil.throwIf(!jwt.equals(realJwt), NumConstant.CODE_NOT_AUTHENTICATED, "jwt已失效，请重新登录");
+        ThrowUtil.ifTrue(!jwt.equals(realJwt), ErrorCode.NOT_AUTHENTICATED_ERROR, "jwt已失效，请重新登录");
 
-        UserDTO user = redisCache.getCacheObject(RedisPrefix.LOGIN_USER + userId);
+        UserDTO user = cacheRepo.getObject(RedisPrefix.LOGIN_USER + userId);
 
         List<Integer> roles = user.getRoles();
 
@@ -105,7 +131,7 @@ public class UserServiceImpl extends ServiceImpl<BaseUserMapper, UserPO> impleme
             accepted |= authorizeMatcher.match(requestPath);
         }
 
-        ThrowUtil.throwIf(!accepted, NumConstant.CODE_NOT_AUTHORIZED, "用户无权限访问该接口");
+        ThrowUtil.ifTrue(!accepted, ErrorCode.NOT_AUTHORIZED_ERROR, "用户无权限访问该接口");
 
         return userId;
     }
@@ -113,12 +139,12 @@ public class UserServiceImpl extends ServiceImpl<BaseUserMapper, UserPO> impleme
     @Override
     public String refreshToken(long userId, String refreshToken, LocalDateTime lastUpdateTime) {
 
-        UserDTO userDTO = redisCache.getCacheObject(RedisPrefix.LOGIN_USER + userId);
+        UserDTO userDTO = cacheRepo.getObject(RedisPrefix.LOGIN_USER + userId);
 
-        ThrowUtil.throwIf(Objects.isNull(userDTO) || !refreshToken.equals(userDTO.getRefreshToken()), "refresh token已失效，请重新登录");
+        ThrowUtil.ifTrue(Objects.isNull(userDTO) || !refreshToken.equals(userDTO.getRefreshToken()), "refresh token已失效，请重新登录");
 
         String newJwt = JwtUtil.createJWT(userId + "");
-        redisCache.setCacheObject(RedisPrefix.LOGIN_JWT + userId, newJwt, 1, TimeUnit.HOURS);
+        cacheRepo.setObject(RedisPrefix.AUTH_REFRESH_TOKEN + userId, newJwt, 1, TimeUnit.HOURS);
 
         TokenDTO tokenDTO = new TokenDTO();
         tokenDTO.setJwt(newJwt);
@@ -130,7 +156,7 @@ public class UserServiceImpl extends ServiceImpl<BaseUserMapper, UserPO> impleme
         if (!lastUpdateTime.equals(userDTO.getUserPO().getUpdateTime()))
             map.put("user", userDTO.getUserPO());
 
-        return Response.ok(map);
+        return null;
     }
 
     @Override
@@ -166,21 +192,27 @@ public class UserServiceImpl extends ServiceImpl<BaseUserMapper, UserPO> impleme
         if (!userRepository.insertUser(user))
             return new Response<>(NumConstant.CODE_INNER_ERROR, null, "注册失败：服务器错误！");*/
 
-        redisCache.deleteObject(redisKey);
+        /*cacheRepo.deleteObject(redisKey);
 
-        return Response.ok(null, "注册成功，请登录");
+        return Response.ok(null, "注册成功，请登录");*/
+        return null;
     }
 
     @Override
-    public void logout(String jwt) {
+    public void logout(String token) {
 
-        String userId = JwtUtil.getJwtSubject(jwt);
-        if (Objects.isNull(userId)) {
-            return Response.error("退出失败，用户不存在");
+        String userId = null;
+        try {
+            userId = JwtUtil.getJwtSubject(token);
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.ILLEGAL_PARAM_ERROR, "退出登录失败：非法token");
         }
-        redisCache.deleteObject(RedisPrefix.LOGIN_USER + userId);
-        redisCache.deleteObject(RedisPrefix.LOGIN_JWT + userId);
-        return Response.ok(null, "成功退出登录");
+
+        ThrowUtil.ifNull(userId, "退出失败，用户不存在");
+
+        cacheRepo.deleteObject(RedisPrefix.LOGIN_USER + userId);
+        cacheRepo.deleteObject(RedisPrefix.AUTH_REFRESH_TOKEN + userId);
+
     }
 
     private PrefixMatcher getAuthorizeMatcher(int roleId) {
@@ -194,6 +226,16 @@ public class UserServiceImpl extends ServiceImpl<BaseUserMapper, UserPO> impleme
 
         return authorizeMatcher;
     }
+
+    @Override
+    public Map<Long, UserMinVO> getUserMin(List<Long> userIds) {
+        /*return userRepo.selectUserByIds(userIds).stream()
+                .map(userStruct::DOtoMinVO)
+                .collect(Collectors.toMap(UserMinVO::getId, userMin -> userMin));*/
+        return userRepo.selectUserByIds(userIds).stream()
+                .collect(Collectors.toMap(User::getId, userStruct::DOtoMinVO));
+    }
+
 }
 
 

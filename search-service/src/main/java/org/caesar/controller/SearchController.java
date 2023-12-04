@@ -1,11 +1,11 @@
 package org.caesar.controller;
 
-import org.caesar.common.Response;
-import org.caesar.domain.constant.enums.DataSource;
-import org.caesar.domain.constant.enums.ErrorCode;
-import org.caesar.domain.constant.enums.SortField;
-import org.caesar.domain.vo.search.Index;
-import org.caesar.common.model.vo.Page;
+import org.caesar.common.vo.Response;
+import org.caesar.domain.search.enums.DataSource;
+import org.caesar.domain.common.enums.ErrorCode;
+import org.caesar.domain.search.enums.SortField;
+import org.caesar.domain.search.vo.Index;
+import org.caesar.common.model.vo.PageVO;
 import org.caesar.service.SearchService;
 import org.caesar.util.SearchServiceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +21,11 @@ public class SearchController {
     private SearchServiceFactory factory;
 
     @GetMapping("/search/{source}")
-    public Response<Page<Index>> search(@RequestParam String keyword, @RequestParam int from, @RequestParam int size,
-                                        @RequestParam SortField field, @PathVariable DataSource source) {
+    public Response<PageVO<Index>> search(@RequestParam String keyword, @RequestParam int from, @RequestParam int size,
+                                          @RequestParam SortField field, @PathVariable DataSource source) {
         SearchService<Index> searchService = factory.getSearchService(source);
-        Page<Index> pageResponse = Objects.isNull(field) ? searchService.search(keyword, from, size) : searchService.sortSearch(keyword, field, from, size);
-        return Response.ok(pageResponse);
+        PageVO<Index> pageVOResponse = Objects.isNull(field) ? searchService.search(keyword, from, size) : searchService.sortSearch(keyword, field, from, size);
+        return Response.ok(pageVOResponse);
     }
 
     @PostMapping("/sync/{source}")

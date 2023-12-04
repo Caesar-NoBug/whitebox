@@ -1,30 +1,16 @@
 package org.caesar.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.caesar.constant.RedisPrefix;
-import org.caesar.model.dto.TokenDTO;
-import org.caesar.model.dto.UserDTO;
-import org.caesar.model.req.LoginRequest;
-import org.caesar.model.vo.UserVO;
-import org.caesar.security.token.EmailAuthenticationToken;
-import org.caesar.security.token.UsernameAuthenticationToken;
-import org.caesar.common.util.JwtUtil;
-import org.caesar.common.util.RedisCache;
-import org.caesar.common.util.StrUtil;import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
 public class LoginServiceImpl {
 
-    public static final int DEFAULT_REFRESH_TOKEN_LENGTH = 32;
+
 
    /* @Autowired
     private AuthenticationManager authenticationManager;
@@ -56,7 +42,7 @@ public class LoginServiceImpl {
     //处理认证结果
     private Map<String, Object> handleAuthentication(Authentication authentication){
 
-        //认证失败
+        /*//认证失败
         if(Objects.isNull(authentication)){
             return null;
         }
@@ -82,7 +68,8 @@ public class LoginServiceImpl {
         map.put("token", tokenDTO);
         map.put("user", authUser.getUserPO());
 
-        return map;
+        return map;*/
+        return null;
     }
 
 }

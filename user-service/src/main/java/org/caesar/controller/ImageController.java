@@ -1,5 +1,6 @@
 package org.caesar.controller;
 
+import org.caesar.common.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -27,9 +28,9 @@ public class ImageController {
 
     //上传图片
     @PostMapping("/upload")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file) {
+    public Response<Void> handleFileUpload(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
-            return "Please select a file to upload.";
+            return Response.error("上传失败：未附带文件或文件为空");
         }
 
         try {
@@ -41,11 +42,12 @@ public class ImageController {
             // 将文件保存到指定路径
             Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 
-            return "File uploaded successfully";
+            return Response.ok();
         } catch (IOException e) {
             e.printStackTrace();
-            return "Failed to upload file.";
+            return Response.error("保存文件失败");
         }
+
     }
 
     @GetMapping("/{imageName}")

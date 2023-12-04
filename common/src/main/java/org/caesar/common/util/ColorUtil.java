@@ -1,5 +1,8 @@
 package org.caesar.common.util;
 
+import java.awt.*;
+import java.util.Random;
+
 public class ColorUtil {
 
     private static final String[] DEFAULT_COLORS = {
@@ -9,6 +12,8 @@ public class ColorUtil {
             "255,128,0", "255,128,128", "255,128,255", "255,255,0", "255,255,128", "255,255,255"
     };
 
+    private static final int COLOR_SIZE = 256;
+
     //生成R,G，B形式的颜色
     public static String genBasicColors() {
         return DEFAULT_COLORS[(int) (Math.random() * DEFAULT_COLORS.length)];
@@ -16,11 +21,17 @@ public class ColorUtil {
 
     //生成R,G，B形式的颜色
     public static String genColors() {
-        return String.format("%d,%d,%d", (int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
+        Random random = new Random();
+        return String.format("%d,%d,%d", random.nextInt(COLOR_SIZE), random.nextInt(COLOR_SIZE), random.nextInt(COLOR_SIZE));
     }
 
-    public static String genColor() {
+    public static String genColorStr() {
         return String.valueOf((int) (Math.random() * 255));
+    }
+
+    public static Color genColor(){
+        Random random = new Random();
+        return new Color(random.nextInt(COLOR_SIZE), random.nextInt(COLOR_SIZE), random.nextInt(COLOR_SIZE));
     }
 
 }
