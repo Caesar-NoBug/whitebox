@@ -1,8 +1,7 @@
 package org.caesar.domain.article.vo;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import org.caesar.domain.user.vo.UserMinVO;
 
 /**
  *  评论VO
@@ -13,17 +12,7 @@ public class CommentVO {
     /**
      * 评论主键
      */
-    private Long id;
-
-    /**
-     * 父对象类型，type取值：0，文章；1，评论；2，题目
-     */
-    private Integer parentType;
-
-    /**
-     * 父对象id
-     */
-    private Long parentId;
+    private long id;
 
     /**
      * 评论内容（不超过1024个字符）
@@ -31,17 +20,17 @@ public class CommentVO {
     private String content;
 
     /**
-     * 发布者id
+     * 发布者信息
      */
-    private Long createBy;
+    private UserMinVO publisher;
 
     /**
      * 点赞数
      */
-    private Integer likeNum;
+    private long likeNum;
 
     /**
-     * 是否已点赞
+     * 点赞情况（-1：点踩；0：无；1：点赞）
      */
-    private boolean liked;
+    private int mark;
 }

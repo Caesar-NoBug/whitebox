@@ -1,7 +1,6 @@
 package org.caesar.model.vo;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
 public class UserVO {

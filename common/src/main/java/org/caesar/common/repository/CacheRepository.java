@@ -20,6 +20,7 @@ public interface CacheRepository {
     // 对象相关
     <T> void setObject(String key, T object);
     <T> void setObject(String key, T object, int expire, TimeUnit timeUnit);
+    boolean expire(String key, int expire, TimeUnit timeUnit);
     void deleteObject(String key);
     <T> T getObject(String key);
 

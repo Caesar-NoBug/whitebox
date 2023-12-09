@@ -14,12 +14,17 @@ public class ArticleVO {
     /**
      * 文章主键
      */
-    private Long id;
+    private long id;
 
     /**
      * 文章内容
      */
     private String content;
+
+    /**
+     *  文章类型
+     */
+    private Integer type;
 
     /**
      * 文章标签
@@ -29,17 +34,17 @@ public class ArticleVO {
     /**
      * 收藏数
      */
-    private Integer favorNum;
+    private long favorNum;
 
     /**
      * 浏览数
      */
-    private Integer viewNum;
+    private long viewNum;
 
     /**
      * 点赞数
      */
-    private Integer likeNum;
+    private long likeNum;
 
     /**
      * 创建者信息

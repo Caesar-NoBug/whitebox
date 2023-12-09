@@ -7,7 +7,6 @@ import org.caesar.model.MsUserStruct;
 import org.caesar.model.entity.User;
 import org.caesar.model.po.UserPO;
 import org.caesar.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;

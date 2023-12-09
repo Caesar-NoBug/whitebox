@@ -10,10 +10,19 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 @Data
-@Document(indexName = StrConstant.QUESTION_INDEX, createIndex = false)
+@Document(indexName = StrConstant.QUESTION_INDEX)
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuestionIndex implements Index{
+
+    public static final String FIELD_ALL = "all";
+    public static final String FIELD_TITLE = "title";
+    public static final String FIELD_CONTENT = "content";
+    public static final String FIELD_TAG = "tag";
+    public static final String FIELD_LIKE_NUM = "likeNum";
+    public static final String FIELD_FAVOR_NUM = "favorNum";
+    public static final String FIELD_SUBMIT_NUM = "submitNum";
+    public static final String FIELD_UPDATE_TIME = "updateTime";
 
     /**
      * 问题主键
@@ -50,7 +59,7 @@ public class QuestionIndex implements Index{
      * 点赞数
      */
     @Field(type = FieldType.Integer)
-    private Integer thumbNum;
+    private Integer likeNum;
 
     /**
      * 收藏数

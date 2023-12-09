@@ -2,13 +2,14 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.caesar.mapper.ArticleMapper">
+<mapper namespace="org.caesar.article.mapper.ArticleMapper">
 
-    <resultMap id="BaseResultMap" type="org.caesar.model.po.ArticlePO">
+    <resultMap id="BaseResultMap" type="org.caesar.article.model.po.ArticlePO">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="title" column="title" jdbcType="VARCHAR"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="digest" column="digest" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="TINYINT"/>
         <result property="tags" column="tags" jdbcType="VARCHAR"/>
         <result property="createBy" column="create_by" jdbcType="BIGINT"/>
         <result property="createAt" column="create_at" jdbcType="TIMESTAMP"/>
@@ -18,7 +19,7 @@
 
     <sql id="Base_Column_List">
         id,title,content,digest,
-        tags,create_by,create_at,
+        type,tags,create_by,create_at,
         update_at,is_delete
     </sql>
 
@@ -49,7 +50,7 @@
         WHERE article_id = #{articleId}
     </delete>
 
-    <select id="getArticleHistory" resultType="org.caesar.model.po.ArticlePO">
+    <select id="getArticleHistory" resultType="org.caesar.article.model.po.ArticlePO">
         SELECT id, title, digest, view_at viewAt, create_by
         FROM article
                  JOIN article_view
@@ -57,7 +58,7 @@
                           AND article_view.article_id = #{articleId}
                           AND article_view.user_id = #{userId}
                           AND article.is_delete = 0
-        ORDER BY view_at DESC
+        ORDER BY view_at, id DESC
         LIMIT #{size} OFFSET #{offset}
     </select>
 
@@ -77,11 +78,17 @@
           AND favored!= #{favored}
     </select>
 
-    <select id="getArticleOps" resultType="org.caesar.model.entity.ArticleOps">
+    <select id="getArticleOps" resultType="org.caesar.article.model.entity.ArticleOps">
         SELECT mark, favored
         FROM article_ops
         WHERE article_id = #{articleId}
             AND user_id = #{userId}
+    </select>
+
+    <select id="getUpdatedArticle" resultType="org.caesar.article.model.po.ArticlePO">
+        SELECT id, title, content, digest, tags, update_at, is_delete
+        FROM article
+        WHERE update_at > #{updateAt}
     </select>
 
 </mapper>

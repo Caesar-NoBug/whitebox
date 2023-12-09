@@ -1,10 +1,10 @@
-import org.caesar.ArticleServiceApplication;
+import org.caesar.article.ArticleServiceApplication;
 import org.caesar.common.repository.CacheRepository;
-import org.caesar.constant.RedisPrefix;
-import org.caesar.mapper.ArticleMapper;
-import org.caesar.model.entity.Article;
-import org.caesar.repository.ArticleRepository;
-import org.caesar.service.ArticleService;
+import org.caesar.article.constant.RedisPrefix;
+import org.caesar.article.mapper.ArticleMapper;
+import org.caesar.article.model.entity.Article;
+import org.caesar.article.repository.ArticleRepository;
+import org.caesar.article.service.ArticleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

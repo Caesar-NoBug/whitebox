@@ -33,13 +33,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * @author caesar
@@ -229,11 +225,25 @@ public class UserServiceImpl extends ServiceImpl<BaseUserMapper, UserPO> impleme
 
     @Override
     public Map<Long, UserMinVO> getUserMin(List<Long> userIds) {
-        /*return userRepo.selectUserByIds(userIds).stream()
-                .map(userStruct::DOtoMinVO)
-                .collect(Collectors.toMap(UserMinVO::getId, userMin -> userMin));*/
-        return userRepo.selectUserByIds(userIds).stream()
-                .collect(Collectors.toMap(User::getId, userStruct::DOtoMinVO));
+        ArrayList<Long> ids = new ArrayList<>();
+
+        Map<Long, UserMinVO> userMinMap = new HashMap<>();
+
+        for (Long userId : userIds) {
+            UserMinVO userMinVO = cacheRepo.getObject(RedisPrefix.CACHE_USER_MIN + userId);
+            if(userMinVO != null) userMinMap.put(userId, userMinVO);
+            else ids.add(userId);
+        }
+
+        userRepo.selectUserByIds(userIds).forEach(user -> {
+            Long id = user.getId();
+            UserMinVO userMinVO = userStruct.DOtoMinVO(user);
+            userMinMap.put(id, userMinVO);
+            cacheRepo.setObject(RedisPrefix.CACHE_USER_MIN + id, userMinVO,
+                    5, TimeUnit.MINUTES);
+        });
+
+        return userMinMap;
     }
 
 }

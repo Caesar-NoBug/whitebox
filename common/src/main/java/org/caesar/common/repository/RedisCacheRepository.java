@@ -49,6 +49,11 @@ public class RedisCacheRepository implements CacheRepository {
     }
 
     @Override
+    public boolean expire(String key, int expire, TimeUnit timeUnit) {
+        return redisCache.expire(key, expire, timeUnit);
+    }
+
+    @Override
     public void deleteObject(String key) {
         redisCache.deleteObject(key);
     }

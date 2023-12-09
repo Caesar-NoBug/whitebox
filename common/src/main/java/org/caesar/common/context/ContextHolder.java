@@ -1,5 +1,6 @@
 package org.caesar.common.context;
 
+import org.caesar.common.exception.ThrowUtil;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -28,6 +29,12 @@ public class ContextHolder {
     public static <T> T get(String key) {
         Map<String, Object> map = threadLocal.get();
         return map == null ? null : (T) map.get(key);
+    }
+
+    public static long getUserId() {
+        Long userId = get(USER_ID);
+        ThrowUtil.ifNull(userId, "用户未登录");
+        return userId;
     }
 
     public static void clear() {

@@ -1,9 +1,9 @@
 package org.caesar.service;
 
-import org.caesar.domain.aigc.request.AnalyseArticleRequest;
+import org.caesar.domain.aigc.request.AnalyseContentRequest;
 import org.caesar.domain.aigc.request.CompletionRequest;
 import org.caesar.domain.aigc.request.QuestionHelperRequest;
-import org.caesar.domain.aigc.response.AnalyseArticleResponse;
+import org.caesar.domain.aigc.response.AnalyseContentResponse;
 import org.caesar.domain.aigc.response.CompletionResponse;
 import org.caesar.domain.aigc.response.QuestionHelperResponse;
 
@@ -21,5 +21,5 @@ public interface ChatService {
     CompletionResponse summary(CompletionRequest request);
 
     //  分析文章
-    AnalyseArticleResponse analyseArticle(AnalyseArticleRequest request);
+    AnalyseContentResponse analyseContent(AnalyseContentRequest request);
 }

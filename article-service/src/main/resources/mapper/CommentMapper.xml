@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.caesar.mapper.CommentMapper">
+<mapper namespace="org.caesar.article.mapper.CommentMapper">
 
-    <resultMap id="BaseResultMap" type="org.caesar.model.po.CommentPO">
+    <resultMap id="BaseResultMap" type="org.caesar.article.model.po.CommentPO">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="parentType" column="parent_type" jdbcType="TINYINT"/>
             <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
@@ -36,7 +36,7 @@
         WHERE comment_id = #{commentId}
     </delete>
 
-    <select id="getCommentList" resultType="org.caesar.model.po.CommentPO">
+    <select id="getCommentList" resultType="org.caesar.article.model.po.CommentPO">
         SELECT id, parent_type, parent_id, content, create_by, create_at, like_num, mark
         FROM comment
                  JOIN comment_ops
@@ -44,7 +44,7 @@
                           AND comment.parent_id = #{parentId}
                           AND comment.parent_type = #{parentType}
                           AND comment.is_delete = 0
-        ORDER BY comment.like_num DESC
+        ORDER BY comment.like_num, comment.create_at, comment.id DESC
         LIMIT #{size} OFFSET #{offset}
     </select>
 

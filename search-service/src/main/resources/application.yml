@@ -2,6 +2,11 @@ spring:
   application:
     name: search-service
 
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 8.130.19.151:8848
+
   redis:
     host: 8.130.19.151
     port: 16379
@@ -9,15 +14,11 @@ spring:
     password: rIj12YF23S
 
   elasticsearch:
-    uris: localhost:9200
+    rest:
+      uris: 192.168.10.135:9200
 
 server:
   port: 14606
-
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 8.130.19.151:8848
 
 logging:
   level:

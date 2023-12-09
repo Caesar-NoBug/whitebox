@@ -56,6 +56,7 @@ public class RedisCache
     }
 
     public RAtomicLong getAtomicLong(String key) {
+
         return redissonClient.getAtomicLong(key);
     }
 

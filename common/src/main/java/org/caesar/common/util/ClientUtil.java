@@ -17,7 +17,7 @@ public class ClientUtil {
         ThrowUtil.ifNull(response, ErrorCode.SYSTEM_ERROR, message + ":响应为空");
 
         ThrowUtil.ifTrue(response.getCode() != ErrorCode.SUCCESS.getCode(),
-                ErrorCode.SYSTEM_ERROR, message);
+                response.getCode(),  message + ":" + response.getMsg());
 
         T data = response.getData();
 

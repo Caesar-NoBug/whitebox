@@ -1,5 +1,5 @@
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.caesar.GatewayApplication;
+import org.caesar.gateway.GatewayApplication;
 import org.caesar.common.client.UserClient;
 import org.caesar.common.vo.Response;
 import org.caesar.domain.common.enums.ErrorCode;

@@ -1,6 +1,4 @@
 package org.caesar.task;
-
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.caesar.common.client.SearchServiceClient;
 import org.caesar.domain.search.enums.DataSource;
@@ -13,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

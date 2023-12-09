@@ -1,6 +1,5 @@
 package org.caesar.repository.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.caesar.mapper.QuestionMapper;
 import org.caesar.model.QuestionPOMapper;
 import org.caesar.model.po.QuestionPO;

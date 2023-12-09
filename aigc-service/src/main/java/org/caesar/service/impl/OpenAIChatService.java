@@ -6,11 +6,12 @@ import org.caesar.client.ChatClient;
 import org.caesar.common.exception.BusinessException;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.constant.ChatPrompt;
+import org.caesar.constant.Patterns;
 import org.caesar.constant.RedisKey;
 
-import org.caesar.domain.aigc.request.AnalyseArticleRequest;
+import org.caesar.domain.aigc.request.AnalyseContentRequest;
 import org.caesar.domain.aigc.request.QuestionHelperRequest;
-import org.caesar.domain.aigc.response.AnalyseArticleResponse;
+import org.caesar.domain.aigc.response.AnalyseContentResponse;
 import org.caesar.domain.aigc.response.QuestionHelperResponse;
 import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.model.vo.*;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.regex.Matcher;
 
 @Service
 @Slf4j
@@ -43,9 +45,9 @@ public class OpenAIChatService implements ChatService {
         CompletionResponse response;
         String cacheKey;
 
-        String userId = ContextHolder.get(ContextHolder.USER_ID);
+        Long userId = ContextHolder.get(ContextHolder.USER_ID);
         ThrowUtil.ifNull(userId, "对话失败：用户未登录");
-
+        //TODO: 加一个向user-service的异步计费请求
         //  继续对话
         if (id != null) {
 
@@ -94,17 +96,19 @@ public class OpenAIChatService implements ChatService {
     }
 
     @Override
-    public AnalyseArticleResponse analyseArticle(AnalyseArticleRequest request) {
+    public AnalyseContentResponse analyseContent(AnalyseContentRequest request) {
         String title = request.getTitle();
-        String content = request.getContent();
+        String content = simplifyArticle(request.getContent());
         boolean genContent = request.isGenContent();
         String prompt = String.format(ChatPrompt.PROMPT_ARTICLE_INFO, title, content);
 
+        // 审核文章
         String detectResult = completion(new CompletionRequest(ChatPrompt.PRESET_DETECT_ARTICLE, prompt)).getReply();
 
-        AnalyseArticleResponse response = new AnalyseArticleResponse();
+        AnalyseContentResponse response = new AnalyseContentResponse();
+
         // 是否通过审核
-        response.setPass(ChatPrompt.DETECT_ARTICLE_FAIL.equals(detectResult));
+        response.setPass(ChatPrompt.DETECT_ARTICLE_PASS.equals(detectResult));
 
         // 未通过或不生成摘要、标签则直接结束
         if(!response.isPass() || !genContent)
@@ -112,16 +116,45 @@ public class OpenAIChatService implements ChatService {
 
         String analyseResult = completion(new CompletionRequest(ChatPrompt.PRESET_ANALYSE_ARTICLE, prompt)).getReply();
 
-        String[] generatedContents = analyseResult.split("\n");
+        String[] generatedContents = analyseResult.split("\n\n");
 
         try {
             response.setDigest(generatedContents[0]);
-            response.setDigest(generatedContents[1]);
+            response.setTags(generatedContents[1]);
         } catch (ArrayIndexOutOfBoundsException e) {
              throw new BusinessException(ErrorCode.SYSTEM_ERROR, "ai响应结果格式错误");
         }
 
         return response;
+    }
+
+    /**
+     * 去除文章中的代码块（但保留代码块中的注释）
+     * @param content 文章内容（假设为md形式）
+     * @return 简化后的文章内容
+     */
+    private String simplifyArticle(String content) {
+
+        Matcher codeBlockMatcher = Patterns.CODE_BLOCK_PATTERN.matcher(content);
+
+        StringBuffer replacedText = new StringBuffer();
+
+        // 遍历匹配的代码块
+        while (codeBlockMatcher.find()) {
+            String codeBlock = codeBlockMatcher.group();
+
+            // 保留代码中的注释
+            Matcher commentMatcher = Patterns.COMMENT_PATTERN.matcher(codeBlock);
+            StringBuilder sb = new StringBuilder();
+            while (commentMatcher.find()) {
+                sb.append(commentMatcher.group()).append('\n');
+            }
+            codeBlockMatcher.appendReplacement(replacedText, Matcher.quoteReplacement(sb.toString()));
+        }
+
+        codeBlockMatcher.appendTail(replacedText);
+
+        return replacedText.toString();
     }
 
     //  开始新对话

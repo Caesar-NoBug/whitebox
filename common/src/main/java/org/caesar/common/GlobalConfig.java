@@ -9,6 +9,7 @@ import feign.codec.DecodeException;
 import feign.codec.Decoder;
 import feign.codec.EncodeException;
 import feign.codec.Encoder;
+import org.caesar.common.context.ContextHolder;
 import org.caesar.common.util.FastJsonDecoder;
 import org.caesar.common.util.FastJsonEncoder;
 import org.caesar.common.util.IOUtil;
@@ -26,6 +27,7 @@ import java.lang.reflect.Type;
 
 @Configuration
 @ComponentScan
+@ComponentScan("org.caesar.common")
 @Import(RedisAutoConfiguration.class)
 public class GlobalConfig {
 
@@ -78,7 +80,10 @@ public class GlobalConfig {
         return new RequestInterceptor() {
             @Override
             public void apply(RequestTemplate template) {
+                //TODO: 设置允许通信的服务的ip白名单，只接收来自白名单的请求，并使用https进行服务间通信
                 template.header(Headers.SOURCE_HEADER, "gateway");
+                template.header(Headers.USERID_HEADER, (String) ContextHolder.get(ContextHolder.USER_ID));
+                template.header(Headers.TRACE_ID_HEADER, (String) ContextHolder.get(ContextHolder.TRACE_ID));
                 // 添加其他全局请求头
             }
         };

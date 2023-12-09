@@ -19,6 +19,7 @@ public interface SearchService<T extends Index> {
 
     PageVO<T> sortSearch(String keyword, SortField field, int from, int size);
 
+    // 插入索引，若指定id以存在，则会覆盖旧数据
     boolean insertIndex(List<T> indices, DataSource source);
 
     boolean deleteIndex(List<Long> ids, DataSource source);
