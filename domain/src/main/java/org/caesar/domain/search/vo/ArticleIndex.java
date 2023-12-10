@@ -14,6 +14,20 @@ import java.time.LocalDateTime;
 @Document(indexName = "article_index", createIndex = false)
 public class ArticleIndex implements Index{
 
+    public static final String FIELD_ALL = "all";
+    public static final String FIELD_TITLE = "title";
+    public static final String FIELD_CONTENT = "content";
+    public static final String FIELD_DIGEST = "digest";
+    public static final String FIELD_TAG = "tag";
+    public static final String FIELD_LIKE_NUM = "likeNum";
+    public static final String FIELD_FAVOR_NUM = "favorNum";
+    public static final String FIELD_VIEW_NUM = "viewNum";
+    public static final String FIELD_UPDATE_TIME = "updateTime";
+
+    public static final String[] RESULT_FIELDS = new String[] {
+            FIELD_TITLE, FIELD_DIGEST, FIELD_TAG, FIELD_LIKE_NUM, FIELD_FAVOR_NUM, FIELD_VIEW_NUM, FIELD_UPDATE_TIME
+    };
+
     /**
      * 文章主键
      */
@@ -68,12 +82,6 @@ public class ArticleIndex implements Index{
      */
     @Field(type = FieldType.Integer, store = true)
     private Integer likeNum;
-
-    /**
-     * 评论数
-     */
-    @Field(type = FieldType.Integer, store = true)
-    private Integer commentNum;
 
     /**
      * 修改时间

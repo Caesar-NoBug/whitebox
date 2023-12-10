@@ -1,4 +1,4 @@
-package org.caesar.util.strategy;
+package org.caesar.judge.strategy;
 
 import org.caesar.common.vo.StatusMap;
 import org.springframework.stereotype.Component;

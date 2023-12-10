@@ -146,7 +146,7 @@ public class ArticleServiceImpl implements ArticleService{
 
         if (articleVO != null) {
             // 热点数据持续刷新过期时间
-            cacheRepo.expire(cacheKey, 15, TimeUnit.MINUTES);
+            cacheRepo.expire(cacheKey, 20, TimeUnit.MINUTES);
             return articleVO;
         }
 

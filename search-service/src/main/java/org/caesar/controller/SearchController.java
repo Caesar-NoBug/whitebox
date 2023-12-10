@@ -21,17 +21,17 @@ public class SearchController {
     private SearchServiceFactory factory;
 
     @GetMapping("/search/{source}")
-    public Response<PageVO<Index>> search(@RequestParam String keyword, @RequestParam int from, @RequestParam int size,
+    public Response<PageVO<? extends Index>> search(@RequestParam String keyword, @RequestParam int from, @RequestParam int size,
                                           @RequestParam SortField field, @PathVariable DataSource source) {
-        SearchService<Index> searchService = factory.getSearchService(source);
-        PageVO<Index> pageVOResponse = Objects.isNull(field) ? searchService.search(keyword, from, size) : searchService.sortSearch(keyword, field, from, size);
+        SearchService<? extends Index> searchService = factory.getSearchService(source);
+        PageVO<? extends Index> pageVOResponse = Objects.isNull(field) ? searchService.search(keyword, from, size) : searchService.sortSearch(keyword, field, from, size);
         return Response.ok(pageVOResponse);
     }
 
     @PostMapping("/sync/{source}")
     public Response<Void> syncIndex(@RequestBody List<Index> indices, @PathVariable DataSource source) {
         SearchService<Index> searchService = factory.getSearchService(source);
-        boolean success = searchService.insertIndex(indices, source);
+        //boolean success = searchService.insertIndex(indices, source);
         return success ? Response.ok(null) : Response.error(ErrorCode.SYSTEM_ERROR, "同步索引失败");
     }
 

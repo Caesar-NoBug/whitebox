@@ -12,10 +12,16 @@ spring:
     port: 16379
     database: 0
     password: rIj12YF23S
+  redisson:
+    client:
+      connectionPool:
+        minIdleSize: 5
+        poolSize: 10
 
   elasticsearch:
     rest:
       uris: 192.168.10.135:9200
+
 
 server:
   port: 14606

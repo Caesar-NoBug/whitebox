@@ -10,7 +10,7 @@ import org.caesar.domain.question.response.JudgeCodeResponse;
 import org.caesar.common.str.JSONUtil;
 import org.caesar.common.vo.StatusMap;
 import org.caesar.model.vo.JudgeParam;
-import org.caesar.util.QuestionJudgeManager;
+import org.caesar.judge.QuestionJudgeManager;
 
 import java.io.Serial;
 import java.io.Serializable;

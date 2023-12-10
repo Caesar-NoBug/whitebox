@@ -4,117 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64792235-44ae-4705-bdf4-1ada63ec6571" name="Changes" comment="新增文章模块、AIGC模块，完成文章缓存，AI文章内容审核及分析">
-      <change afterPath="$PROJECT_DIR$/aigc-service/src/main/java/org/caesar/constant/Patterns.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/constant/RedisPrefix.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/controller/ArticleController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/model/entity/Comment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/service/impl/CommentServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/task/IncSyncArticleTask.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/article/enums/ArticleType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/enums/QuestionSortField.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/Example.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/repository/QuestionRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/impl/ArticleSearchService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/impl/QuestionSearchService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7017b0d2-8a93-4b3f-bd49-a71ed4f8ca3c.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7017b0d2-8a93-4b3f-bd49-a71ed4f8ca3c.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7017b0d2-8a93-4b3f-bd49-a71ed4f8ca3c/storage_v2/_src_/schema/db_white_box.ND6YRQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7017b0d2-8a93-4b3f-bd49-a71ed4f8ca3c/storage_v2/_src_/schema/db_white_box.ND6YRQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="64792235-44ae-4705-bdf4-1ada63ec6571" name="Changes" comment="文章内容简化、更新问题检索功能">
+      <change afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/constant/RedisPrefix.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/SearchManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aigc-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aigc-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aigc-service/src/main/java/org/caesar/constant/ChatPrompt.java" beforeDir="false" afterPath="$PROJECT_DIR$/aigc-service/src/main/java/org/caesar/constant/ChatPrompt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aigc-service/src/main/java/org/caesar/controller/ChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/aigc-service/src/main/java/org/caesar/controller/ChatController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aigc-service/src/main/java/org/caesar/service/ChatService.java" beforeDir="false" afterPath="$PROJECT_DIR$/aigc-service/src/main/java/org/caesar/service/ChatService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aigc-service/src/main/java/org/caesar/service/impl/OpenAIChatService.java" beforeDir="false" afterPath="$PROJECT_DIR$/aigc-service/src/main/java/org/caesar/service/impl/OpenAIChatService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aigc-service/src/test/java/ChatTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/aigc-service/src/test/java/ChatTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/ArticleServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/ArticleServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/config/DataSourceConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/constant/RedisPrefix.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/controller/ArticleController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/controller/CommentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/controller/CommentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/mapper/ArticleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/mapper/ArticleMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/mapper/CommentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/mapper/CommentMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/model/MsArticleStruct.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/model/MsArticleStruct.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/model/MsCommentStruct.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/model/MsCommentStruct.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/model/entity/Article.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/model/entity/Article.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/model/entity/ArticleOps.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/model/entity/ArticleOps.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/model/entity/Comment.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/model/po/ArticlePO.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/model/po/ArticlePO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/model/po/CommentPO.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/model/po/CommentPO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/repository/ArticleRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/repository/ArticleRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/repository/CommentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/repository/CommentRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/repository/impl/ArticleRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/repository/impl/ArticleRepositoryImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/repository/impl/CommentRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/repository/impl/CommentRepositoryImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/service/ArticleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/service/ArticleService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/service/CommentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/service/CommentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/service/impl/ArticleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/service/impl/ArticleServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/service/impl/CommentServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/resources/mapper/ArticleMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/resources/mapper/ArticleMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/resources/mapper/CommentMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/resources/mapper/CommentMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/test/java/ArticleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/test/java/ArticleTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/GlobalConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/GlobalConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/AIGCClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/AIGCClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/context/ContextHolder.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/context/ContextHolder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/redis/RedisCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/redis/RedisCache.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/repository/CacheRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/repository/CacheRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/repository/RedisCacheRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/repository/RedisCacheRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/util/ClientUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/util/ClientUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/aigc/request/AnalyseArticleRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/aigc/request/AnalyseContentRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/aigc/response/AnalyseArticleResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/aigc/response/AnalyseContentResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/article/vo/ArticleVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/article/vo/ArticleVO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/article/vo/CommentVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/article/vo/CommentVO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/question/enums/QuestionSortField.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/repository/impl/ArticleRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/repository/impl/ArticleRepositoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/service/impl/ArticleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/service/impl/ArticleServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/enums/DataSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/enums/DataSource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/enums/SortField.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/enums/SortField.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/vo/ArticleIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/vo/ArticleIndex.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/vo/QuestionIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/vo/QuestionIndex.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/ExecutorApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/ExecutorApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/config/MQConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/config/MQConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/controller/ExecutorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/controller/ExecutorController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/sandbox/CodeSandbox.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/sandbox/CodeSandbox.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/sandbox/CodeSandboxFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/sandbox/CodeSandboxFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/sandbox/impl/CLangCodeSandbox.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/sandbox/impl/CLangCodeSandbox.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/sandbox/impl/CPlusPlusCodeSandbox.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/sandbox/impl/CPlusPlusCodeSandbox.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/sandbox/impl/GoCodeSandbox.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/sandbox/impl/GoCodeSandbox.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/sandbox/impl/JavaCodeSandbox.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/sandbox/impl/JavaCodeSandbox.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/sandbox/impl/PythonCodeSandbox.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/sandbox/impl/PythonCodeSandbox.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/service/ExecutorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/service/ExecutorService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/service/impl/ExecutorServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/service/impl/ExecutorServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/util/ExecProcessResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/util/ExecProcessResult.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/test/java/MyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/test/java/MyTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/GatewayApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/gateway/GatewayApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/config/GatewayConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/gateway/config/GatewayConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/constant/RedisKey.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/gateway/constant/RedisKey.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/exception/GlobalWebExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/gateway/exception/GlobalWebExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/AuthorizeGlobalFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/gateway/filter/AuthorizeGlobalFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/ColoringGlobalFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/gateway/filter/ColoringGlobalFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/IdempotentGlobalFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/gateway/filter/IdempotentGlobalFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/LogGlobalFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/gateway/filter/LogGlobalFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/RateLimiterGlobalFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/gateway/filter/RateLimiterGlobalFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/RequestHandlerFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/gateway/filter/RequestHandlerFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/publisher/ExecuteMessagePublisher.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/gateway/publisher/ExecuteMessagePublisher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/util/FastJsonDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/gateway/util/FastJsonDecoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/util/FastJsonEncoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/gateway/util/FastJsonEncoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/util/IPKeyResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/gateway/util/IPKeyResolver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/test/java/FeignTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/test/java/FeignTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/config/ThreadPoolConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/config/ThreadPoolConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/entity/Question.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/entity/Question.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/repository/impl/QuestionRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/repository/impl/QuestionRepositoryImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/task/IncSyncQuestionTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/task/IncSyncQuestionTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recommend-service/src/main/java/com/snqg/RecommendApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/recommend-service/src/main/java/com/snqg/RecommendApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/util/QuestionJudgeManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/judge/QuestionJudgeManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/util/strategy/DefaultStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/judge/strategy/DefaultStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/util/strategy/JudgeStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/judge/strategy/JudgeStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/util/strategy/RoundStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/judge/strategy/RoundStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/util/strategy/UnorderedStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/judge/strategy/UnorderedStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/controller/SearchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/controller/SearchController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/repository/QuestionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/repository/QuestionRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/runner/QuestionRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/runner/QuestionRunner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/SearchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/SearchService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/impl/QuestionServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/impl/ArticleSearchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/impl/ArticleSearchService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/impl/QuestionSearchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/impl/QuestionSearchService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/search-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-service/src/test/java/MyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/test/java/TestSearch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/constant/RedisPrefix.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/constant/RedisPrefix.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/model/MsUserStruct.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/model/MsUserStruct.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/model/dto/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/model/dto/UserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/model/vo/UserVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/model/vo/UserVO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/repository/impl/UserRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/repository/impl/UserRepositoryImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-service/src/test/java/TestSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/test/java/TestSearch.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -230,7 +142,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.TestSearch.testAddIndex">
+  <component name="RunManager" selected="JUnit.TestSearch.testSearch">
     <configuration name="TestSearch.testAddIndex" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="search-service" />
       <option name="PACKAGE_NAME" value="" />
@@ -241,11 +153,31 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TestSearch.testInit" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="search-service" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestSearch" />
+      <option name="METHOD_NAME" value="testInit" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TestSearch.testSearch" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="search-service" />
       <option name="PACKAGE_NAME" value="" />
       <option name="MAIN_CLASS_NAME" value="TestSearch" />
       <option name="METHOD_NAME" value="testSearch" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestSearch.testSortSearch" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="search-service" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestSearch" />
+      <option name="METHOD_NAME" value="testSortSearch" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -262,35 +194,9 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ArticleServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="article-service" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="org.caesar.article.ArticleServiceApplication" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.caesar.article.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="SearchServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="search-service" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="org.caesar.SearchServiceApplication" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.caesar.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="UserServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="user-service" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="org.caesar.UserServiceApplication" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="org.caesar.*" />
@@ -312,19 +218,19 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="JUnit.TestSearch.testInit" />
+      <item itemvalue="JUnit.TestSearch.testSortSearch" />
       <item itemvalue="JUnit.TestSearch.testSearch" />
       <item itemvalue="JUnit.TestSearch.testAddIndex" />
       <item itemvalue="Spring Boot.SearchServiceApplication" />
-      <item itemvalue="Spring Boot.ArticleServiceApplication" />
-      <item itemvalue="Spring Boot.UserServiceApplication" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.TestSearch.testAddIndex" />
         <item itemvalue="JUnit.TestSearch.testSearch" />
+        <item itemvalue="JUnit.TestSearch.testInit" />
+        <item itemvalue="JUnit.TestSearch.testSortSearch" />
         <item itemvalue="Spring Boot.SearchServiceApplication" />
-        <item itemvalue="Spring Boot.UserServiceApplication" />
-        <item itemvalue="Spring Boot.ArticleServiceApplication" />
+        <item itemvalue="JUnit.TestSearch.testAddIndex" />
       </list>
     </recent_temporary>
   </component>
@@ -586,7 +492,11 @@
       <workItem from="1702006665951" duration="458000" />
       <workItem from="1702035954833" duration="9536000" />
       <workItem from="1702097561190" duration="1343000" />
-      <workItem from="1702101020319" duration="4711000" />
+      <workItem from="1702101020319" duration="6091000" />
+      <workItem from="1702119128072" duration="14486000" />
+      <workItem from="1702173186632" duration="8584000" />
+      <workItem from="1702206167511" duration="54000" />
+      <workItem from="1702211067306" duration="4235000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -612,7 +522,15 @@
       <option name="project" value="LOCAL" />
       <updated>1701699132402</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="文章内容简化、更新问题检索功能">
+      <option name="closed" value="true" />
+      <created>1702106177246</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1702106177246</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -634,7 +552,8 @@
     <MESSAGE value="init" />
     <MESSAGE value="降版本前最终版本" />
     <MESSAGE value="新增文章模块、AIGC模块，完成文章缓存，AI文章内容审核及分析" />
-    <option name="LAST_COMMIT_MESSAGE" value="新增文章模块、AIGC模块，完成文章缓存，AI文章内容审核及分析" />
+    <MESSAGE value="文章内容简化、更新问题检索功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="文章内容简化、更新问题检索功能" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -10,19 +10,46 @@ import java.util.List;
 public interface SearchService<T extends Index> {
 
     /**
-     * @param keyword 查询关键词
+     * 综合搜索
+     * @param text 查询关键词
      * @param from 页数
      * @param size 页大小
      * @return 查询结果
      */
-    PageVO<T> search(String keyword, int from, int size);
+    PageVO<T> search(String text, int from, int size);
 
-    PageVO<T> sortSearch(String keyword, SortField field, int from, int size);
+    /**
+     * 排序搜索
+     * @param text  用户文本
+     * @param field 排序字段
+     * @param from  开始页
+     * @param size  页大小
+     * @return      搜索结果
+     */
+    PageVO<T> sortSearch(String text, SortField field, int from, int size);
 
-    // 插入索引，若指定id以存在，则会覆盖旧数据
-    boolean insertIndex(List<T> indices, DataSource source);
+    /**
+     * @param text 用户文本
+     * @return     自动补全
+     */
+    String completion(String text);
 
-    boolean deleteIndex(List<Long> ids, DataSource source);
+    /**
+     * 插入索引，若指定id已存在，则会覆盖旧数据
+     * @param indices 新增或更新的索引数据
+     * @return        是否更新成功
+     */
+    boolean insertIndex(List<T> indices);
 
+    /**
+     * 删除索引
+     * @param ids       待删除索引id
+     * @return          是否删除成功
+     */
+    boolean deleteIndex(List<Long> ids);
+
+    /**
+     * @return 服务能够处理的数据类型
+     */
     DataSource getDataSource();
 }

@@ -112,6 +112,7 @@ public class ArticleRepositoryImpl extends ServiceImpl<ArticleMapper, ArticlePO>
         ) > 0;
     }
 
+    //TODO: 加一个延迟双删操作
     @Override
     public boolean updateArticle(long userId, Article article) {
         // 删除文章缓存
