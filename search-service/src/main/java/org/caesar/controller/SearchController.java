@@ -6,8 +6,8 @@ import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.domain.search.enums.SortField;
 import org.caesar.domain.search.vo.Index;
 import org.caesar.common.model.vo.PageVO;
+import org.caesar.service.SearchManager;
 import org.caesar.service.SearchService;
-import org.caesar.util.SearchServiceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,28 +18,27 @@ import java.util.Objects;
 public class SearchController {
 
     @Autowired
-    private SearchServiceFactory factory;
+    private SearchManager manager;
 
-    @GetMapping("/search/{source}")
-    public Response<PageVO<? extends Index>> search(@RequestParam String keyword, @RequestParam int from, @RequestParam int size,
-                                          @RequestParam SortField field, @PathVariable DataSource source) {
-        SearchService<? extends Index> searchService = factory.getSearchService(source);
-        PageVO<? extends Index> pageVOResponse = Objects.isNull(field) ? searchService.search(keyword, from, size) : searchService.sortSearch(keyword, field, from, size);
-        return Response.ok(pageVOResponse);
+    @GetMapping("/search/{dataSource}")
+    public Response<PageVO<? extends Index>> search(@RequestParam String text, @RequestParam int from, @RequestParam int size,
+                                                    @RequestParam SortField field, @PathVariable DataSource dataSource) {
+        if(Objects.isNull(field))
+            return Response.ok(manager.search(dataSource, text, from, size));
+        else
+            return Response.ok(manager.sortSearch(dataSource, text, field, from, size));
     }
 
-    @PostMapping("/sync/{source}")
-    public Response<Void> syncIndex(@RequestBody List<Index> indices, @PathVariable DataSource source) {
-        SearchService<Index> searchService = factory.getSearchService(source);
-        //boolean success = searchService.insertIndex(indices, source);
-        return success ? Response.ok(null) : Response.error(ErrorCode.SYSTEM_ERROR, "同步索引失败");
+    @PostMapping("/sync/{dataSource}")
+    public Response<Void> syncIndex(@RequestBody List<Index> indices, @PathVariable DataSource dataSource) {
+        boolean success = manager.insertIndex(dataSource, indices);
+        return success ? Response.ok() : Response.error(ErrorCode.SYSTEM_ERROR, "更新索引失败");
     }
 
-    @DeleteMapping("/sync/{source}")
-    public Response<Void> deleteIndex(@RequestBody List<Long> ids, @PathVariable DataSource source) {
-        SearchService<Index> searchService = factory.getSearchService(source);
-        boolean success = searchService.deleteIndex(ids, source);
-        return success ? Response.ok(null) : Response.error(ErrorCode.SYSTEM_ERROR, "同步索引失败");
+    @DeleteMapping("/sync/{dataSource}")
+    public Response<Void> deleteIndex(@RequestBody List<Long> ids, @PathVariable DataSource dataSource) {
+        boolean success = manager.deleteIndex(dataSource, ids);
+        return success ? Response.ok() : Response.error(ErrorCode.SYSTEM_ERROR, "删除索引失败");
     }
 
 }

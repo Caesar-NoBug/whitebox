@@ -1,32 +1,24 @@
 package org.caesar.domain.search.vo;
 
 
+import lombok.experimental.FieldNameConstants;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.CompletionField;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.core.completion.Completion;
 
 import java.time.LocalDateTime;
 
 /**
  * 文章索引
  */
-@Document(indexName = "article_index", createIndex = false)
+@FieldNameConstants
+@Document(indexName = ArticleIndex.INDEX_NAME, createIndex = false)
 public class ArticleIndex implements Index{
 
-    public static final String FIELD_ALL = "all";
-    public static final String FIELD_TITLE = "title";
-    public static final String FIELD_CONTENT = "content";
-    public static final String FIELD_DIGEST = "digest";
-    public static final String FIELD_TAG = "tag";
-    public static final String FIELD_LIKE_NUM = "likeNum";
-    public static final String FIELD_FAVOR_NUM = "favorNum";
-    public static final String FIELD_VIEW_NUM = "viewNum";
-    public static final String FIELD_UPDATE_TIME = "updateTime";
-
-    public static final String[] RESULT_FIELDS = new String[] {
-            FIELD_TITLE, FIELD_DIGEST, FIELD_TAG, FIELD_LIKE_NUM, FIELD_FAVOR_NUM, FIELD_VIEW_NUM, FIELD_UPDATE_TIME
-    };
+    public static final String INDEX_NAME = "article_index";
 
     /**
      * 文章主键
@@ -37,8 +29,11 @@ public class ArticleIndex implements Index{
     /**
      * 检索凭据
      */
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "text_analyzer", searchAnalyzer = "ik_smart")
     private String all;
+
+    @CompletionField(analyzer = "completion_analyzer")
+    private Completion suggestion;
 
     /**
      * 文章标题

@@ -12,6 +12,7 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.Random;
 
 @SpringBootTest(classes = SearchServiceApplication.class)
@@ -28,7 +29,7 @@ public class TestSearch {
 
     @Test
     public void testAddIndex() {
-        QuestionIndex index = new QuestionIndex();
+        /*QuestionIndex index = new QuestionIndex();
         Random random = new Random();
         //index.setId(random.nextLong());
         index.setId(random.nextLong());
@@ -38,7 +39,23 @@ public class TestSearch {
         index.setLikeNum(random.nextInt(100));
         index.setFavorNum(random.nextInt(100));
         index.setSubmitNum(random.nextInt(100));
-        operations.save(index);
+        operations.save(index);*/
+        Random random = new Random();
+        QuestionIndex index = new QuestionIndex(random.nextLong(), null, null, "最长回文串", "这个是非常好的内容", new String[]{"动态规划", "表达式"}, 5, 6, 0);
+        QuestionIndex index1 = new QuestionIndex(random.nextLong(), null, null, "这个是标题", "这个是内容", new String[]{"字符串", "数组", "正则表达式"}, 0, 0, 1);
+        QuestionIndex index2 = new QuestionIndex(random.nextLong(), null, null, "这个是一个标题", "这个是好多内容", new String[]{"数组", "表达式"}, 0, 6, 0);
+
+        index.genSuggestion();
+        index1.genSuggestion();
+        index2.genSuggestion();
+
+        questionService.insertIndex(
+                Arrays.asList(
+                        index,
+                        index1,
+                        index2
+                )
+        );
 
         //List<QuestionIndex> query = questionService.search("表达式", 0, 10);
     }
@@ -53,9 +70,14 @@ public class TestSearch {
 
     @Test
     public void testSortSearch() {
-        System.out.println(questionService.sortSearch("字", QuestionSortField.LIKE_NUM, 0, 10));
-        System.out.println(questionService.sortSearch("字z符", QuestionSortField.LIKE_NUM, 0, 10));
-        System.out.println(questionService.sortSearch("字符串", QuestionSortField.LIKE_NUM, 0, 10));
+        System.out.println(questionService.sortSearch("表达", QuestionSortField.LIKE_NUM, 0, 10));
+        System.out.println(questionService.sortSearch("表d", QuestionSortField.LIKE_NUM, 0, 10));
+        System.out.println(questionService.sortSearch("表达式", QuestionSortField.LIKE_NUM, 0, 10));
+    }
+
+    @Test
+    public void testCompletion() {
+        System.out.println(questionService.suggestion("zg", 10));
     }
 
     @Test
@@ -68,9 +90,9 @@ public class TestSearch {
         indexOperations.refresh();
         System.out.println("创建索引中...");
 
-        operations.save(new QuestionIndex(0L, null, "这个是标题", "这个是内容",new String[]{"字符串", "数组", "正则表达式"}, 0, 0, 1));
-        operations.save(new QuestionIndex(6L, null, "这个是一个标题", "这个是好多内容",  new String[]{"数组", "表达式"}, 0, 6, 0));
-        operations.save(new QuestionIndex(9L, null, "这个是一个大标题", "这个是非常好的内容", new String[]{"数组", "表达式"}, 5, 6, 0));
+        operations.save(new QuestionIndex(0L, null, null, "这个是标题", "这个是内容", new String[]{"字符串", "数组", "正则表达式"}, 0, 0, 1));
+        operations.save(new QuestionIndex(6L, null, null, "这个是一个标题", "这个是好多内容", new String[]{"数组", "表达式"}, 0, 6, 0));
+        operations.save(new QuestionIndex(9L, null, null, "这个是一个大标题", "这个是非常好的内容", new String[]{"数组", "表达式"}, 5, 6, 0));
         System.out.println(questionService.search("字符", 0, 10));
     }
 

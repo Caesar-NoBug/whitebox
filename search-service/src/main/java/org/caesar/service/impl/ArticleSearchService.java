@@ -3,12 +3,10 @@ package org.caesar.service.impl;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.model.vo.PageVO;
 import org.caesar.common.repository.CacheRepository;
-import org.caesar.constant.RedisPrefix;
 import org.caesar.domain.search.enums.DataSource;
 import org.caesar.domain.search.enums.QuestionSortField;
 import org.caesar.domain.search.enums.SortField;
 import org.caesar.domain.search.vo.ArticleIndex;
-import org.caesar.domain.search.vo.QuestionIndex;
 import org.caesar.service.SearchService;
 import org.elasticsearch.common.lucene.search.function.CombineFunction;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -17,7 +15,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.script.ScriptType;
-import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +28,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,11 +39,15 @@ public class ArticleSearchService implements SearchService<ArticleIndex> {
     @Resource
     private CacheRepository cacheRepo;
 
-    public static final float LIKE_FACTOR = 0.0004f;
-    public static final float FAVOR_FACTOR = 0.0008f;
-    public static final float VIEW_FACTOR = 0.0001f;
+    public static final float LIKE_FACTOR = 0.04f;
+    public static final float FAVOR_FACTOR = 0.08f;
+    public static final float VIEW_FACTOR = 0.01f;
 
-    // 加一个更新时间的权重
+    public static final String[] RESULT_FIELDS = new String[] {
+            ArticleIndex.Fields.id, ArticleIndex.Fields.title, ArticleIndex.Fields.digest, ArticleIndex.Fields.tag,
+            ArticleIndex.Fields.favorNum, ArticleIndex.Fields.viewNum, ArticleIndex.Fields.likeNum, ArticleIndex.Fields.updateAt
+    };
+
     public static final String searchScript = "Math.log(1 + doc['likeNum'].value) * params.likeFactor " +
             "+ Math.log(1 + doc['favorNum'].value) * params.favorFactor + Math.log(1 + doc['viewNum'].value) * params.viewFactor";
 
@@ -71,13 +71,13 @@ public class ArticleSearchService implements SearchService<ArticleIndex> {
         NativeSearchQuery query = new NativeSearchQueryBuilder()
                 .withQuery(buildScoreQuery(text))
                 .withPageable(PageRequest.of(from, size))
-                .withFields(QuestionIndex.RESULT_FIELDS)
-                .withSort(SortBuilders.fieldSort(ArticleIndex.FIELD_UPDATE_TIME).order(SortOrder.DESC))
+                .withFields(RESULT_FIELDS)
+                .withSort(SortBuilders.fieldSort(ArticleIndex.Fields.updateAt).order(SortOrder.DESC))
                 .build();
 
         List<SearchHit<ArticleIndex>> searchHits = operations.search(query, ArticleIndex.class).getSearchHits();
 
-        return handleSearchHits(searchHits, text, null);
+        return handleSearchHits(searchHits);
     }
 
     @Override
@@ -87,19 +87,20 @@ public class ArticleSearchService implements SearchService<ArticleIndex> {
                 field instanceof QuestionSortField, "排序字段错误：不支持该排序字段");
 
         NativeSearchQuery query = new NativeSearchQueryBuilder()
-                .withQuery(buildSortQuery(text, field))
+                .withQuery(buildMatchQuery(text, field))
                 .withPageable(PageRequest.of(from, size))
-                .withFields(ArticleIndex.RESULT_FIELDS)
-                .withSort(SortBuilders.fieldSort(ArticleIndex.FIELD_UPDATE_TIME).order(SortOrder.DESC))
+                .withFields(RESULT_FIELDS)
+                .withSort(SortBuilders.fieldSort(field.getValue()).order(SortOrder.DESC))
                 .build();
 
         List<SearchHit<ArticleIndex>> searchHits = operations.search(query, ArticleIndex.class).getSearchHits();
 
-        return handleSearchHits(searchHits, text, field);
+        return handleSearchHits(searchHits);
     }
 
     @Override
-    public String completion(String text) {
+    public List<String> suggestion(String text, int size) {
+
         return null;
     }
 
@@ -128,7 +129,7 @@ public class ArticleSearchService implements SearchService<ArticleIndex> {
     private QueryBuilder buildScoreQuery(String text) {
 
         BoolQueryBuilder query = QueryBuilders.boolQuery()
-                .must(QueryBuilders.fuzzyQuery(QuestionIndex.FIELD_ALL, text));
+                .must(QueryBuilders.fuzzyQuery(ArticleIndex.Fields.all, text));
 
         Script script = new Script(ScriptType.INLINE,
                 Script.DEFAULT_SCRIPT_LANG, searchScript, scriptParams);
@@ -142,20 +143,21 @@ public class ArticleSearchService implements SearchService<ArticleIndex> {
      * @param text 用户关键词
      * @return     匹配关键词的查询
      */
-    private QueryBuilder buildSortQuery(String text, SortField field) {
+    private QueryBuilder buildMatchQuery(String text, SortField field) {
 
-        BoolQueryBuilder query = QueryBuilders.boolQuery()
-                .must(QueryBuilders.fuzzyQuery(QuestionIndex.FIELD_ALL, text));
+        /*BoolQueryBuilder query = QueryBuilders.boolQuery()
+                .must(QueryBuilders.fuzzyQuery(ArticleIndex.Fields.all, text));*/
 
-        Script script = new Script(ScriptType.INLINE,
-                Script.DEFAULT_SCRIPT_LANG, String.format(sortSearchScript, field.getValue()), Collections.emptyMap());
+        /*Script script = new Script(ScriptType.INLINE,
+                Script.DEFAULT_SCRIPT_LANG, String.format(sortSearchScript, field.getValue()), Collections.emptyMap());*/
 
         return QueryBuilders
-                .functionScoreQuery(query, ScoreFunctionBuilders.scriptFunction(script))
-                .boostMode(CombineFunction.REPLACE);
+                .matchQuery(ArticleIndex.Fields.all, text);
+                //.functionScoreQuery(query, ScoreFunctionBuilders.scriptFunction(script))
+                //.boostMode(CombineFunction.REPLACE);
     }
 
-    private PageVO<ArticleIndex> handleSearchHits(List<SearchHit<ArticleIndex>> searchHits, String text, SortField field) {
+    private PageVO<ArticleIndex> handleSearchHits(List<SearchHit<ArticleIndex>> searchHits) {
 
         PageVO<ArticleIndex> response = new PageVO<>();
 
@@ -165,17 +167,6 @@ public class ArticleSearchService implements SearchService<ArticleIndex> {
                 .collect(Collectors.toList()));
 
         response.setTotalSize(searchHits.size());
-
-        String cacheKey;
-        String dataSource = getDataSource().getValue();
-
-        if(Objects.isNull(field))
-            cacheKey = String.format(RedisPrefix.CACHE_SEARCH_RESULT, dataSource, text);
-        else
-            cacheKey = String.format(RedisPrefix.CACHE_SORT_SEARCH_RESULT, dataSource, field.getValue(), text);
-
-        int expire = (int) (5 + (Math.random() * 10));
-        cacheRepo.setObject(cacheKey, response, expire, TimeUnit.MINUTES);
 
         return response;
     }

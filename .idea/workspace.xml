@@ -4,28 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64792235-44ae-4705-bdf4-1ada63ec6571" name="Changes" comment="文章内容简化、更新问题检索功能">
-      <change afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/constant/RedisPrefix.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/SearchManager.java" afterDir="false" />
+    <list default="true" id="64792235-44ae-4705-bdf4-1ada63ec6571" name="Changes" comment="新增检索自动补全功能，优化es中的存储结构：不保存all和content的原始内容。">
+      <change afterPath="$PROJECT_DIR$/search-service/src/main/resources/article_index.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/search-service/src/main/resources/question_index.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/repository/impl/ArticleRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/repository/impl/ArticleRepositoryImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/service/impl/ArticleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/service/impl/ArticleServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/enums/DataSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/enums/DataSource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/enums/QuestionSortField.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/enums/QuestionSortField.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/vo/ArticleIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/vo/ArticleIndex.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/vo/QuestionIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/vo/QuestionIndex.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/entity/Question.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/entity/Question.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/util/QuestionJudgeManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/judge/QuestionJudgeManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/util/strategy/DefaultStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/judge/strategy/DefaultStrategy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/util/strategy/JudgeStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/judge/strategy/JudgeStrategy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/util/strategy/RoundStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/judge/strategy/RoundStrategy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/util/strategy/UnorderedStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/judge/strategy/UnorderedStrategy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/controller/SearchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/controller/SearchController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/repository/QuestionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/repository/QuestionRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/runner/QuestionRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/runner/QuestionRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/SearchManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/SearchManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/SearchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/SearchService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/impl/ArticleSearchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/impl/ArticleSearchService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/impl/QuestionSearchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/impl/QuestionSearchService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/util/SearchServiceFactory.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/search-service/src/test/java/TestSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/test/java/TestSearch.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -83,7 +74,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.javacompiler&quot;,
@@ -142,12 +133,22 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.TestSearch.testSearch">
+  <component name="RunManager" selected="JUnit.TestSearch.testAddIndex">
     <configuration name="TestSearch.testAddIndex" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="search-service" />
       <option name="PACKAGE_NAME" value="" />
       <option name="MAIN_CLASS_NAME" value="TestSearch" />
       <option name="METHOD_NAME" value="testAddIndex" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestSearch.testCompletion" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="search-service" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestSearch" />
+      <option name="METHOD_NAME" value="testCompletion" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -194,19 +195,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SearchServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="search-service" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="org.caesar.SearchServiceApplication" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.caesar.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="lua.app" factoryName="Lua Application">
       <option name="program" value="lua.exe" />
       <option name="file" value="" />
@@ -218,19 +206,19 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="JUnit.TestSearch.testCompletion" />
       <item itemvalue="JUnit.TestSearch.testInit" />
       <item itemvalue="JUnit.TestSearch.testSortSearch" />
       <item itemvalue="JUnit.TestSearch.testSearch" />
       <item itemvalue="JUnit.TestSearch.testAddIndex" />
-      <item itemvalue="Spring Boot.SearchServiceApplication" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.TestSearch.testAddIndex" />
+        <item itemvalue="JUnit.TestSearch.testCompletion" />
+        <item itemvalue="JUnit.TestSearch.testSortSearch" />
         <item itemvalue="JUnit.TestSearch.testSearch" />
         <item itemvalue="JUnit.TestSearch.testInit" />
-        <item itemvalue="JUnit.TestSearch.testSortSearch" />
-        <item itemvalue="Spring Boot.SearchServiceApplication" />
-        <item itemvalue="JUnit.TestSearch.testAddIndex" />
       </list>
     </recent_temporary>
   </component>
@@ -496,7 +484,12 @@
       <workItem from="1702119128072" duration="14486000" />
       <workItem from="1702173186632" duration="8584000" />
       <workItem from="1702206167511" duration="54000" />
-      <workItem from="1702211067306" duration="4235000" />
+      <workItem from="1702211067306" duration="4304000" />
+      <workItem from="1702253346874" duration="640000" />
+      <workItem from="1702254146626" duration="1861000" />
+      <workItem from="1702285038024" duration="1176000" />
+      <workItem from="1702286453680" duration="13072000" />
+      <workItem from="1702344209524" duration="5435000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -530,7 +523,15 @@
       <option name="project" value="LOCAL" />
       <updated>1702106177246</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="优化搜索功能：将查询字段统一到all中，新增文章的搜索">
+      <option name="closed" value="true" />
+      <created>1702220537180</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1702220537180</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -553,7 +554,9 @@
     <MESSAGE value="降版本前最终版本" />
     <MESSAGE value="新增文章模块、AIGC模块，完成文章缓存，AI文章内容审核及分析" />
     <MESSAGE value="文章内容简化、更新问题检索功能" />
-    <option name="LAST_COMMIT_MESSAGE" value="文章内容简化、更新问题检索功能" />
+    <MESSAGE value="优化搜索功能：将查询字段统一到all中，新增文章的搜索" />
+    <MESSAGE value="新增检索自动补全功能，优化es中的存储结构：不保存all和content的原始内容。" />
+    <option name="LAST_COMMIT_MESSAGE" value="新增检索自动补全功能，优化es中的存储结构：不保存all和content的原始内容。" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -582,6 +585,11 @@
           <url>file://$PROJECT_DIR$/article-service/src/main/java/org/caesar/article/Test.java</url>
           <line>38</line>
           <option name="timeStamp" value="74" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/search-service/src/main/java/org/caesar/service/impl/QuestionSearchService.java</url>
+          <line>172</line>
+          <option name="timeStamp" value="76" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$USER_HOME$/AppData/Local/Temp/leetcode/editor/cn/P134GasStation .java</url>

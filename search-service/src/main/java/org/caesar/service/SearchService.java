@@ -30,9 +30,10 @@ public interface SearchService<T extends Index> {
 
     /**
      * @param text 用户文本
+     * @param size 建议数量
      * @return     自动补全
      */
-    String completion(String text);
+    List<String> suggestion(String text, int size);
 
     /**
      * 插入索引，若指定id已存在，则会覆盖旧数据

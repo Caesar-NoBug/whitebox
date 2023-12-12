@@ -1,4 +1,5 @@
 package org.caesar.service.impl;
+
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.domain.search.enums.DataSource;
 import org.caesar.domain.search.enums.QuestionSortField;
@@ -6,6 +7,7 @@ import org.caesar.domain.search.enums.SortField;
 import org.caesar.domain.search.vo.QuestionIndex;
 import org.caesar.common.model.vo.PageVO;
 import org.caesar.service.SearchService;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.lucene.search.function.CombineFunction;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -13,12 +15,17 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.script.ScriptType;
-import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.search.suggest.Suggest;
+import org.elasticsearch.search.suggest.SuggestBuilder;
+import org.elasticsearch.search.suggest.SuggestBuilders;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -35,14 +42,22 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
     @Resource
     private ElasticsearchOperations operations;
 
-    public static final float LIKE_FACTOR = 0.0004f;
-    public static final float FAVOR_FACTOR = 0.0008f;
-    public static final float SUBMIT_FACTOR = 0.0001f;
-    // 加一个更新时间的权重
+    @Resource
+    private ElasticsearchRestTemplate esTemplate;
+
+    public static final float LIKE_FACTOR = 0.04f;
+    public static final float FAVOR_FACTOR = 0.08f;
+    public static final float SUBMIT_FACTOR = 0.01f;
+
     public static final String searchScript = "Math.log(1 + doc['likeNum'].value) * params.likeFactor " +
             "+ Math.log(1 + doc['favorNum'].value) * params.favorFactor + Math.log(1 + doc['submitNum'].value) * params.submitFactor";
 
     public static final String sortSearchScript = "doc['%s'].value";
+
+    public static final String[] RESULT_FIELDS = new String[]{
+            QuestionIndex.Fields.id, QuestionIndex.Fields.title, QuestionIndex.Fields.tag,
+            QuestionIndex.Fields.favorNum, QuestionIndex.Fields.submitNum, QuestionIndex.Fields.likeNum
+    };
 
     private Map<String, Object> scriptParams;
 
@@ -62,7 +77,7 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
         NativeSearchQuery query = new NativeSearchQueryBuilder()
                 .withQuery(buildScoreQuery(text))
                 .withPageable(PageRequest.of(from, size))
-                .withFields(QuestionIndex.RESULT_FIELDS)
+                .withFields(RESULT_FIELDS)
                 .build();
 
         List<SearchHit<QuestionIndex>> searchHits = operations.search(query, QuestionIndex.class).getSearchHits();
@@ -77,9 +92,10 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
                 field instanceof QuestionSortField, "排序字段错误：不支持该排序字段");
 
         NativeSearchQuery query = new NativeSearchQueryBuilder()
-                .withQuery(buildSortQuery(text, field))
+                .withQuery(QueryBuilders.fuzzyQuery(QuestionIndex.Fields.all, text))
                 .withPageable(PageRequest.of(from, size))
-                .withFields(QuestionIndex.RESULT_FIELDS)
+                .withSort(SortBuilders.fieldSort(field.getValue()).order(SortOrder.DESC))
+                .withFields(RESULT_FIELDS)
                 .build();
 
         List<SearchHit<QuestionIndex>> searchHits = operations.search(query, QuestionIndex.class).getSearchHits();
@@ -88,8 +104,20 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
     }
 
     @Override
-    public String completion(String text) {
-        return null;
+    public List<String> suggestion(String text, int size) {
+        CompletionSuggestionBuilder suggestion = SuggestBuilders
+                .completionSuggestion(QuestionIndex.Fields.suggestion)
+                .prefix(text)
+                .skipDuplicates(true)
+                .size(size);
+
+        SuggestBuilder suggestBuilder = new SuggestBuilder()
+                .addSuggestion(QuestionIndex.Fields.suggestion, suggestion);
+
+        SearchResponse response = esTemplate
+                .suggest(suggestBuilder, IndexCoordinates.of(QuestionIndex.INDEX_NAME));
+
+        return handleSuggestion(response);
     }
 
     @Override
@@ -111,13 +139,13 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
     }
 
     /**
-     * @param text  用户输入的关键词
-     * @return      默认规则对应的查询
+     * @param text 用户输入的关键词
+     * @return 默认规则对应的查询
      */
     private QueryBuilder buildScoreQuery(String text) {
 
         BoolQueryBuilder query = QueryBuilders.boolQuery()
-                .must(QueryBuilders.fuzzyQuery(QuestionIndex.FIELD_ALL, text));
+                .must(QueryBuilders.fuzzyQuery(QuestionIndex.Fields.all, text));
 
         Script script = new Script(ScriptType.INLINE,
                 Script.DEFAULT_SCRIPT_LANG, searchScript, scriptParams);
@@ -125,23 +153,6 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
         return QueryBuilders
                 .functionScoreQuery(query, ScoreFunctionBuilders.scriptFunction(script))
                 .boostMode(CombineFunction.SUM);
-    }
-
-    /**
-     * @param text 用户关键词
-     * @return     匹配关键词的查询
-     */
-    private QueryBuilder buildSortQuery(String text, SortField field) {
-
-        BoolQueryBuilder query = QueryBuilders.boolQuery()
-                .must(QueryBuilders.fuzzyQuery(QuestionIndex.FIELD_ALL, text));
-
-        Script script = new Script(ScriptType.INLINE,
-                Script.DEFAULT_SCRIPT_LANG, String.format(sortSearchScript, field.getValue()), Collections.emptyMap());
-
-        return QueryBuilders
-                .functionScoreQuery(query, ScoreFunctionBuilders.scriptFunction(script))
-                .boostMode(CombineFunction.REPLACE);
     }
 
     private PageVO<QuestionIndex> handleSearchHits(List<SearchHit<QuestionIndex>> searchHits) {
@@ -156,6 +167,23 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
         response.setTotalSize(searchHits.size());
 
         return response;
+    }
+
+    private List<String> handleSuggestion(SearchResponse response) {
+        Suggest suggest = response.getSuggest();
+        ThrowUtil.ifNull(suggest, "搜索建议为空");
+        List<String> suggestions = new ArrayList<>();
+
+        suggest.forEach(suggestion -> {
+            suggestion.getEntries().forEach(entry -> {
+                entry.getOptions().forEach(option -> {
+                    suggestions.add(option.getText().toString());
+                });
+            });
+        });
+
+        System.out.println(suggestions);
+        return suggestions;
     }
 
 }
