@@ -122,7 +122,7 @@ public class OpenAIChatService implements ChatService {
             response.setDigest(generatedContents[0]);
             response.setTags(generatedContents[1]);
         } catch (ArrayIndexOutOfBoundsException e) {
-             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "ai响应结果格式错误");
+             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "分析响应结果格式错误");
         }
 
         return response;

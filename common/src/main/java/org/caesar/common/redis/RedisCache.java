@@ -1,13 +1,9 @@
 package org.caesar.common.redis;
 
-import org.redisson.api.RAtomicLong;
-import org.redisson.api.RHyperLogLog;
-import org.redisson.api.RedissonClient;
+import com.alibaba.nacos.shaded.org.checkerframework.checker.units.qual.K;
+import org.redisson.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.BoundSetOperations;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -21,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedisCache
 {
-
     //TODO: 加分布式锁功能
     @Resource
     private RedisTemplate redisTemplate;
@@ -55,13 +50,24 @@ public class RedisCache
         return timestamp << 32 + count;
     }
 
-    public RAtomicLong getAtomicLong(String key) {
+    public boolean hasKey(String key) {
+        return redisTemplate.hasKey(key);
+    }
 
+    public<T> RQueue<T> getQueue(String key) {
+        return redissonClient.getQueue(key);
+    }
+
+    public RAtomicLong getAtomicLong(String key) {
         return redissonClient.getAtomicLong(key);
     }
 
     public <T> RHyperLogLog<T> getHyperLogLog(String key) {
         return redissonClient.getHyperLogLog(key);
+    }
+
+    public <T, V> BoundZSetOperations<T, V> getSortedSet(String key) {
+        return redisTemplate.boundZSetOps(key);
     }
 
     /**

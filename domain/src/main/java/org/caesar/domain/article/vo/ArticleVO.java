@@ -3,13 +3,14 @@ package org.caesar.domain.article.vo;
 import lombok.Data;
 import org.caesar.domain.user.vo.UserMinVO;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  *  文章详情VO
  */
 @Data
-public class ArticleVO {
+public class ArticleVO implements Serializable {
 
     /**
      * 文章主键

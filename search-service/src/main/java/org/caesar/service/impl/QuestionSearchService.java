@@ -7,6 +7,7 @@ import org.caesar.domain.search.enums.SortField;
 import org.caesar.domain.search.vo.QuestionIndex;
 import org.caesar.common.model.vo.PageVO;
 import org.caesar.service.SearchService;
+import org.caesar.util.EsUtil;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.lucene.search.function.CombineFunction;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -52,8 +53,6 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
     public static final String searchScript = "Math.log(1 + doc['likeNum'].value) * params.likeFactor " +
             "+ Math.log(1 + doc['favorNum'].value) * params.favorFactor + Math.log(1 + doc['submitNum'].value) * params.submitFactor";
 
-    public static final String sortSearchScript = "doc['%s'].value";
-
     public static final String[] RESULT_FIELDS = new String[]{
             QuestionIndex.Fields.id, QuestionIndex.Fields.title, QuestionIndex.Fields.tag,
             QuestionIndex.Fields.favorNum, QuestionIndex.Fields.submitNum, QuestionIndex.Fields.likeNum
@@ -69,7 +68,6 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
         scriptParams.put("submitFactor", SUBMIT_FACTOR);
     }
 
-    //TODO: 添加update字段并在增删改时修改该字段的值
     //TODO: es改成防腐层设计
     @Override
     public PageVO<QuestionIndex> search(String text, int from, int size) {
@@ -82,7 +80,7 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
 
         List<SearchHit<QuestionIndex>> searchHits = operations.search(query, QuestionIndex.class).getSearchHits();
 
-        return handleSearchHits(searchHits);
+        return EsUtil.handleSearchHits(searchHits);
     }
 
     @Override
@@ -100,7 +98,7 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
 
         List<SearchHit<QuestionIndex>> searchHits = operations.search(query, QuestionIndex.class).getSearchHits();
 
-        return handleSearchHits(searchHits);
+        return EsUtil.handleSearchHits(searchHits);
     }
 
     @Override
@@ -117,7 +115,7 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
         SearchResponse response = esTemplate
                 .suggest(suggestBuilder, IndexCoordinates.of(QuestionIndex.INDEX_NAME));
 
-        return handleSuggestion(response);
+        return EsUtil.handleSuggestion(response);
     }
 
     @Override
@@ -153,37 +151,6 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
         return QueryBuilders
                 .functionScoreQuery(query, ScoreFunctionBuilders.scriptFunction(script))
                 .boostMode(CombineFunction.SUM);
-    }
-
-    private PageVO<QuestionIndex> handleSearchHits(List<SearchHit<QuestionIndex>> searchHits) {
-
-        PageVO<QuestionIndex> response = new PageVO<>();
-
-        response.setData(searchHits
-                .stream()
-                .map(SearchHit::getContent)
-                .collect(Collectors.toList()));
-
-        response.setTotalSize(searchHits.size());
-
-        return response;
-    }
-
-    private List<String> handleSuggestion(SearchResponse response) {
-        Suggest suggest = response.getSuggest();
-        ThrowUtil.ifNull(suggest, "搜索建议为空");
-        List<String> suggestions = new ArrayList<>();
-
-        suggest.forEach(suggestion -> {
-            suggestion.getEntries().forEach(entry -> {
-                entry.getOptions().forEach(option -> {
-                    suggestions.add(option.getText().toString());
-                });
-            });
-        });
-
-        System.out.println(suggestions);
-        return suggestions;
     }
 
 }

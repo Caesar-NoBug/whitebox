@@ -2,10 +2,11 @@ package org.caesar.domain.article.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-public class ArticleMinVO {
+public class ArticleMinVO implements Serializable {
 
     /**
      * 文章主键

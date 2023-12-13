@@ -29,6 +29,11 @@ public class SearchController {
             return Response.ok(manager.sortSearch(dataSource, text, field, from, size));
     }
 
+    @GetMapping("/suggestion")
+    public Response<List<String>> suggestion(DataSource dataSource, String text, int size) {
+        return Response.ok(manager.suggestion(dataSource, text, size));
+    }
+
     @PostMapping("/sync/{dataSource}")
     public Response<Void> syncIndex(@RequestBody List<Index> indices, @PathVariable DataSource dataSource) {
         boolean success = manager.insertIndex(dataSource, indices);

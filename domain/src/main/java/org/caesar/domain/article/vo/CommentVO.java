@@ -3,11 +3,13 @@ package org.caesar.domain.article.vo;
 import lombok.Data;
 import org.caesar.domain.user.vo.UserMinVO;
 
+import java.io.Serializable;
+
 /**
  *  评论VO
  */
 @Data
-public class CommentVO {
+public class CommentVO implements Serializable {
 
     /**
      * 评论主键

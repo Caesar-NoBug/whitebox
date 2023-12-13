@@ -23,10 +23,10 @@ spring:
 server:
   port: 13456
 
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-logging:
-  level:
-    org.springframework.cloud.openfeign: trace
+#logging:
+#  level:
+#    org.springframework.cloud.openfeign: trace

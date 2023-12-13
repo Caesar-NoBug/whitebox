@@ -77,7 +77,23 @@ public class SearchManager implements ApplicationContextAware {
     }
 
     public List<String> suggestion(DataSource dataSource, String text, int size) {
-        return getService(dataSource).suggestion(text, size);
+
+        List<String> suggestion;
+        String cacheKey = String.format(RedisPrefix.CACHE_SUGGESTION, dataSource, text);
+        suggestion = cacheRepo.getObject(cacheKey);
+
+        // 排序检索相同的概率要更低，设置更低的缓存时间
+        if (Objects.nonNull(suggestion)) {
+            cacheRepo.expire(cacheKey, 5, TimeUnit.MINUTES);
+            return suggestion;
+        }
+
+        suggestion = getService(dataSource).suggestion(text, size);
+
+        int expire = (int) (2 + (Math.random() * 6));
+        cacheRepo.setObject(cacheKey, suggestion, expire, TimeUnit.MINUTES);
+
+        return suggestion;
     }
 
     public boolean insertIndex(DataSource dataSource, List indices) {

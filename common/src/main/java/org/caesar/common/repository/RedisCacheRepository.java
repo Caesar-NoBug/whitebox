@@ -1,10 +1,17 @@
 package org.caesar.common.repository;
 
 import org.caesar.common.redis.RedisCache;
+import org.redisson.api.RQueue;
+import org.redisson.api.RSortedSet;
+import org.redisson.api.RedissonClient;
+import org.springframework.data.redis.core.BoundZSetOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -69,6 +76,11 @@ public class RedisCacheRepository implements CacheRepository {
     }
 
     @Override
+    public boolean exist(String key) {
+        return redisCache.hasKey(key);
+    }
+
+    @Override
     public boolean deleteLogLog(String key) {
         return redisCache.getHyperLogLog(key).delete();
     }
@@ -79,13 +91,28 @@ public class RedisCacheRepository implements CacheRepository {
     }
 
     @Override
-    public void addLogLogElement(String key, Object object) {
-        redisCache.getHyperLogLog(key).add(object);
+    public boolean addLogLogElement(String key, Object object) {
+        return redisCache.getHyperLogLog(key).add(object);
     }
 
     @Override
-    public void addLogLogElements(String key, List<Object> object) {
-        redisCache.getHyperLogLog(key).addAll(object);
+    public boolean addLogLogElements(String key, List<Object> object) {
+        return redisCache.getHyperLogLog(key).addAll(object);
+    }
+
+    @Override
+    public <T> RQueue<T> getQueue(String key) {
+        return redisCache.getQueue(key);
+    }
+
+    @Override
+    public <T> Set<T> getSet(String key) {
+        return redisCache.getCacheSet(key);
+    }
+
+    @Override
+    public<T, V> BoundZSetOperations<T, V> getSortedSet(String key) {
+        return redisCache.getSortedSet(key);
     }
 
 }

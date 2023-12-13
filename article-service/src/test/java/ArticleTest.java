@@ -1,14 +1,20 @@
-import org.caesar.article.ArticleServiceApplication;
+import org.caesar.ArticleServiceApplication;
 import org.caesar.common.repository.CacheRepository;
-import org.caesar.article.constant.RedisPrefix;
-import org.caesar.article.mapper.ArticleMapper;
-import org.caesar.article.model.entity.Article;
-import org.caesar.article.repository.ArticleRepository;
-import org.caesar.article.service.ArticleService;
+import org.caesar.mapper.ArticleMapper;
+import org.caesar.model.entity.Article;
+import org.caesar.repository.ArticleRepository;
+import org.caesar.service.ArticleService;
+import org.caesar.common.str.StrUtil;
+import org.caesar.task.HotArticleTask;
+import org.caesar.util.RedisKey;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.BoundZSetOperations;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Random;
 
 @SpringBootTest(classes = ArticleServiceApplication.class)
 public class ArticleTest {
@@ -25,6 +31,9 @@ public class ArticleTest {
     @Resource
     private ArticleMapper mapper;
 
+    @Resource
+    private HotArticleTask hotArticleTask;
+
     @Test
     public void testMark() {
         System.out.println("--------------------\n\n");
@@ -38,12 +47,16 @@ public class ArticleTest {
     @Test
     public void addArticle() {
         Article article = new Article();
-        article.setId(3423423L);
-        article.setTitle("一个标题");
-        article.setTags("好看/爱看");
-        article.setContent("文章内容");
-        article.setCreateBy(0L);
-        repository.addArticle(article);
+
+        for (long i = 12; i < 40; i++) {
+            article.setId(i);
+            article.setDigest("摘要:" + StrUtil.genRandCNStr(10));
+            article.setTitle("标题:" + StrUtil.genRandCNStr(10));
+            article.setTags("标签/" + StrUtil.genRandCNStr(10));
+            article.setContent("内容:" + StrUtil.genRandCNStr(10));
+            article.setCreateBy(0L);
+            repository.addArticle(article);
+        }
         //repository.markArticle(0L, 3423423L);
     }
 
@@ -55,7 +68,7 @@ public class ArticleTest {
 
     @Test
     public void testViewArticle() {
-        service.viewArticle(0, 3423423L);
+        /*service.viewArticle(0, 3423423L);
         System.out.println(cacheRepo.getLogLogCount(RedisPrefix.ARTICLE_VIEW_COUNT + 3423423));
         service.viewArticle(0, 3423423L);
         System.out.println(cacheRepo.getLogLogCount(RedisPrefix.ARTICLE_VIEW_COUNT + 3423423));
@@ -63,5 +76,28 @@ public class ArticleTest {
         System.out.println(cacheRepo.getLogLogCount(RedisPrefix.ARTICLE_VIEW_COUNT + 3423423));
         service.viewArticle(0, 3423423L);
         System.out.println(cacheRepo.getLogLogCount(RedisPrefix.ARTICLE_VIEW_COUNT + 3423423));
+    */}
+
+    @Test
+    public void testHotArticle() {
+        Random random = new Random();
+        LocalDateTime now = LocalDateTime.now();
+        for (int i = 0; i < 1000; i++) {
+            long articleId = random.nextInt(40);
+            long userId = random.nextInt(1000);
+            repository.addViewHistory(userId, articleId, now);
+
+            if(i % 100 == 0) {
+                hotArticleTask.run();
+                System.out.println(service.getHotArticle() + "\n---------------------------------------------------------\n");
+            }
+
+        }
+
+        /*service.viewArticle(0, 0);
+        service.viewArticle(1, 0);
+        service.viewArticle(2, 0);
+        service.viewArticle(3, 0);
+        service.viewArticle(4, 0);*/
     }
 }
