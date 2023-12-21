@@ -16,14 +16,13 @@ public class RequestPreHandleFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        chain.doFilter(request, response);
+
         String uri = request.getRequestURI();
-
-        String userId = request.getHeader(Headers.USERID_HEADER);
+        long userId = Long.parseLong(request.getHeader(Headers.USERID_HEADER));
         String traceId = request.getHeader(Headers.TRACE_ID_HEADER);
-
-        ContextHolder.set(ContextHolder.USER_ID, userId);
+        ContextHolder.setUserId(userId);
         ContextHolder.set(ContextHolder.TRACE_ID, traceId);
+        chain.doFilter(request, response);
 
     }
 

@@ -2,6 +2,7 @@ package org.caesar.model.vo;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.caesar.model.entity.OpenAIChatCompletion;
 
 import java.util.ArrayList;
 import java.util.List;

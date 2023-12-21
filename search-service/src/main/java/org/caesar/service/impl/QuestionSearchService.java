@@ -4,8 +4,10 @@ import org.caesar.common.exception.ThrowUtil;
 import org.caesar.domain.search.enums.DataSource;
 import org.caesar.domain.search.enums.QuestionSortField;
 import org.caesar.domain.search.enums.SortField;
-import org.caesar.domain.search.vo.QuestionIndex;
-import org.caesar.common.model.vo.PageVO;
+import org.caesar.domain.search.vo.QuestionIndexVO;
+import org.caesar.model.MsQuestionStruct;
+import org.caesar.model.entity.QuestionIndex;
+import org.caesar.domain.common.vo.PageVO;
 import org.caesar.service.SearchService;
 import org.caesar.util.EsUtil;
 import org.elasticsearch.action.search.SearchResponse;
@@ -18,14 +20,13 @@ import org.elasticsearch.script.Script;
 import org.elasticsearch.script.ScriptType;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
-import org.elasticsearch.search.suggest.Suggest;
 import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
@@ -38,13 +39,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class QuestionSearchService implements SearchService<QuestionIndex> {
+public class QuestionSearchService implements SearchService<QuestionIndexVO> {
 
     @Resource
     private ElasticsearchOperations operations;
 
     @Resource
     private ElasticsearchRestTemplate esTemplate;
+
+    @Resource
+    private MsQuestionStruct questionStruct;
 
     public static final float LIKE_FACTOR = 0.04f;
     public static final float FAVOR_FACTOR = 0.08f;
@@ -70,7 +74,7 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
 
     //TODO: es改成防腐层设计
     @Override
-    public PageVO<QuestionIndex> search(String text, int from, int size) {
+    public PageVO<QuestionIndexVO> search(String text, int from, int size) {
 
         NativeSearchQuery query = new NativeSearchQueryBuilder()
                 .withQuery(buildScoreQuery(text))
@@ -78,13 +82,11 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
                 .withFields(RESULT_FIELDS)
                 .build();
 
-        List<SearchHit<QuestionIndex>> searchHits = operations.search(query, QuestionIndex.class).getSearchHits();
-
-        return EsUtil.handleSearchHits(searchHits);
+        return doSearch(query);
     }
 
     @Override
-    public PageVO<QuestionIndex> sortSearch(String text, SortField field, int from, int size) {
+    public PageVO<QuestionIndexVO> sortSearch(String text, SortField field, int from, int size) {
 
         ThrowUtil.ifFalse(
                 field instanceof QuestionSortField, "排序字段错误：不支持该排序字段");
@@ -96,9 +98,17 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
                 .withFields(RESULT_FIELDS)
                 .build();
 
-        List<SearchHit<QuestionIndex>> searchHits = operations.search(query, QuestionIndex.class).getSearchHits();
+        return doSearch(query);
+    }
 
-        return EsUtil.handleSearchHits(searchHits);
+    private PageVO<QuestionIndexVO> doSearch(NativeSearchQuery query) {
+
+        SearchHits<QuestionIndex> searchHits = operations.search(query, QuestionIndex.class);
+
+        List<QuestionIndexVO> data = EsUtil.handleSearchHits(searchHits)
+                .stream().map(QuestionIndex::toQuestionIndexVO).collect(Collectors.toList());
+
+        return new PageVO<>(data, data.size());
     }
 
     @Override
@@ -119,7 +129,9 @@ public class QuestionSearchService implements SearchService<QuestionIndex> {
     }
 
     @Override
-    public boolean insertIndex(List<QuestionIndex> indices) {
+    public boolean insertIndex(List<QuestionIndexVO> indices) {
+        List<QuestionIndex> indicesDO = indices.stream()
+                .map(QuestionIndex::new).collect(Collectors.toList());
         operations.save(indices);
         return true;
     }

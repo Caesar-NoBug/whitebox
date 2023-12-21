@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum DataSource {
-    QUESTION("question"),
-    USER("user"),
-    ARTICLE("article");
+    QUESTION(0),
+    ARTICLE(1),
+    USER(2);
 
-    private final String value;
+    private final int value;
 }

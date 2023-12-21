@@ -1,6 +1,8 @@
 package org.caesar.service.impl;
 
+import org.caesar.domain.article.response.GetPreferArticleResponse;
 import org.caesar.domain.article.vo.ArticleMinVO;
+import org.caesar.model.entity.ArticleHistory;
 import org.caesar.util.RedisKey;
 import org.caesar.common.client.AIGCClient;
 import org.caesar.common.client.UserClient;
@@ -8,8 +10,8 @@ import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.repository.CacheRepository;
 import org.caesar.common.util.ClientUtil;
 import org.caesar.common.vo.Response;
-import org.caesar.domain.aigc.request.AnalyseContentRequest;
-import org.caesar.domain.aigc.response.AnalyseContentResponse;
+import org.caesar.domain.aigc.request.AnalyseTextRequest;
+import org.caesar.domain.aigc.response.AnalyseTextResponse;
 import org.caesar.domain.article.request.AddArticleRequest;
 import org.caesar.domain.article.request.UpdateArticleRequest;
 import org.caesar.domain.article.vo.ArticleHistoryVO;
@@ -31,7 +33,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class ArticleServiceImpl implements ArticleService{
+public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private ArticleRepository articleRepo;
@@ -47,18 +49,19 @@ public class ArticleServiceImpl implements ArticleService{
 
     @Resource
     private UserClient userClient;
+
     //TODO: 定时更新文章浏览数、点赞数、收藏数（通过hyperLogLog）
     @Override
     public void addArticle(long userId, AddArticleRequest request) {
         long id = cacheRepo.nextId(RedisKey.articleIncId());
         Article article = Article.fromAddRequest(id, userId, request);
         boolean genContent = request.isGenContent();
-        Response<AnalyseContentResponse> analyseResp = aigcClient.analyseContent(new AnalyseContentRequest(article.getTitle(), article.getContent(), genContent));
+        Response<AnalyseTextResponse> analyseResp = aigcClient.analyseText(new AnalyseTextRequest(article.getTitle(), article.getContent(), genContent));
 
-        AnalyseContentResponse response = ClientUtil.handleResponse(analyseResp, "审核文章/分析文章失败");
+        AnalyseTextResponse response = ClientUtil.handleResponse(analyseResp, "审核文章/分析文章失败");
 
-        if(genContent) {
-            article.setTags(response.getTags());
+        if (genContent) {
+            article.setTag(response.getTags());
             article.setDigest(response.getDigest());
         }
 
@@ -93,6 +96,26 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
+    public GetPreferArticleResponse getPreferArticle(long userId, int viewedSize, int preferredSize, int randPreferredSize) {
+
+        GetPreferArticleResponse response = new GetPreferArticleResponse();
+
+        response.setViewedArticles(
+                loadArticleMinVO(articleRepo.getRecentViewedArticle(userId, viewedSize))
+        );
+
+        response.setPreferredArticles(
+                loadArticleMinVO(articleRepo.getRecentPreferredArticle(userId, preferredSize))
+        );
+
+        response.setRandPreferredArticles(
+                loadArticleMinVO(articleRepo.getRandPreferArticle(userId, randPreferredSize))
+        );
+
+        return response;
+    }
+
+    @Override
     public List<ArticleMinVO> getArticleMin(Set<Long> articleIds) {
 
         ThrowUtil.ifEmpty(articleIds, ErrorCode.SYSTEM_ERROR, "id集合为空");
@@ -104,8 +127,8 @@ public class ArticleServiceImpl implements ArticleService{
 
     @Override
     public List<ArticleHistoryVO> getArticleHistory(long userId, Integer from, Integer size) {
-        List<Article> articles = articleRepo.getArticleHistory(userId, from, size);
-        List<Long> authorIds = articles.stream().map(Article::getId).collect(Collectors.toList());
+        List<ArticleHistory> histories = articleRepo.getArticleHistory(userId, from, size);
+        List<Long> authorIds = histories.stream().map(ArticleHistory::getCreateBy).collect(Collectors.toList());
 
         Map<Long, UserMinVO> authorInfo = ClientUtil.handleResponse(
                 userClient.getUserMin(authorIds),
@@ -114,14 +137,14 @@ public class ArticleServiceImpl implements ArticleService{
 
         ThrowUtil.ifEmpty(authorInfo, ErrorCode.SYSTEM_ERROR, "获取作者信息失败,作者不存在");
 
-        List<ArticleHistoryVO> histories = new ArrayList<>();
-        for (Article article : articles) {
-            ArticleHistoryVO historyVO = articleStruct.DOtoHistoryVO(article);
-            historyVO.setAuthor(authorInfo.get(article.getCreateBy()));
-            histories.add(historyVO);
+        List<ArticleHistoryVO> historyVOs = new ArrayList<>();
+        for (ArticleHistory history : histories) {
+            ArticleHistoryVO historyVO = articleStruct.DOtoHistoryVO(history);
+            historyVO.setAuthor(authorInfo.get(history.getCreateBy()));
+            historyVOs.add(historyVO);
         }
 
-        return histories;
+        return historyVOs;
     }
 
     @Override
@@ -146,10 +169,17 @@ public class ArticleServiceImpl implements ArticleService{
         ThrowUtil.ifFalse(articleRepo.favorArticle(userId, articleId, isFavor), ErrorCode.SYSTEM_ERROR, "");
     }
 
+    @Override
+    public List<Long> getUniqueArticle(long userId, List<Long> articleIds) {
+        return articleRepo.getUniqueArticle(userId, articleIds);
+    }
+
+
     /**
      * 从缓存中或数据库中获取文章数据，并缓存文章
+     *
      * @param articleId 文章id
-     * @return  文章数据
+     * @return 文章数据
      */
     private ArticleVO loadArticleVO(long articleId) {
 
@@ -184,6 +214,10 @@ public class ArticleServiceImpl implements ArticleService{
         cacheRepo.setObject(cacheKey, articleVO, expire, TimeUnit.MINUTES);
 
         return articleVO;
+    }
+
+    private List<ArticleMinVO> loadArticleMinVO(List<Article> articles) {
+        return articles.stream().map(articleStruct::DOtoMinVO).collect(Collectors.toList());
     }
 
 }

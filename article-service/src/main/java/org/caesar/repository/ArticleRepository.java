@@ -1,7 +1,7 @@
 package org.caesar.repository;
 
-import org.caesar.domain.article.vo.ArticleMinVO;
 import org.caesar.model.entity.Article;
+import org.caesar.model.entity.ArticleHistory;
 import org.caesar.model.entity.ArticleOps;
 
 import java.time.LocalDateTime;
@@ -19,11 +19,22 @@ public interface ArticleRepository {
     // 获取用户对文章的操作（点赞、点踩、收藏）
     ArticleOps getArticleOps(long userId, long articleId);
 
+    List<Article> getRandPreferArticle(long userId, int size);
+
+    // 文章去重（出除用户已经看过的文章）
+    List<Long> getUniqueArticle(long userId, List<Long> articleIds);
+
     // 判断文章是否存在
     boolean existArticle(long articleId);
 
     // 添加阅读记录
     boolean addViewHistory(long userId, long articleId, LocalDateTime viewAt);
+
+    // 获取近期点赞或收藏的文章
+    List<Article> getRecentPreferredArticle(long userId, int size);
+
+    // 获取近期阅读的文章
+    List<Article> getRecentViewedArticle(long userId, int size);
 
     /**
      * 获取近期修改的文章
@@ -32,8 +43,9 @@ public interface ArticleRepository {
      */
     List<Article> getUpdatedArticle(LocalDateTime afterTime);
 
+    // TODO: 正确返回浏览时间记录
     // 获取文章历史
-    List<Article> getArticleHistory(long userId, Integer from, Integer size);
+    List<ArticleHistory> getArticleHistory(long userId, Integer from, Integer size);
 
     // 获取文章列表(只获取少量信息)
     List<Article> getArticleMin(Set<Long> articleIds);

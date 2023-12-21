@@ -30,7 +30,7 @@ public class ArticleVO implements Serializable {
     /**
      * 文章标签
      */
-    private String tags;
+    private String tag;
 
     /**
      * 收藏数

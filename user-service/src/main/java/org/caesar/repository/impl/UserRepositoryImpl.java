@@ -1,6 +1,7 @@
 package org.caesar.repository.impl;
 
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.caesar.mapper.BaseUserMapper;
 import org.caesar.mapper.MenuMapper;
 import org.caesar.model.MsUserStruct;
@@ -15,7 +16,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Repository
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl extends ServiceImpl<BaseUserMapper, UserPO> implements UserRepository {
 
     @Resource
     private BaseUserMapper userMapper;

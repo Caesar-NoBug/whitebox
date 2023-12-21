@@ -32,5 +32,5 @@ public class ArticleHistoryVO {
     /**
      * 浏览时间
      */
-    private LocalDateTime viewTime;
+    private LocalDateTime viewAt;
 }

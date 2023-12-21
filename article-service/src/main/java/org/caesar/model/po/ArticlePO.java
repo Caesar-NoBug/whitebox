@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.Data;
+import lombok.experimental.FieldNameConstants;
 
 //TODO: 自动生成文章摘要、标签
 //TODO: 把文章加入到检索服务中
@@ -15,6 +16,7 @@ import lombok.Data;
  */
 @TableName(value ="article")
 @Data
+@FieldNameConstants
 public class ArticlePO implements Serializable{
 
     /**
@@ -46,7 +48,7 @@ public class ArticlePO implements Serializable{
     /**
      * 文章标签
      */
-    private String tags;
+    private String tag;
 
     /**
      * 创建者id

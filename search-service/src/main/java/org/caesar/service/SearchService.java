@@ -2,12 +2,13 @@ package org.caesar.service;
 
 import org.caesar.domain.search.enums.DataSource;
 import org.caesar.domain.search.enums.SortField;
-import org.caesar.domain.search.vo.Index;
-import org.caesar.common.model.vo.PageVO;
+import org.caesar.domain.search.vo.IndexVO;
+import org.caesar.domain.common.vo.PageVO;
 
 import java.util.List;
 
-public interface SearchService<T extends Index> {
+// 搜索服务接口(V为对外VO数据类型)
+public interface SearchService<V extends IndexVO> {
 
     /**
      * 综合搜索
@@ -16,7 +17,7 @@ public interface SearchService<T extends Index> {
      * @param size 页大小
      * @return 查询结果
      */
-    PageVO<T> search(String text, int from, int size);
+    PageVO<V> search(String text, int from, int size);
 
     /**
      * 排序搜索
@@ -26,7 +27,7 @@ public interface SearchService<T extends Index> {
      * @param size  页大小
      * @return      搜索结果
      */
-    PageVO<T> sortSearch(String text, SortField field, int from, int size);
+    PageVO<V> sortSearch(String text, SortField field, int from, int size);
 
     /**
      * @param text 用户文本
@@ -40,7 +41,7 @@ public interface SearchService<T extends Index> {
      * @param indices 新增或更新的索引数据
      * @return        是否更新成功
      */
-    boolean insertIndex(List<T> indices);
+    boolean insertIndex(List<V> indices);
 
     /**
      * 删除索引

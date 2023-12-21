@@ -2,6 +2,7 @@ package org.caesar.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.caesar.domain.article.vo.ArticleMinVO;
+import org.caesar.model.entity.ArticleHistory;
 import org.caesar.model.entity.ArticleOps;
 import org.caesar.model.po.ArticlePO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -19,13 +20,64 @@ import java.util.Set;
 @Mapper
 public interface ArticleMapper extends BaseMapper<ArticlePO> {
 
-    List<ArticlePO> getArticleHistory(long userId, int size, int offset);
+    /**
+     * @param userId 用户id
+     * @param size   页大小
+     * @param offset 偏移量
+     * @return       用户浏览过的文章
+     */
+    List<ArticleHistory> getArticleHistory(long userId, int size, int offset);
 
+    /**
+     * @param userId    用户id
+     * @param articleId 文章id
+     * @return          用户对文章的操作数据
+     */
     ArticleOps getArticleOps(long userId, long articleId);
 
+    /**
+     * @param afterTime 最后更新时间
+     * @return          afterTime以后更新的文章数
+     */
     List<ArticlePO> getUpdatedArticle(LocalDateTime afterTime);
 
+    List<ArticlePO> getRandPreferArticle(long userId, int size);
+
+    // 文章去重（出除用户已经看过的文章）
+    List<Long> getUniqueArticle(long userId, List<Long> articleIds);
+
+    /**
+     * @param articleIds 文章id
+     * @return           文章最小信息（用于展示文章基本信息）
+     */
     List<ArticlePO> getArticleMin(Set<Long> articleIds);
+
+    /**
+     * @param userId  用户id
+     * @param size    最大文章数量
+     * @return 获取近期点赞或收藏的文章
+     */
+    List<ArticlePO> getRecentPreferArticle(long userId, int size);
+
+    /**
+     * @param userId  用户id
+     * @param size    最大文章数量
+     * @return 获取近期浏览过的文章
+     */
+    List<ArticlePO> getRecentViewedArticle(long userId, int size);
+
+    /**
+     * @param historyCount 最大浏览历史数量
+     * @return  浏览历史数量超过viewCount的用户id
+     */
+    List<Long> getTopUsersByHistoryCount(int historyCount);
+
+    /**
+     * @param userIds 待删除记录的用户id
+     * @param historyCount 最大浏览历史数量
+     * 根据浏览时间降序，删除超过最大数量的早期用户浏览历史
+     */
+    void deleteViewHistory(List<Long> userIds, int historyCount);
 
     /**
      * @param userId    用户id
@@ -57,8 +109,19 @@ public interface ArticleMapper extends BaseMapper<ArticlePO> {
      */
     int favorArticle(long userId, long articleId, Boolean favored);
 
+
+    /**
+     * @param articleId 文章id
+     * @return 是否删除文章操作记录成功
+     */
     int deleteArticleOps(long articleId);
 
+    /**
+     * @param userId    用户id
+     * @param articleId 文章id
+     * @param viewAt    浏览时间
+     * @return          是否成功添加文章浏览记录
+     */
     int addViewHistory(long userId, long articleId, LocalDateTime viewAt);
 }
 

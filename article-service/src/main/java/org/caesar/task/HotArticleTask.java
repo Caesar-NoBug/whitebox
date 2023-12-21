@@ -35,13 +35,14 @@ public class HotArticleTask {
 
     @Scheduled(fixedRate = HOT_UPDATE_FREQUENCY)
     public void run() {
-        BoundZSetOperations<String, Long> recentZSet = cacheRepo.getSortedSet(RedisKey.recentArticleSet());
+        // 候选文章集合
+        BoundZSetOperations<String, Long> candidateZSet = cacheRepo.getSortedSet(RedisKey.candidateArticleSet());
 
         // 当前时间
         long now = System.currentTimeMillis() / 1000 - BEGIN_TIMESTAMP;
 
-        Set<Long> articleIds = recentZSet.range(0, Math.max(0, recentZSet.size() - 1));
-        System.out.println("articleIds:" + articleIds);
+        Set<Long> articleIds = candidateZSet.range(0, Math.max(0, candidateZSet.size() - 1));
+        //System.out.println("articleIds:" + articleIds);
 
         articleIds.forEach(articleId -> {
             BoundZSetOperations<String, Long> historySet = cacheRepo.getSortedSet(RedisKey.articleHistorySet(articleId));
@@ -51,15 +52,16 @@ public class HotArticleTask {
 
             // 删除没有浏览量的文章
             if(viewCount <= 0) {
-                recentZSet.remove(articleId);
+                candidateZSet.remove(articleId);
             }
             // 更新近期文章中的浏览数据
             else {
-                recentZSet.add(articleId, viewCount);
+                candidateZSet.add(articleId, viewCount);
             }
         });
 
-        Set<Long> hotArticleIds = recentZSet.reverseRange(0, HOT_ARTICLE_COUNT - 1);
+        // 更新热门文章数据
+        Set<Long> hotArticleIds = candidateZSet.reverseRange(0, HOT_ARTICLE_COUNT - 1);
         System.out.println("hotArticleIds:" + hotArticleIds);
         List<ArticleMinVO> hotArticles = articleService.getArticleMin(hotArticleIds);
 

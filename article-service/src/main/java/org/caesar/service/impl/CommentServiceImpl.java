@@ -8,8 +8,8 @@ import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.repository.CacheRepository;
 import org.caesar.common.util.ClientUtil;
 import org.caesar.common.vo.Response;
-import org.caesar.domain.aigc.request.AnalyseContentRequest;
-import org.caesar.domain.aigc.response.AnalyseContentResponse;
+import org.caesar.domain.aigc.request.AnalyseTextRequest;
+import org.caesar.domain.aigc.response.AnalyseTextResponse;
 import org.caesar.domain.article.request.AddCommentRequest;
 import org.caesar.domain.article.request.GetCommentRequest;
 import org.caesar.domain.article.vo.CommentVO;
@@ -49,8 +49,8 @@ public class CommentServiceImpl implements CommentService {
     public void addComment(long userId, AddCommentRequest request) {
         long id = cacheRepo.nextId(RedisKey.commentIncId());
         Comment comment = Comment.fromAddRequest(id, userId, request);
-        Response<AnalyseContentResponse> response = aigcClient.analyseContent(new AnalyseContentRequest("", comment.getContent(), false));
-        AnalyseContentResponse analyseResp = ClientUtil.handleResponse(response, "审核评论失败");
+        Response<AnalyseTextResponse> response = aigcClient.analyseText(new AnalyseTextRequest("", comment.getContent(), false));
+        AnalyseTextResponse analyseResp = ClientUtil.handleResponse(response, "审核评论失败");
         ThrowUtil.ifFalse(analyseResp.isPass(), "评论审核不通过");
 
         ThrowUtil.ifFalse(commentRepo.addComment(comment), ErrorCode.SYSTEM_ERROR ,"无法添加评论");

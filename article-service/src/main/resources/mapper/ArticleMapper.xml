@@ -10,7 +10,7 @@
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="digest" column="digest" jdbcType="VARCHAR"/>
         <result property="type" column="type" jdbcType="TINYINT"/>
-        <result property="tags" column="tags" jdbcType="VARCHAR"/>
+        <result property="tag" column="tag" jdbcType="VARCHAR"/>
         <result property="createBy" column="create_by" jdbcType="BIGINT"/>
         <result property="createAt" column="create_at" jdbcType="TIMESTAMP"/>
         <result property="updateAt" column="update_at" jdbcType="TIMESTAMP"/>
@@ -50,7 +50,25 @@
         WHERE article_id = #{articleId}
     </delete>
 
-    <select id="getArticleHistory" resultType="org.caesar.model.po.ArticlePO">
+    <delete id="deleteViewHistory">
+        DELETE FROM article_view
+        WHERE user_id IN
+        <foreach item="userId" collection="userIds" separator="," open="(" close=")">
+            #{userId}
+        </foreach>
+        AND view_at &lt; ALL (
+            SELECT view_at
+            FROM article_view
+            WHERE user_id IN
+            <foreach item="userId" collection="userIds" separator="," open="(" close=")">
+                #{userId}
+            </foreach>
+            ORDER BY view_at DESC
+            LIMIT #{historyCount}
+        )
+    </delete>
+
+    <select id="getArticleHistory" resultType="org.caesar.model.entity.ArticleHistory">
         SELECT id, title, digest, view_at viewAt, create_by
         FROM article
                  JOIN article_view
@@ -86,7 +104,7 @@
     </select>
 
     <select id="getUpdatedArticle" resultType="org.caesar.model.po.ArticlePO">
-        SELECT id, title, content, digest, tags, update_at, is_delete
+        SELECT id, title, content, digest, tag, update_at, is_delete
         FROM article
         WHERE update_at > #{updateAt}
     </select>
@@ -97,6 +115,61 @@
         WHERE is_delete = 0
         AND id IN
         <foreach item="id" collection="articleIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getTopUsersByHistoryCount" resultType="java.lang.Long">
+        SELECT user_id
+        FROM (SELECT user_id, COUNT(*) AS history_count
+              FROM article_view
+              GROUP BY user_id
+              HAVING history_count > #{historyCount}) as uivc
+    </select>
+
+    <select id="getRecentPreferArticle" resultType="org.caesar.model.po.ArticlePO">
+        SELECT id, title, digest, tag
+        FROM article
+        WHERE id IN (SELECT t.article_id FROM
+                            (SELECT article_id
+                     FROM article_ops
+                     WHERE user_id = #{userId}
+                       AND (favored = 1
+                         OR mark = 1)
+                     ORDER BY article_ops.update_at DESC
+                     LIMIT #{size}) AS t)
+    </select>
+
+    <select id="getRecentViewedArticle" resultType="org.caesar.model.po.ArticlePO">
+        SELECT id, title, digest, tag
+        FROM article
+        WHERE id IN (SELECT t.article_id FROM
+                            (SELECT article_id
+                             FROM article_view
+                             WHERE user_id = #{userId}
+                             ORDER BY article_view.view_at DESC
+                             LIMIT #{size}) AS t)
+    </select>
+
+    <select id="getRandPreferArticle" resultType="org.caesar.model.po.ArticlePO">
+        SELECT id, title, digest, tag
+        FROM article
+        WHERE id IN (SELECT t.article_id FROM
+                            (SELECT article_id
+                             FROM article_ops
+                             WHERE user_id = #{userId}
+                               AND (favored = 1
+                                 OR mark = 1)
+                             ORDER BY RAND()
+                             LIMIT #{size}) AS t)
+    </select>
+
+    <select id="getUniqueArticle" resultType="java.lang.Long">
+        SELECT article_id
+        FROM article_view
+        WHERE user_id = #{userId}
+        AND article_id NOT IN
+        <foreach collection="articleIds" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
     </select>

@@ -16,7 +16,6 @@
         <module>executor-service</module>
         <module>search-service</module>
         <module>domain</module>
-        <module>recommend-service</module>
         <module>aigc-service</module>
         <module>article-service</module>
     </modules>

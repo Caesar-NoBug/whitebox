@@ -16,7 +16,7 @@ import java.util.Map;
 * @description 针对表【sys_user_base】的数据库操作Service
 * @createDate 2023-05-01 09:36:22
 */
-public interface UserService extends IService<UserPO> {
+public interface UserService {
 
     UserVO login(LoginRequest request);
 
@@ -30,4 +30,6 @@ public interface UserService extends IService<UserPO> {
     UserVO register(RegisterRequest request);
 
     Map<Long, UserMinVO> getUserMin(List<Long> userId);
+
+    //TODO: update User 时同步删除userMin缓存
 }

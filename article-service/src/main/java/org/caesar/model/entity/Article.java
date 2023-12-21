@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class Article {
+//TODO: 把作者名称和头像放到这
 
     /**
      * 文章主键
@@ -39,7 +40,7 @@ public class Article {
     /**
      * 文章标签
      */
-    private String tags;
+    private String tag;
 
     /**
      * 收藏数
@@ -83,7 +84,7 @@ public class Article {
         article.setTitle(request.getTitle());
         article.setContent(request.getContent());
         article.setDigest(request.getDigest());
-        article.setTags(request.getTags());
+        article.setTag(request.getTags());
         article.setCreateBy(authorId);
         LocalDateTime now = LocalDateTime.now();
         article.setCreateAt(now);
@@ -99,7 +100,7 @@ public class Article {
         article.setTitle(request.getTitle());
         article.setContent(request.getContent());
         article.setDigest(request.getDigest());
-        article.setTags(request.getTags());
+        article.setTag(request.getTags());
         article.setUpdateAt(LocalDateTime.now());
 
         return article;

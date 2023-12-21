@@ -17,7 +17,7 @@
             <option name="ignoreTableSuffix" value="" />
             <option name="jsr310Support" value="true" />
             <option name="moduleName" value="aigc-service" />
-            <option name="modulePath" value="$PROJECT_DIR$/article-service" />
+            <option name="modulePath" value="$PROJECT_DIR$/search-service" />
             <option name="moduleUIInfoList">
               <list>
                 <ModuleInfoGo>
@@ -27,7 +27,7 @@
                   <option name="encoding" value="${domain.encoding}" />
                   <option name="fileName" value="${domain.fileName}Mapper" />
                   <option name="fileNameWithSuffix" value="${domain.fileName}Mapper.java" />
-                  <option name="modulePath" value="$PROJECT_DIR$/article-service" />
+                  <option name="modulePath" value="$PROJECT_DIR$/search-service" />
                   <option name="packageName" value="${domain.basePackage}.mapper" />
                 </ModuleInfoGo>
                 <ModuleInfoGo>
@@ -37,7 +37,7 @@
                   <option name="encoding" value="${domain.encoding}" />
                   <option name="fileName" value="${domain.fileName}Mapper" />
                   <option name="fileNameWithSuffix" value="${domain.fileName}Mapper.xml" />
-                  <option name="modulePath" value="$PROJECT_DIR$/article-service" />
+                  <option name="modulePath" value="$PROJECT_DIR$/search-service" />
                   <option name="packageName" value="mapper" />
                 </ModuleInfoGo>
                 <ModuleInfoGo>
@@ -47,7 +47,7 @@
                   <option name="encoding" value="${domain.encoding}" />
                   <option name="fileName" value="${domain.fileName}ServiceImpl" />
                   <option name="fileNameWithSuffix" value="${domain.fileName}ServiceImpl.java" />
-                  <option name="modulePath" value="$PROJECT_DIR$/article-service" />
+                  <option name="modulePath" value="$PROJECT_DIR$/search-service" />
                   <option name="packageName" value="${domain.basePackage}.service.impl" />
                 </ModuleInfoGo>
                 <ModuleInfoGo>
@@ -57,7 +57,7 @@
                   <option name="encoding" value="${domain.encoding}" />
                   <option name="fileName" value="${domain.fileName}Service" />
                   <option name="fileNameWithSuffix" value="${domain.fileName}Service.java" />
-                  <option name="modulePath" value="$PROJECT_DIR$/article-service" />
+                  <option name="modulePath" value="$PROJECT_DIR$/search-service" />
                   <option name="packageName" value="${domain.basePackage}.service" />
                 </ModuleInfoGo>
               </list>
@@ -65,13 +65,13 @@
             <option name="needToStringHashcodeEquals" value="true" />
             <option name="needsComment" value="true" />
             <option name="needsModel" value="true" />
-            <option name="relativePackage" value="model.entity" />
+            <option name="relativePackage" value="model.po" />
             <option name="superClass" value="" />
             <option name="tableUIInfoList">
               <list>
                 <TableUIInfo>
-                  <option name="className" value="Comment" />
-                  <option name="tableName" value="comment" />
+                  <option name="className" value="SearchHistory" />
+                  <option name="tableName" value="search_history" />
                 </TableUIInfo>
               </list>
             </option>

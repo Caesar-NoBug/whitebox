@@ -44,23 +44,23 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 @Slf4j
-public class UserServiceImpl extends ServiceImpl<BaseUserMapper, UserPO> implements UserService {
+public class UserServiceImpl implements UserService {
 
     public static final int DEFAULT_REFRESH_TOKEN_LENGTH = 32;
 
-    @Autowired
+    @Resource
     private UserRepository userRepo;
 
     @Resource
     private MsUserStruct userStruct;
 
-    @Autowired
+    @Resource
     private MenuMapper menuMapper;
 
-    @Autowired
+    @Resource
     private CacheRepository cacheRepo;
 
-    @Autowired
+    @Resource
     private AuthenticationManager authManager;
 
     private final Map<Integer, PrefixMatcher> authorizeMap = new ConcurrentHashMap<>();
@@ -225,17 +225,18 @@ public class UserServiceImpl extends ServiceImpl<BaseUserMapper, UserPO> impleme
 
     @Override
     public Map<Long, UserMinVO> getUserMin(List<Long> userIds) {
-        ArrayList<Long> ids = new ArrayList<>();
+        // 没有被缓存的用户id
+        ArrayList<Long> nonCachedIds = new ArrayList<>();
 
         Map<Long, UserMinVO> userMinMap = new HashMap<>();
 
         for (Long userId : userIds) {
             UserMinVO userMinVO = cacheRepo.getObject(RedisPrefix.CACHE_USER_MIN + userId);
             if(userMinVO != null) userMinMap.put(userId, userMinVO);
-            else ids.add(userId);
+            else nonCachedIds.add(userId);
         }
 
-        userRepo.selectUserByIds(userIds).forEach(user -> {
+        userRepo.selectUserByIds(nonCachedIds).forEach(user -> {
             Long id = user.getId();
             UserMinVO userMinVO = userStruct.DOtoMinVO(user);
             userMinMap.put(id, userMinVO);

@@ -2,6 +2,7 @@ package org.caesar.service;
 
 import org.caesar.domain.article.request.AddArticleRequest;
 import org.caesar.domain.article.request.UpdateArticleRequest;
+import org.caesar.domain.article.response.GetPreferArticleResponse;
 import org.caesar.domain.article.vo.ArticleHistoryVO;
 import org.caesar.domain.article.vo.ArticleMinVO;
 import org.caesar.domain.article.vo.ArticleVO;
@@ -27,6 +28,9 @@ public interface ArticleService {
     // 获取近期修改了的文章
     List<Article> getUpdatedArticle(LocalDateTime afterTime);
 
+    // 获取近期文章
+    GetPreferArticleResponse getPreferArticle(long userId, int viewedSize, int preferredSize, int randPreferredSize);
+
     // 获取热门文章
     List<ArticleMinVO> getHotArticle();
 
@@ -47,4 +51,7 @@ public interface ArticleService {
 
     // 文章收藏
     void favorArticle(long userId, long articleId, boolean isFavor);
+
+    // 文章去重（出除用户已经看过的文章）
+    List<Long> getUniqueArticle(long userId, List<Long> articleIds);
 }

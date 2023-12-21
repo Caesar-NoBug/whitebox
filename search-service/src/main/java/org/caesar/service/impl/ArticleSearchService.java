@@ -1,14 +1,12 @@
 package org.caesar.service.impl;
 
 import org.caesar.common.exception.ThrowUtil;
-import org.caesar.common.model.vo.PageVO;
-import org.caesar.common.repository.CacheRepository;
+import org.caesar.domain.common.vo.PageVO;
 import org.caesar.domain.search.enums.ArticleSortField;
 import org.caesar.domain.search.enums.DataSource;
-import org.caesar.domain.search.enums.QuestionSortField;
 import org.caesar.domain.search.enums.SortField;
-import org.caesar.domain.search.vo.ArticleIndex;
-import org.caesar.domain.search.vo.QuestionIndex;
+import org.caesar.domain.search.vo.ArticleIndexVO;
+import org.caesar.model.entity.ArticleIndex;
 import org.caesar.service.SearchService;
 import org.caesar.util.EsUtil;
 import org.elasticsearch.action.search.SearchResponse;
@@ -27,7 +25,7 @@ import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
@@ -40,7 +38,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class ArticleSearchService implements SearchService<ArticleIndex> {
+public class ArticleSearchService implements SearchService<ArticleIndexVO> {
 
     @Resource
     private ElasticsearchOperations operations;
@@ -52,7 +50,7 @@ public class ArticleSearchService implements SearchService<ArticleIndex> {
     public static final float FAVOR_FACTOR = 0.08f;
     public static final float VIEW_FACTOR = 0.01f;
 
-    public static final String[] RESULT_FIELDS = new String[] {
+    public static final String[] RESULT_FIELDS = new String[]{
             ArticleIndex.Fields.id, ArticleIndex.Fields.title, ArticleIndex.Fields.digest, ArticleIndex.Fields.tag,
             ArticleIndex.Fields.favorNum, ArticleIndex.Fields.viewNum, ArticleIndex.Fields.likeNum, ArticleIndex.Fields.updateAt
     };
@@ -73,7 +71,7 @@ public class ArticleSearchService implements SearchService<ArticleIndex> {
     //TODO: 添加update字段并在增删改时修改该字段的值
     //TODO: es改成防腐层设计
     @Override
-    public PageVO<ArticleIndex> search(String text, int from, int size) {
+    public PageVO<ArticleIndexVO> search(String text, int from, int size) {
 
         NativeSearchQuery query = new NativeSearchQueryBuilder()
                 .withQuery(buildScoreQuery(text))
@@ -82,13 +80,11 @@ public class ArticleSearchService implements SearchService<ArticleIndex> {
                 .withSort(SortBuilders.fieldSort(ArticleIndex.Fields.updateAt).order(SortOrder.DESC))
                 .build();
 
-        List<SearchHit<ArticleIndex>> searchHits = operations.search(query, ArticleIndex.class).getSearchHits();
-
-        return EsUtil.handleSearchHits(searchHits);
+        return doSearch(query);
     }
 
     @Override
-    public PageVO<ArticleIndex> sortSearch(String text, SortField field, int from, int size) {
+    public PageVO<ArticleIndexVO> sortSearch(String text, SortField field, int from, int size) {
 
         ThrowUtil.ifFalse(
                 field instanceof ArticleSortField, "排序字段错误：不支持该排序字段");
@@ -100,9 +96,17 @@ public class ArticleSearchService implements SearchService<ArticleIndex> {
                 .withSort(SortBuilders.fieldSort(field.getValue()).order(SortOrder.DESC))
                 .build();
 
-        List<SearchHit<ArticleIndex>> searchHits = operations.search(query, ArticleIndex.class).getSearchHits();
+        return doSearch(query);
+    }
 
-        return EsUtil.handleSearchHits(searchHits);
+    private PageVO<ArticleIndexVO> doSearch(NativeSearchQuery query) {
+
+        SearchHits<ArticleIndex> searchHits = operations.search(query, ArticleIndex.class);
+
+        List<ArticleIndexVO> data = EsUtil.handleSearchHits(searchHits)
+                .stream().map(ArticleIndex::toArticleIndexVO).collect(Collectors.toList());
+
+        return new PageVO<>(data, data.size());
     }
 
     @Override
@@ -123,8 +127,12 @@ public class ArticleSearchService implements SearchService<ArticleIndex> {
     }
 
     @Override
-    public boolean insertIndex(List<ArticleIndex> indices) {
-        operations.save(indices);
+    public boolean insertIndex(List<ArticleIndexVO> indices) {
+        System.out.println("成功同步:" + indices.size());
+        List<ArticleIndex> indicesDO = indices.stream()
+                .map(ArticleIndex::new).collect(Collectors.toList());
+        System.out.println(indicesDO);
+        operations.save(indicesDO);
         return true;
     }
 
@@ -141,8 +149,8 @@ public class ArticleSearchService implements SearchService<ArticleIndex> {
     }
 
     /**
-     * @param text  用户输入的关键词
-     * @return      默认规则对应的查询
+     * @param text 用户输入的关键词
+     * @return 默认规则对应的查询
      */
     private QueryBuilder buildScoreQuery(String text) {
 

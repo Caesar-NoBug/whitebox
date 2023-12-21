@@ -1,11 +1,15 @@
 package org.caesar.domain.article.vo;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.caesar.domain.search.vo.ArticleIndexVO;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Data
+@NoArgsConstructor
 public class ArticleMinVO implements Serializable {
 
     /**
@@ -24,6 +28,11 @@ public class ArticleMinVO implements Serializable {
     private String digest;
 
     /**
+     * 文章标签
+     */
+    private String tag;
+
+    /**
      * 浏览数
      */
     private Integer viewNum;
@@ -34,7 +43,22 @@ public class ArticleMinVO implements Serializable {
     private Integer likeNum;
 
     /**
-     * 创建时间
+     * 更新时间
      */
     private LocalDateTime updateAt;
+
+    public ArticleMinVO(ArticleIndexVO articleIndexVO) {
+
+        if (Objects.nonNull(articleIndexVO)) {
+            this.id = articleIndexVO.getId();
+            this.title = articleIndexVO.getTitle();
+            this.digest = articleIndexVO.getDigest();
+            this.tag = articleIndexVO.getTag();
+            this.viewNum = articleIndexVO.getViewNum();
+            this.likeNum = articleIndexVO.getLikeNum();
+            this.updateAt = articleIndexVO.getUpdateAt();
+        }
+
+    }
+
 }

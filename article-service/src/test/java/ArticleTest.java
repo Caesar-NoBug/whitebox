@@ -6,6 +6,7 @@ import org.caesar.repository.ArticleRepository;
 import org.caesar.service.ArticleService;
 import org.caesar.common.str.StrUtil;
 import org.caesar.task.HotArticleTask;
+import org.caesar.task.IncSyncArticleTask;
 import org.caesar.util.RedisKey;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,6 +35,9 @@ public class ArticleTest {
     @Resource
     private HotArticleTask hotArticleTask;
 
+    @Resource
+    private IncSyncArticleTask incSyncArticleTask;
+
     @Test
     public void testMark() {
         System.out.println("--------------------\n\n");
@@ -52,7 +56,7 @@ public class ArticleTest {
             article.setId(i);
             article.setDigest("摘要:" + StrUtil.genRandCNStr(10));
             article.setTitle("标题:" + StrUtil.genRandCNStr(10));
-            article.setTags("标签/" + StrUtil.genRandCNStr(10));
+            article.setTag("标签/" + StrUtil.genRandCNStr(10));
             article.setContent("内容:" + StrUtil.genRandCNStr(10));
             article.setCreateBy(0L);
             repository.addArticle(article);
@@ -93,11 +97,25 @@ public class ArticleTest {
             }
 
         }
-
         /*service.viewArticle(0, 0);
         service.viewArticle(1, 0);
         service.viewArticle(2, 0);
         service.viewArticle(3, 0);
         service.viewArticle(4, 0);*/
+    }
+
+    @Test
+    public void initOps() {
+        Random random = new Random();
+        for (long i = 0; i < 40; i++) {
+
+            cacheRepo.setLongValue(RedisKey.articleFavorCount(i), random.nextInt(1000));
+            cacheRepo.setLongValue(RedisKey.articleLikeCount(i), random.nextInt(50000));
+        }
+    }
+
+    @Test
+    public void testSync() {
+        incSyncArticleTask.run();
     }
 }

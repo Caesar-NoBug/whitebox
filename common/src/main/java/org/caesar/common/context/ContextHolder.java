@@ -31,10 +31,22 @@ public class ContextHolder {
         return map == null ? null : (T) map.get(key);
     }
 
+    public static void setUserId(long userId) {
+        set(USER_ID, userId);
+    }
+
     public static long getUserId() {
         Long userId = get(USER_ID);
         ThrowUtil.ifNull(userId, "用户未登录");
         return userId;
+    }
+
+    public static void setTraceId(long traceId) {
+        set(TRACE_ID, traceId);
+    }
+
+    public static String getTraceId() {
+        return get(TRACE_ID);
     }
 
     public static void clear() {

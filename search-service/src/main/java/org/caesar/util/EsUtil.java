@@ -1,11 +1,10 @@
 package org.caesar.util;
 
 import org.caesar.common.exception.ThrowUtil;
-import org.caesar.common.model.vo.PageVO;
-import org.caesar.domain.search.vo.ArticleIndex;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.suggest.Suggest;
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,18 +18,10 @@ public class EsUtil {
      * @param <T>        数据类型
      * @return           解析结果
      */
-    public static <T> PageVO<T> handleSearchHits(List<SearchHit<T>> searchHits) {
-
-        PageVO<T> response = new PageVO<>();
-
-        response.setData(searchHits
-                .stream()
+    public static <T> List<T> handleSearchHits(SearchHits<T> searchHits) {
+        return searchHits.getSearchHits().stream()
                 .map(SearchHit::getContent)
-                .collect(Collectors.toList()));
-
-        response.setTotalSize(searchHits.size());
-
-        return response;
+                .collect(Collectors.toList());
     }
 
     public static List<String> handleSuggestion(SearchResponse response) {

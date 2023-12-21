@@ -18,7 +18,7 @@ public class RedisKey {
     // 评论点赞数
     private static final String COMMENT_LIKE_COUNT = "article:likeCount:";
     // 全部文章近期浏览记录集合
-    private static final String RECENT_ARTICLE_SET = "article:recent:set";
+    private static final String CANDIDATE_ARTICLE_SET = "article:candidate:set";
     // 热门文章集合
     private static final String HOT_ARTICLE_SET = "article:hot:set";
     // 文章浏览历史记录
@@ -34,8 +34,8 @@ public class RedisKey {
     public static String hotArticleSet() {
         return HOT_ARTICLE_SET;
     }
-    public static String recentArticleSet() {
-        return RECENT_ARTICLE_SET;
+    public static String candidateArticleSet() {
+        return CANDIDATE_ARTICLE_SET;
     }
     public static String articleHistorySet(long articleId) {
         return ARTICLE_HISTORY_ZSET + articleId;

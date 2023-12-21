@@ -1,6 +1,7 @@
 package org.caesar.model.vo;
 
 import lombok.Data;
+import org.caesar.model.entity.Usage;
 
 import java.util.List;
 

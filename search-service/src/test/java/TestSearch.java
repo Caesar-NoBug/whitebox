@@ -1,7 +1,7 @@
 import org.caesar.SearchServiceApplication;
 import org.caesar.domain.constant.StrConstant;
 import org.caesar.domain.search.enums.QuestionSortField;
-import org.caesar.domain.search.vo.QuestionIndex;
+import org.caesar.model.entity.QuestionIndex;
 import org.caesar.service.impl.QuestionSearchService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,33 +29,20 @@ public class TestSearch {
 
     @Test
     public void testAddIndex() {
-        /*QuestionIndex index = new QuestionIndex();
-        Random random = new Random();
-        //index.setId(random.nextLong());
-        index.setId(random.nextLong());
-        index.setTitle("最长回文串");
-        index.setContent("springboot");
-        index.setTag(new String[]{"字符串", "动态规划"});
-        index.setLikeNum(random.nextInt(100));
-        index.setFavorNum(random.nextInt(100));
-        index.setSubmitNum(random.nextInt(100));
-        operations.save(index);*/
         Random random = new Random();
         QuestionIndex index = new QuestionIndex(random.nextLong(), null, null, "最长回文串", "这个是非常好的内容", new String[]{"动态规划", "表达式"}, 5, 6, 0);
         QuestionIndex index1 = new QuestionIndex(random.nextLong(), null, null, "这个是标题", "这个是内容", new String[]{"字符串", "数组", "正则表达式"}, 0, 0, 1);
         QuestionIndex index2 = new QuestionIndex(random.nextLong(), null, null, "这个是一个标题", "这个是好多内容", new String[]{"数组", "表达式"}, 0, 6, 0);
-
         index.genSuggestion();
         index1.genSuggestion();
         index2.genSuggestion();
-
-        questionService.insertIndex(
+        /*questionService.insertIndex(
                 Arrays.asList(
                         index,
                         index1,
                         index2
                 )
-        );
+        );*/
 
         //List<QuestionIndex> query = questionService.search("表达式", 0, 10);
     }

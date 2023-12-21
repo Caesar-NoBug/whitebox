@@ -49,4 +49,7 @@ public class CompletionRequest {
         this.prompt = prompt;
     }
 
+    public void setHighestTemperature() {
+        this.temperature = 2;
+    }
 }

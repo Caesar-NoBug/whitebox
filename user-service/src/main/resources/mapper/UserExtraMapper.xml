@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.caesar.mapper.UserExtraMapper">
+
+    <resultMap id="BaseResultMap" type="org.caesar.model.po.UserExtraPO">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="balance" column="balance" jdbcType="INTEGER"/>
+            <result property="level" column="level" jdbcType="INTEGER"/>
+            <result property="gender" column="gender" jdbcType="CHAR"/>
+            <result property="birth" column="birth" jdbcType="DATE"/>
+            <result property="location" column="location" jdbcType="VARCHAR"/>
+            <result property="sign" column="sign" jdbcType="VARCHAR"/>
+            <result property="tag" column="tag" jdbcType="VARCHAR"/>
+            <result property="followCount" column="follow_count" jdbcType="INTEGER"/>
+            <result property="fansCount" column="fans_count" jdbcType="INTEGER"/>
+            <result property="likeCount" column="like_count" jdbcType="INTEGER"/>
+            <result property="readCount" column="read_count" jdbcType="INTEGER"/>
+            <result property="lastLogin" column="last_login" jdbcType="TIMESTAMP"/>
+            <result property="preference" column="preference" jdbcType="VARCHAR"/>
+            <result property="occupation" column="occupation" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,balance,
+        level,gender,birth,
+        location,sign,tag,
+        follow_count,fans_count,like_count,
+        read_count,last_login,preference,occupation
+    </sql>
+
+</mapper>

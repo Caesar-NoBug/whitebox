@@ -37,8 +37,8 @@ public class SlideCaptchaGenerator implements CaptchaGenerator {
     public Captcha genCaptcha(int width, int height) {
 
         //滑块左上角坐标
-        int x = (int) ((Math.random() * 0.5 + 0.25) * width);
-        int y = (int) ((Math.random() * 0.5 + 0.25) * height);
+        int x = (int) ((Math.random() * 0.2 + 0.4) * width);
+        int y = (int) ((Math.random() * 0.6 + 0.2) * height);
 
         //滑块中心正方形的直径
         int size = width >> 3;

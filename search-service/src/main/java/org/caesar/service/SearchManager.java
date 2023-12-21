@@ -1,11 +1,12 @@
 package org.caesar.service;
 
-import org.caesar.common.model.vo.PageVO;
+import org.caesar.domain.common.vo.PageVO;
 import org.caesar.common.repository.CacheRepository;
 import org.caesar.constant.RedisPrefix;
 import org.caesar.domain.search.enums.DataSource;
 import org.caesar.domain.search.enums.SortField;
-import org.caesar.domain.search.vo.Index;
+import org.caesar.domain.search.vo.IndexVO;
+import org.caesar.model.entity.Index;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -38,9 +39,9 @@ public class SearchManager implements ApplicationContextAware {
     }
 
     // 统一处理搜索结果的缓存
-    public PageVO<? extends Index> search(DataSource dataSource, String text, int from, int size) {
+    public PageVO<? extends IndexVO> search(DataSource dataSource, String text, int from, int size) {
 
-        PageVO<? extends Index> result;
+        PageVO<? extends IndexVO> result;
         String cacheKey = String.format(RedisPrefix.CACHE_SEARCH_RESULT, dataSource, text);
         result = cacheRepo.getObject(cacheKey);
 
@@ -57,8 +58,8 @@ public class SearchManager implements ApplicationContextAware {
         return result;
     }
 
-    public PageVO<? extends Index> sortSearch(DataSource dataSource, String text, SortField field, int from, int size) {
-        PageVO<? extends Index> result;
+    public PageVO<? extends IndexVO> sortSearch(DataSource dataSource, String text, SortField field, int from, int size) {
+        PageVO<? extends IndexVO> result;
         String cacheKey = String.format(RedisPrefix.CACHE_SORT_SEARCH_RESULT, dataSource, field.getValue(), text);
         result = cacheRepo.getObject(cacheKey);
 

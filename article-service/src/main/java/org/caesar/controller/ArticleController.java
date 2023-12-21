@@ -5,62 +5,85 @@ import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.vo.Response;
 import org.caesar.domain.article.request.AddArticleRequest;
 import org.caesar.domain.article.request.UpdateArticleRequest;
+import org.caesar.domain.article.response.GetPreferArticleResponse;
 import org.caesar.domain.article.vo.ArticleHistoryVO;
 import org.caesar.domain.article.vo.ArticleVO;
 import org.caesar.service.ArticleService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Min;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/article")
 public class ArticleController {
+//TODO: 同步更新作者的信息
 
     @Resource
     private ArticleService articleService;
 
     // 添加文章
-    Response<Void> addArticle(AddArticleRequest request) {
+    @PostMapping
+    Response<Void> addArticle(@RequestBody AddArticleRequest request) {
         articleService.addArticle(ContextHolder.getUserId(), request);
         return Response.ok();
     }
+    @GetMapping("/prefer")
+    Response<GetPreferArticleResponse> getRecentArticle(
+            @Min(0) @RequestParam Integer viewedSize,
+            @Min(0) @RequestParam Integer preferredSize,
+            @Min(0) @RequestParam Integer randPreferredSize) {
+        long userId = ContextHolder.getUserId();
+        return Response.ok(articleService.getPreferArticle(userId, viewedSize, preferredSize, randPreferredSize));
+    }
 
     // 查看文章
-    Response<ArticleVO> viewArticle(long articleId) {
+    @GetMapping("/detail/{articleId}")
+    Response<ArticleVO> viewArticle(@PathVariable Long articleId) {
         Long userId = ContextHolder.get(ContextHolder.USER_ID);
         ThrowUtil.ifNull(userId, "用户未登录");
         return Response.ok(articleService.viewArticle(ContextHolder.getUserId(), articleId));
     }
 
     // 查看文章历史
-    Response<List<ArticleHistoryVO>> getArticleHistory(Integer from, Integer size) {
+    @GetMapping("/history")
+    Response<List<ArticleHistoryVO>> getArticleHistory(@RequestParam Integer from, @RequestParam Integer size) {
         return Response.ok(articleService.getArticleHistory(ContextHolder.getUserId(), from, size));
     }
 
     // 修改文章
-    Response<Void> updateArticle(UpdateArticleRequest request) {
+    @PutMapping
+    Response<Void> updateArticle(@RequestBody UpdateArticleRequest request) {
         articleService.updateArticle(ContextHolder.getUserId(), request);
         return Response.ok();
     }
 
     // 删除文章
-    Response<Void> deleteArticle(long articleId) {
+    @DeleteMapping("/{articleId}")
+    Response<Void> deleteArticle(@PathVariable Long articleId) {
         articleService.deleteArticle(ContextHolder.getUserId(), articleId);
         return Response.ok();
     }
 
-    // 评价文章(-1:踩，0:无，1:赞)
-    Response<Void> markArticle(long articleId, int mark) {
-        articleService.markArticle(ContextHolder.getUserId(), articleId, mark);
+    // 评价文章(-1:踩，0:无，1:赞)及收藏文章（true：收藏，false：取消收藏）
+    @PutMapping("/ops/{articleId}")
+    Response<Void> markArticle(@PathVariable Long articleId,@RequestParam Integer mark, @RequestParam Boolean isFavor) {
+
+        if(Objects.nonNull(mark))
+            articleService.markArticle(ContextHolder.getUserId(), articleId, mark);
+
+        if(Objects.nonNull(isFavor))
+            articleService.favorArticle(ContextHolder.getUserId(), articleId, isFavor);
+
         return Response.ok();
     }
 
-    // 文章收藏
-    Response<Void> favorArticle(long articleId, boolean isFavor) {
-        articleService.favorArticle(ContextHolder.getUserId(), articleId, isFavor);
-        return Response.ok();
+    @PostMapping("/unique")
+    Response<List<Long>> getUniqueArticle(@RequestBody List<Long> articleIds) {
+        long userId = ContextHolder.getUserId();
+        return Response.ok(articleService.getUniqueArticle(userId, articleIds));
     }
 
 }

@@ -1,7 +1,7 @@
 import org.caesar.AIGCServiceApplication;
 import org.caesar.common.context.ContextHolder;
 import org.caesar.controller.ChatController;
-import org.caesar.domain.aigc.request.AnalyseContentRequest;
+import org.caesar.domain.aigc.request.AnalyseTextRequest;
 import org.caesar.domain.aigc.request.CompletionRequest;
 import org.caesar.domain.aigc.response.CompletionResponse;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ public class ChatTest {
     @Test
     public void testAnalyseArticle() {
         ContextHolder.set(ContextHolder.USER_ID, 0L);
-        AnalyseContentRequest request = new AnalyseContentRequest("Spring-Boot-操作-Redis，三种方案全解析！",
+        AnalyseTextRequest request = new AnalyseTextRequest("Spring-Boot-操作-Redis，三种方案全解析！",
                 "当使用 Spring Feign 进行服务间通信时，可以按照以下步骤进行配置和使用：\n" +
                         "\n" +
                         "步骤 1: 添加依赖\n" +

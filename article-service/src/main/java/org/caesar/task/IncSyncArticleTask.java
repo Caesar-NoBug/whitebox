@@ -1,12 +1,12 @@
 package org.caesar.task;
 
 import lombok.extern.slf4j.Slf4j;
+import org.caesar.domain.search.enums.DataSource;
+import org.caesar.domain.search.vo.ArticleIndexVO;
 import org.caesar.model.MsArticleStruct;
 import org.caesar.model.entity.Article;
 import org.caesar.repository.ArticleRepository;
-import org.caesar.common.client.SearchServiceClient;
-import org.caesar.domain.search.enums.DataSource;
-import org.caesar.domain.search.vo.ArticleIndex;
+import org.caesar.common.client.SearchClient;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -24,7 +24,7 @@ public class IncSyncArticleTask {
     private ArticleRepository articleRepo;
 
     @Resource
-    private SearchServiceClient searchServiceClient;
+    private SearchClient searchClient;
 
     @Resource
     private MsArticleStruct articleStruct;
@@ -35,7 +35,7 @@ public class IncSyncArticleTask {
     @Scheduled(fixedRate = 60 * 1000)
     public void run() {
         // 查询近 5 分钟内的数据
-        LocalDateTime fiveMinutesAgo = LocalDateTime.now().minusMinutes(5);
+        LocalDateTime fiveMinutesAgo = LocalDateTime.now().minusMinutes(60000);
         List<Article> changedArticle = articleRepo.getUpdatedArticle(fiveMinutesAgo);
 
         if (CollectionUtils.isEmpty(changedArticle)) {
@@ -43,15 +43,15 @@ public class IncSyncArticleTask {
             return;
         }
 
-        List<ArticleIndex> removedArticle = new ArrayList<>();
-        List<ArticleIndex> updatedArticle = new ArrayList<>();
+        List<Long> removedArticle = new ArrayList<>();
+        List<ArticleIndexVO> updatedArticle = new ArrayList<>();
 
         for (Article article : changedArticle) {
 
-            ArticleIndex questionIndex = articleStruct.DOtoIndex(article);
+            ArticleIndexVO questionIndex = articleStruct.DOtoIndex(article);
 
             if (article.getIsDelete())
-                removedArticle.add(questionIndex);
+                removedArticle.add(questionIndex.getId());
             else
                 updatedArticle.add(questionIndex);
         }
@@ -64,7 +64,7 @@ public class IncSyncArticleTask {
         for (int i = 0; i < updatedSize; i += pageSize) {
             int end = Math.min(i + pageSize, updatedSize);
             log.info("sync from {} to {}", i, end);
-            searchServiceClient.syncIndex(updatedArticle.subList(i, end), DataSource.ARTICLE);
+            searchClient.syncArticleIndex(updatedArticle.subList(i, end));
         }
         log.info("SyncArticleToEs end, total {}", updatedSize);
 
@@ -72,7 +72,7 @@ public class IncSyncArticleTask {
         for (int i = 0; i < removedSize; i += pageSize) {
             int end = Math.min(i + pageSize, removedSize);
             log.info("remove from {} to {}", i, end);
-            searchServiceClient.syncIndex(removedArticle.subList(i, end), DataSource.ARTICLE);
+            searchClient.deleteIndex(removedArticle.subList(i, end), DataSource.ARTICLE);
         }
         log.info("RemoveArticleToEs end, total {}", removedSize);
     }

@@ -1,8 +1,8 @@
 package org.caesar.task;
 import lombok.extern.slf4j.Slf4j;
-import org.caesar.common.client.SearchServiceClient;
+import org.caesar.common.client.SearchClient;
 import org.caesar.domain.search.enums.DataSource;
-import org.caesar.domain.search.vo.QuestionIndex;
+import org.caesar.domain.search.vo.QuestionIndexVO;
 import org.caesar.model.QuestionPOMapper;
 import org.caesar.model.entity.Question;
 import org.caesar.repository.QuestionRepository;
@@ -24,7 +24,7 @@ public class IncSyncQuestionTask {
     private QuestionRepository questionRepository;
 
     @Autowired
-    private SearchServiceClient searchServiceClient;
+    private SearchClient searchClient;
 
     @Autowired
     private QuestionPOMapper poMapper;
@@ -43,12 +43,12 @@ public class IncSyncQuestionTask {
             return;
         }
 
-        List<QuestionIndex> removedQuestion = new ArrayList<>();
-        List<QuestionIndex> updatedQuestion = new ArrayList<>();
+        List<QuestionIndexVO> removedQuestion = new ArrayList<>();
+        List<QuestionIndexVO> updatedQuestion = new ArrayList<>();
 
         for (Question question : changedQuestion) {
 
-            QuestionIndex questionIndex = poMapper.DOtoDTO(question);
+            QuestionIndexVO questionIndex = poMapper.DOtoDTO(question);
 
             if(question.getIsDelete() == 0)
                 updatedQuestion.add(questionIndex);
@@ -65,7 +65,7 @@ public class IncSyncQuestionTask {
         for (int i = 0; i < updatedSize; i += pageSize) {
             int end = Math.min(i + pageSize, updatedSize);
             log.info("sync from {} to {}", i, end);
-            searchServiceClient.syncIndex(updatedQuestion.subList(i, end), DataSource.QUESTION);
+            searchClient.syncArticleIndex(updatedQuestion.subList(i, end), DataSource.QUESTION);
         }
         log.info("SyncQuestionToEs end, total {}", updatedSize);
 
@@ -73,7 +73,7 @@ public class IncSyncQuestionTask {
         for (int i = 0; i < removedSize; i += pageSize) {
             int end = Math.min(i + pageSize, removedSize);
                 log.info("remove from {} to {}", i, end);
-            searchServiceClient.syncIndex(removedQuestion.subList(i, end), DataSource.QUESTION);
+            searchClient.syncArticleIndex(removedQuestion.subList(i, end), DataSource.QUESTION);
         }
         log.info("RemoveQuestionToEs end, total {}", removedSize);
     }

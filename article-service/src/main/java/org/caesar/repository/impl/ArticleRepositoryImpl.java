@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.caesar.model.entity.ArticleHistory;
 import org.caesar.repository.ArticleRepository;
 import org.caesar.repository.CommentRepository;
 import org.caesar.task.HotArticleTask;
@@ -73,10 +74,20 @@ public class ArticleRepositoryImpl extends ServiceImpl<ArticleMapper, ArticlePO>
     }
 
     @Override
+    public List<Article> getRandPreferArticle(long userId, int size) {
+        return loadArticle(baseMapper.getRandPreferArticle(userId, size));
+    }
+
+    @Override
+    public List<Long> getUniqueArticle(long userId, List<Long> articleIds) {
+        return baseMapper.getUniqueArticle(userId, articleIds);
+    }
+
+    @Override
     public boolean existArticle(long articleId) {
         return baseMapper.selectCount(
                 new QueryWrapper<ArticlePO>()
-                        .eq("id", articleId)
+                        .eq(ArticlePO.Fields.id, articleId)
         ) == 1;
     }
 
@@ -87,7 +98,7 @@ public class ArticleRepositoryImpl extends ServiceImpl<ArticleMapper, ArticlePO>
 
         // 若该文章还没有浏览历史，说明也不在近期文章中，则加入近期文章列表
         if(!cacheRepo.exist(historyKey)) {
-            cacheRepo.getSortedSet(RedisKey.recentArticleSet()).add(articleId, 0);
+            cacheRepo.getSortedSet(RedisKey.candidateArticleSet()).add(articleId, 0);
         }
 
         // 在对应文章的浏览记录中添加一条记录
@@ -99,34 +110,37 @@ public class ArticleRepositoryImpl extends ServiceImpl<ArticleMapper, ArticlePO>
     }
 
     @Override
-    public List<Article> getUpdatedArticle(LocalDateTime afterTime) {
-        return baseMapper.getUpdatedArticle(afterTime)
-                .stream()
-                .map(this::loadArticleOps)
-                .collect(Collectors.toList());
+    public List<Article> getRecentPreferredArticle(long userId, int size) {
+        return loadArticle(baseMapper.getRecentPreferArticle(userId, size));
     }
 
     @Override
-    public List<Article> getArticleHistory(long userId, Integer from, Integer size) {
+    public List<Article> getRecentViewedArticle(long userId, int size) {
+        return loadArticle(baseMapper.getRecentViewedArticle(userId, size));
+    }
+
+    @Override
+    public List<Article> getUpdatedArticle(LocalDateTime afterTime) {
+        return loadArticle(baseMapper.getUpdatedArticle(afterTime));
+    }
+
+    @Override
+    public List<ArticleHistory> getArticleHistory(long userId, Integer from, Integer size) {
         int offset = from * size;
-        return baseMapper.getArticleHistory(userId, offset, size).stream()
-                .map(articleStruct::POtoDO)
-                .collect(Collectors.toList());
+        return baseMapper.getArticleHistory(userId, offset, size);
     }
 
     @Override
     public List<Article> getArticleMin(Set<Long> articleIds) {
-        return baseMapper.getArticleMin(articleIds).stream()
-                .map(this::loadArticleOps)
-                .collect(Collectors.toList());
+        return loadArticle(baseMapper.getArticleMin(articleIds));
     }
 
     @Override
     public boolean hasOwnership(long userId, long articleId) {
         return baseMapper.selectCount(
                 new QueryWrapper<ArticlePO>()
-                        .eq("id", articleId)
-                        .eq("create_by", userId)
+                        .eq(ArticlePO.Fields.id, articleId)
+                        .eq(ArticlePO.Fields.createBy, userId)
         ) > 0;
     }
 
@@ -137,18 +151,18 @@ public class ArticleRepositoryImpl extends ServiceImpl<ArticleMapper, ArticlePO>
         cacheRepo.deleteObject(RedisKey.cacheArticle(article.getId()));
 
         return update(articleStruct.DOtoPO(article),
-                new UpdateWrapper<ArticlePO>().eq("id", article.getId()).eq("create_by", userId));
+                new UpdateWrapper<ArticlePO>().eq(ArticlePO.Fields.id, article.getId()).eq(ArticlePO.Fields.createBy, userId));
     }
 
-    @Retryable(value = Exception.class, maxAttempts = 3, backoff = @Backoff(value = 500, maxDelay = 2000, multiplier = 2))
+    @Retryable(value = Exception.class, backoff = @Backoff(value = 500, maxDelay = 2000, multiplier = 2))
     @Transactional
     @Override
     public boolean deleteArticle(long userId, long articleId) {
         ThrowUtil.ifFalse(
                 remove(
                         new QueryWrapper<ArticlePO>()
-                                .eq("id", articleId)
-                                .eq("create_by", userId))
+                                .eq(ArticlePO.Fields.id, articleId)
+                                .eq(ArticlePO.Fields.createBy, userId))
                 , "文章不存在或无权限删除");
 
         // 删除文章操作记录
@@ -196,7 +210,6 @@ public class ArticleRepositoryImpl extends ServiceImpl<ArticleMapper, ArticlePO>
         return baseMapper.favorArticle(userId, articleId, isFavor) > 0;
     }
 
-
     private Article loadArticleOps(ArticlePO articlePO) {
         Article article = articleStruct.POtoDO(articlePO);
         long id = article.getId();
@@ -206,4 +219,7 @@ public class ArticleRepositoryImpl extends ServiceImpl<ArticleMapper, ArticlePO>
         return article;
     }
 
+    private List<Article> loadArticle(List<ArticlePO> articles) {
+        return articles.stream().map(articleStruct::POtoDO).collect(Collectors.toList());
+    }
 }
