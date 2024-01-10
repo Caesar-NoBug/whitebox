@@ -33,4 +33,5 @@ public class CharCaptchaGenerator extends SimpleCaptchaGenerator {
     public CaptchaType getType() {
         return CaptchaType.CHAR;
     }
+
 }

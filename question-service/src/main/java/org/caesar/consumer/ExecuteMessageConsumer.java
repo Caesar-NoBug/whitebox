@@ -1,7 +1,7 @@
 package org.caesar.consumer;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.question.request.JudgeCodeRequest;
 import org.caesar.domain.question.response.JudgeCodeResponse;
 import org.caesar.service.QuestionService;

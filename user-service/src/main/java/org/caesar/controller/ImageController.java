@@ -1,6 +1,6 @@
 package org.caesar.controller;
 
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;

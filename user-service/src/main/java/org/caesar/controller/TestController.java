@@ -1,6 +1,6 @@
 package org.caesar.controller;
 
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

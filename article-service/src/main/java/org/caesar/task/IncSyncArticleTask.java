@@ -36,6 +36,7 @@ public class IncSyncArticleTask {
     public void run() {
         // 查询近 5 分钟内的数据
         LocalDateTime fiveMinutesAgo = LocalDateTime.now().minusMinutes(60000);
+        //TODO: 改成分页查询避免一次处理太多数据
         List<Article> changedArticle = articleRepo.getUpdatedArticle(fiveMinutesAgo);
 
         if (CollectionUtils.isEmpty(changedArticle)) {

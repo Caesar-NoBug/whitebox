@@ -1,10 +1,9 @@
 package org.caesar.common.client;
 
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.user.vo.UserMinVO;
 import org.caesar.domain.user.vo.UserPreferVO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;

@@ -1,7 +1,7 @@
 package org.caesar.common.util;
 
 import org.caesar.common.exception.ThrowUtil;
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.common.enums.ErrorCode;
 
 public class ClientUtil {

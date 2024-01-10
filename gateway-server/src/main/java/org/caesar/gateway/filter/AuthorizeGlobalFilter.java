@@ -2,7 +2,7 @@ package org.caesar.gateway.filter;
 
 import org.caesar.common.client.UserClient;
 import org.caesar.common.exception.BusinessException;
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.constant.Headers;
 import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.common.exception.ThrowUtil;

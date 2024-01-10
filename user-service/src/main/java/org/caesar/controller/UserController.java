@@ -1,7 +1,8 @@
 package org.caesar.controller;
 
 import org.caesar.common.context.ContextHolder;
-import org.caesar.common.vo.Response;
+import org.caesar.common.log.MethodLogger;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.user.vo.UserMinVO;
 import org.caesar.domain.user.vo.UserPreferVO;
 import org.caesar.service.UserExtraService;
@@ -22,6 +23,8 @@ public class UserController {
     @Resource
     private UserExtraService userExtraService;
 
+    //TODO: 把所有日志和报错信息都改成英文
+    @MethodLogger(value = "getUserMin", time = true)
     @GetMapping("/min")
     public Response<Map<Long, UserMinVO>> getUserMin(@RequestParam List<Long> id) {
         return Response.ok(userService.getUserMin(id));

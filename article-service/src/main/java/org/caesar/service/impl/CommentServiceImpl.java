@@ -7,7 +7,7 @@ import org.caesar.common.client.UserClient;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.repository.CacheRepository;
 import org.caesar.common.util.ClientUtil;
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.aigc.request.AnalyseTextRequest;
 import org.caesar.domain.aigc.response.AnalyseTextResponse;
 import org.caesar.domain.article.request.AddCommentRequest;
@@ -45,6 +45,7 @@ public class CommentServiceImpl implements CommentService {
     @Resource
     private MsCommentStruct commentStruct;
 
+    //TODO: XSS检测
     @Override
     public void addComment(long userId, AddCommentRequest request) {
         long id = cacheRepo.nextId(RedisKey.commentIncId());

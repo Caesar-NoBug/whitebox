@@ -1,4 +1,4 @@
-package org.caesar.common.vo;
+package org.caesar.domain.common.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,6 +40,10 @@ public class Response<T>{
 
     public static <T> Response<T> error(String msg){
         return new Response<>(ErrorCode.ILLEGAL_PARAM_ERROR.getCode(), null, msg);
+    }
+
+    public boolean isSuccess(){
+        return this.code == ErrorCode.SUCCESS.getCode();
     }
 
 }

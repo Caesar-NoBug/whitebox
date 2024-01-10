@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Business {
     //业务名称
-    String name();
+    String value();
 }

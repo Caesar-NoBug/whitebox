@@ -1,6 +1,9 @@
 package org.caesar.util;
 
 public class RedisKey {
+
+    public static final String ARTICLE_BLOOM_FILTER = "article:bloomFilter";
+    public static final String ARTICLE_REMOVED_BITSET = "article:removed:bitset";
     // 文章自增id
     private static final String ARTICLE_INC_ID = "article:incId:";
     // 评论自增id

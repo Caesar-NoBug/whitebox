@@ -1,5 +1,6 @@
 package org.caesar.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.caesar.common.exception.BusinessException;
 import org.caesar.constant.ChatPrompt;
 import org.caesar.constant.Patterns;
@@ -15,6 +16,7 @@ import javax.annotation.Resource;
 import java.util.regex.Matcher;
 
 @Service
+@Slf4j
 public class AnalyseServiceImpl implements AnalyseService {
 
     @Resource
@@ -30,6 +32,8 @@ public class AnalyseServiceImpl implements AnalyseService {
         // 审核文章
         String detectResult = chatService.completion(new CompletionRequest(ChatPrompt.PRESET_DETECT_TEXT, prompt)).getReply();
 
+        System.out.println("detectResult:" + detectResult);
+
         AnalyseTextResponse response = new AnalyseTextResponse();
 
         // 是否通过审核
@@ -41,12 +45,13 @@ public class AnalyseServiceImpl implements AnalyseService {
 
         String analyseResult = chatService.completion(new CompletionRequest(ChatPrompt.PRESET_ANALYSE_ARTICLE, prompt)).getReply();
 
-        String[] generatedContents = analyseResult.split("\n\n");
+        String[] generatedContents = analyseResult.split("@@@");
 
         try {
             response.setDigest(generatedContents[0]);
             response.setTags(generatedContents[1]);
         } catch (ArrayIndexOutOfBoundsException e) {
+            log.error("分析响应结果格式错误:{错误结果:" + "analyseResult" + "}");
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "分析响应结果格式错误");
         }
 

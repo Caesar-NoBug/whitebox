@@ -20,7 +20,7 @@ public class ImageUtil {
 
     /*@Resource
     private RestTemplate restTemplate;*/
-    private static RestTemplate restTemplate = new RestTemplate();
+    private static final RestTemplate restTemplate = new RestTemplate();
 
     //图片地址
     private static final String IMAGE_URL = "https://picsum.photos/%s/%s";
@@ -48,7 +48,7 @@ public class ImageUtil {
         try {
             ImageIO.write(image, "jpg", os);
         } catch (IOException e) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "转换图片失败（BufferedImage to Base64）");
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Fail to transfer BufferedImage to Base64");
         }
 
         return Base64.encode(os.toByteArray());
@@ -119,7 +119,7 @@ public class ImageUtil {
         try {
             image = ImageIO.read(bis);
         } catch (IOException e) {
-            throw new RuntimeException(e + "获取图片失败：url");
+            throw new RuntimeException("fail to get image[" + "url" + "]:" + e);
         }
 
         return image;

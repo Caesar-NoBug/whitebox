@@ -31,6 +31,7 @@ public class CheckSourceFilter extends OncePerRequestFilter implements Ordered {
             return;
         }
 
+        System.out.println("check source 校验通过");
         filterChain.doFilter(request, response);
     }
 

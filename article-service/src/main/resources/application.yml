@@ -29,11 +29,19 @@ server:
 
 #logging:
 #  level:
+
 feign:
   client:
     config:
+      aigc-service:
+        connect-timeout: 10000
+        read-timeout: 10000
       default:
         connect-timeout: 3000
         read-timeout: 3000
 
+article:
+  bloomFilter:
+    size: 100000
+    falseProbability: 0.01
 #    org.springframework.cloud.openfeign: trace

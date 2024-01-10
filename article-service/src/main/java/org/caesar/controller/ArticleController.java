@@ -2,7 +2,7 @@ package org.caesar.controller;
 
 import org.caesar.common.context.ContextHolder;
 import org.caesar.common.exception.ThrowUtil;
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.article.request.AddArticleRequest;
 import org.caesar.domain.article.request.UpdateArticleRequest;
 import org.caesar.domain.article.response.GetPreferArticleResponse;
@@ -30,6 +30,7 @@ public class ArticleController {
         articleService.addArticle(ContextHolder.getUserId(), request);
         return Response.ok();
     }
+
     @GetMapping("/prefer")
     Response<GetPreferArticleResponse> getRecentArticle(
             @Min(0) @RequestParam Integer viewedSize,

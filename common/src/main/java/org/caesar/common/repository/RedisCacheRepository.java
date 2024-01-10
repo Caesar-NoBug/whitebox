@@ -1,9 +1,7 @@
 package org.caesar.common.repository;
 
 import org.caesar.common.redis.RedisCache;
-import org.redisson.api.RQueue;
-import org.redisson.api.RSortedSet;
-import org.redisson.api.RedissonClient;
+import org.redisson.api.*;
 import org.springframework.data.redis.core.BoundZSetOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -103,6 +101,16 @@ public class RedisCacheRepository implements CacheRepository {
     @Override
     public <T> RQueue<T> getQueue(String key) {
         return redisCache.getQueue(key);
+    }
+
+    @Override
+    public RBloomFilter<Long> getBloomFilter(String key) {
+        return redisCache.getBloomFilter(key);
+    }
+
+    @Override
+    public RBitSet getBitSet(String key) {
+        return redisCache.getBitSet(key);
     }
 
     @Override

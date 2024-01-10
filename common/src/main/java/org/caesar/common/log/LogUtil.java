@@ -2,6 +2,7 @@ package org.caesar.common.log;
 
 import lombok.extern.slf4j.Slf4j;
 import org.caesar.common.context.ContextHolder;
+import org.caesar.domain.common.enums.LogType;
 
 import java.util.Date;
 
@@ -11,22 +12,26 @@ public class LogUtil {
     /**
      * 错误信息，系统内部错误，但是不影响系统其他功能
      */
-    public static void error(String message) {
-
+    public static void error(String message, Throwable e) {
+        log.error(message, e);
     }
 
     /**
      * 警告信息，如参数不合法，不符合预期等
      */
-    public static void warn(String message) {
-
+    public static void warn(String message, Throwable e) {
+        log.warn(message, e);
     }
 
     /**
      * 正常执行流程记录相关信息
      */
-    public static void info(String message) {
+    public static void info(LogType type, String message) {
+        log.info("[{}] in '{}' {}", type.getValue(), ContextHolder.getBusinessName(), message);
+    }
 
+    public static void bizLog(String message) {
+        info(LogType.BUSINESS_LOG, message);
     }
 
     /**
@@ -36,10 +41,4 @@ public class LogUtil {
 
     }
 
-    private static String createLogMessage(String message) {
-        String businessName = ContextHolder.get(ContextHolder.BUSINESS_NAME);
-        Date time = new Date();
-        //TODO: 日志格式配置到配置文件中
-        return null;
-    }
 }

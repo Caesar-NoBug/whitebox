@@ -4,7 +4,7 @@ package org.caesar.controller;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.caesar.common.check.CheckManager;
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.domain.question.request.AddQuestionRequest;
 import org.caesar.domain.question.request.JudgeCodeRequest;

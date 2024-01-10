@@ -41,12 +41,21 @@ public class ContextHolder {
         return userId;
     }
 
-    public static void setTraceId(long traceId) {
+    public static void setTraceId(String traceId) {
         set(TRACE_ID, traceId);
     }
 
     public static String getTraceId() {
         return get(TRACE_ID);
+    }
+
+
+    public static void setBusinessName(String businessName) {
+        set(BUSINESS_NAME, businessName);
+    }
+
+    public static String getBusinessName() {
+        return get(BUSINESS_NAME);
     }
 
     public static void clear() {

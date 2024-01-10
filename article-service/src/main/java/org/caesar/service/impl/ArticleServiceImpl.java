@@ -9,7 +9,7 @@ import org.caesar.common.client.UserClient;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.repository.CacheRepository;
 import org.caesar.common.util.ClientUtil;
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.aigc.request.AnalyseTextRequest;
 import org.caesar.domain.aigc.response.AnalyseTextResponse;
 import org.caesar.domain.article.request.AddArticleRequest;
@@ -49,6 +49,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private UserClient userClient;
+    //TODO: XSS检测
 
     //TODO: 定时更新文章浏览数、点赞数、收藏数（通过hyperLogLog）
     @Override
@@ -59,6 +60,8 @@ public class ArticleServiceImpl implements ArticleService {
         Response<AnalyseTextResponse> analyseResp = aigcClient.analyseText(new AnalyseTextRequest(article.getTitle(), article.getContent(), genContent));
 
         AnalyseTextResponse response = ClientUtil.handleResponse(analyseResp, "审核文章/分析文章失败");
+
+        ThrowUtil.ifFalse(response.isPass(), "文章审核不通过");
 
         if (genContent) {
             article.setTag(response.getTags());
@@ -182,7 +185,7 @@ public class ArticleServiceImpl implements ArticleService {
      * @return 文章数据
      */
     private ArticleVO loadArticleVO(long articleId) {
-
+        //TODO: 用布隆过滤器预防缓存穿透
         String cacheKey = RedisKey.cacheArticle(articleId);
         // 尝试从缓存中获取文章
         ArticleVO articleVO = cacheRepo.getObject(cacheKey);

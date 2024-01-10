@@ -1,6 +1,6 @@
 package org.caesar.executor.service.impl;
 
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.executor.request.ExecuteCodeRequest;
 import org.caesar.domain.executor.response.ExecuteCodeResponse;
 import org.caesar.common.exception.ThrowUtil;

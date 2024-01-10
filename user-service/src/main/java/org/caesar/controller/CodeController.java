@@ -1,6 +1,6 @@
 package org.caesar.controller;
 
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.common.captcha.vo.Captcha;
 import org.caesar.service.CodeService;
 import org.caesar.common.str.StrUtil;

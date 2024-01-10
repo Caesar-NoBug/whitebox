@@ -8,7 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-public class SpringConfig {
+public class UserConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -19,4 +19,5 @@ public class SpringConfig {
     public ResourceLoader resourceLoader(){
         return new DefaultResourceLoader();
     }
+
 }

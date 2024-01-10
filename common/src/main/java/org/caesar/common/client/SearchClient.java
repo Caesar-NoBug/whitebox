@@ -1,7 +1,7 @@
 package org.caesar.common.client;
 
 import org.caesar.domain.common.vo.PageVO;
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.search.enums.DataSource;
 import org.caesar.domain.search.enums.SortField;
 import org.caesar.domain.search.vo.ArticleIndexVO;

@@ -236,13 +236,15 @@ public class UserServiceImpl implements UserService {
             else nonCachedIds.add(userId);
         }
 
-        userRepo.selectUserByIds(nonCachedIds).forEach(user -> {
-            Long id = user.getId();
-            UserMinVO userMinVO = userStruct.DOtoMinVO(user);
-            userMinMap.put(id, userMinVO);
-            cacheRepo.setObject(RedisPrefix.CACHE_USER_MIN + id, userMinVO,
-                    5, TimeUnit.MINUTES);
-        });
+        if(!nonCachedIds.isEmpty()) {
+            userRepo.selectUserByIds(nonCachedIds).forEach(user -> {
+                Long id = user.getId();
+                UserMinVO userMinVO = userStruct.DOtoMinVO(user);
+                userMinMap.put(id, userMinVO);
+                cacheRepo.setObject(RedisPrefix.CACHE_USER_MIN + id, userMinVO,
+                        5, TimeUnit.MINUTES);
+            });
+        }
 
         return userMinMap;
     }

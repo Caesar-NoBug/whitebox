@@ -1,8 +1,6 @@
 package org.caesar.common.repository;
 
-import org.redisson.api.RAtomicLong;
-import org.redisson.api.RQueue;
-import org.redisson.api.RSortedSet;
+import org.redisson.api.*;
 import org.springframework.data.redis.core.BoundZSetOperations;
 
 import java.util.List;
@@ -39,6 +37,12 @@ public interface CacheRepository {
 
     // 队列相关
     <T> RQueue<T> getQueue(String key);
+
+    // 布隆过滤器
+    RBloomFilter<Long> getBloomFilter(String key);
+
+    // bitset
+    RBitSet getBitSet(String key);
 
     // set相关
     <T> Set<T> getSet(String key);

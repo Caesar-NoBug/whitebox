@@ -10,7 +10,7 @@ import org.caesar.domain.article.vo.ArticleMinVO;
 import org.caesar.service.AnalyseService;
 import org.caesar.service.RecommendService;
 import org.caesar.service.impl.OpenAIChatService;
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.aigc.request.CompletionRequest;
 import org.caesar.domain.aigc.response.CompletionResponse;
 import org.springframework.web.bind.annotation.PostMapping;

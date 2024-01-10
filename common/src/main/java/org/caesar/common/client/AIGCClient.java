@@ -1,6 +1,6 @@
 package org.caesar.common.client;
 
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.aigc.request.AnalyseTextRequest;
 import org.caesar.domain.aigc.response.AnalyseTextResponse;
 import org.springframework.cloud.openfeign.FeignClient;

@@ -1,6 +1,6 @@
 package org.caesar.service;
 
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.question.request.AddQuestionRequest;
 import org.caesar.domain.question.request.JudgeCodeRequest;
 import org.caesar.domain.question.request.UpdateQuestionRequest;

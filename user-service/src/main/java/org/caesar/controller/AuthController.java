@@ -1,7 +1,6 @@
 package org.caesar.controller;
 
-import org.caesar.common.vo.Response;
-import org.caesar.common.exception.Business;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.model.dto.TokenDTO;
 import org.caesar.model.req.LoginRequest;
 import org.caesar.model.req.RegisterRequest;
@@ -26,7 +25,6 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    @Business(name = "用户登录")
     @PostMapping("/login")
     public Response<UserVO> login(@RequestBody LoginRequest request) {
         return Response.ok(userService.login(request));

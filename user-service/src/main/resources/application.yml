@@ -37,3 +37,8 @@ server:
 
 upload:
   path: /whitebox/src/main/resources/imgs
+
+logging:
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} <%X{traceId}> @%X{userId} - %msg%n'
+#TODO: 配置异步打印日志,把traceId和userId移动到util里

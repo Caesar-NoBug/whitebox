@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings(value = { "unchecked", "rawtypes" })
@@ -24,7 +25,7 @@ public class RedisCache
     @Resource
     private RedissonClient redissonClient;
 
-    private final HashMap<String, String> lastDate = new HashMap<>();
+    private final Map<String, String> lastDate = new ConcurrentHashMap<>();
 
     //2023-01-01 00:00
     private final long BEGIN_TIMESTAMP = 1672531200L;
@@ -36,16 +37,18 @@ public class RedisCache
 
         String curr = now.format(DateTimeFormatter.ofPattern("yyyy:MM:dd"));
         String last = lastDate.get(keyPrefix);
-        String redisKey = keyPrefix + curr;
+
+        RAtomicLong cacheNumber = redissonClient.getAtomicLong(keyPrefix + curr);
 
         //新的一天添加新的主键并更新lastDate
         if(Objects.isNull(last) || !last.equals(curr)){
             lastDate.put(keyPrefix, curr);
             //设置有效期避免占用过多资源
-            setCacheObject(redisKey, 0, 7, TimeUnit.DAYS);
+            cacheNumber.set(0);
+            cacheNumber.expire(14, TimeUnit.DAYS);
         }
 
-        long count = redisTemplate.opsForValue().increment(redisKey);
+        long count = cacheNumber.incrementAndGet();
 
         return timestamp << 32 + count;
     }
@@ -288,4 +291,13 @@ public class RedisCache
     {
         return redisTemplate.keys(pattern);
     }
+
+    public RBloomFilter<Long> getBloomFilter(String key) {
+        return redissonClient.getBloomFilter(key);
+    }
+
+    public RBitSet getBitSet(String key) {
+        return redissonClient.getBitSet(key);
+    }
+
 }

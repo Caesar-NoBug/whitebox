@@ -3,7 +3,7 @@ package org.caesar.service.impl;
 import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.caesar.common.client.ExecutorClient;
-import org.caesar.common.vo.Response;
+import org.caesar.domain.common.vo.Response;
 import org.caesar.common.repository.CacheRepository;
 import org.caesar.constant.CachePrefix;
 import org.caesar.domain.common.enums.ErrorCode;
