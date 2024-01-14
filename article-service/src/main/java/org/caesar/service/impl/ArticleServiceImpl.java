@@ -8,7 +8,7 @@ import org.caesar.common.client.AIGCClient;
 import org.caesar.common.client.UserClient;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.repository.CacheRepository;
-import org.caesar.common.util.ClientUtil;
+import org.caesar.common.resp.RespUtil;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.aigc.request.AnalyseTextRequest;
 import org.caesar.domain.aigc.response.AnalyseTextResponse;
@@ -51,24 +51,27 @@ public class ArticleServiceImpl implements ArticleService {
     private UserClient userClient;
     //TODO: XSS检测
 
+    //TODO: 把文章的数据定时同步到MySQL
     //TODO: 定时更新文章浏览数、点赞数、收藏数（通过hyperLogLog）
     @Override
     public void addArticle(long userId, AddArticleRequest request) {
         long id = cacheRepo.nextId(RedisKey.articleIncId());
         Article article = Article.fromAddRequest(id, userId, request);
         boolean genContent = request.isGenContent();
+
+        // 进行文章审核和智能分析
         Response<AnalyseTextResponse> analyseResp = aigcClient.analyseText(new AnalyseTextRequest(article.getTitle(), article.getContent(), genContent));
 
-        AnalyseTextResponse response = ClientUtil.handleResponse(analyseResp, "审核文章/分析文章失败");
+        AnalyseTextResponse response = RespUtil.handleWithThrow(analyseResp, "Fail to analyse the article");
 
-        ThrowUtil.ifFalse(response.isPass(), "文章审核不通过");
+        ThrowUtil.ifFalse(response.isPass(), "The article did not pass the review");
 
         if (genContent) {
             article.setTag(response.getTags());
             article.setDigest(response.getDigest());
         }
 
-        ThrowUtil.ifFalse(articleRepo.addArticle(article), ErrorCode.SYSTEM_ERROR, "无法添加文章");
+        ThrowUtil.ifFalse(articleRepo.addArticle(article), ErrorCode.SYSTEM_ERROR, "fail to add the article");
     }
 
     @Override
@@ -133,7 +136,7 @@ public class ArticleServiceImpl implements ArticleService {
         List<ArticleHistory> histories = articleRepo.getArticleHistory(userId, from, size);
         List<Long> authorIds = histories.stream().map(ArticleHistory::getCreateBy).collect(Collectors.toList());
 
-        Map<Long, UserMinVO> authorInfo = ClientUtil.handleResponse(
+        Map<Long, UserMinVO> authorInfo = RespUtil.handleWithThrow(
                 userClient.getUserMin(authorIds),
                 "获取作者信息失败"
         );
@@ -205,7 +208,7 @@ public class ArticleServiceImpl implements ArticleService {
         // 获取作者信息
         Long authorId = article.getCreateBy();
 
-        Map<Long, UserMinVO> authorInfo = ClientUtil.handleResponse(
+        Map<Long, UserMinVO> authorInfo = RespUtil.handleWithThrow(
                 userClient.getUserMin(Collections.singletonList(authorId)), "获取作者信息失败"
         );
 

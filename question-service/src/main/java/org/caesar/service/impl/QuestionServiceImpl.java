@@ -3,6 +3,7 @@ package org.caesar.service.impl;
 import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.caesar.common.client.ExecutorClient;
+import org.caesar.common.resp.RespUtil;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.common.repository.CacheRepository;
 import org.caesar.constant.CachePrefix;
@@ -110,14 +111,10 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, QuestionPO>
         ExecuteCodeRequest executeRequest = new ExecuteCodeRequest(request.getCode(), request.getLanguage(),
                 question.getInputArray(), question.getTimeLimit(), question.getMemoryLimit());
 
-        Response<ExecuteCodeResponse> response = executorClient.executeCode(executeRequest);
-
-        //处理响应结果
-        ThrowUtil.ifTrue(response.getCode() != ErrorCode.SUCCESS.getCode(),
-                response.getCode(), response.getMsg());
+        ExecuteCodeResponse response = RespUtil.handleWithThrow(executorClient.executeCode(executeRequest), "fail to execute the code");
 
         //执行判题逻辑
-        JudgeCodeResponse judgeCodeResponse = question.judge(response.getData());
+        JudgeCodeResponse judgeCodeResponse = question.judge(response);
 
         //缓存判题结果
         cacheRepository.setObject(

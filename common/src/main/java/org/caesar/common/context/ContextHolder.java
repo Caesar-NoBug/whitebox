@@ -35,10 +35,16 @@ public class ContextHolder {
         set(USER_ID, userId);
     }
 
+    // 获取用户ID, 如果为空抛出异常
     public static long getUserId() {
         Long userId = get(USER_ID);
-        ThrowUtil.ifNull(userId, "用户未登录");
+        ThrowUtil.ifNull(userId, "Unauthenticated User!");
         return userId;
+    }
+
+    // 获取用户ID, 如果为空返回null(不抛出异常)
+    public static Long getUserIdIfExist() {
+        return get(USER_ID);
     }
 
     public static void setTraceId(String traceId) {
@@ -48,7 +54,6 @@ public class ContextHolder {
     public static String getTraceId() {
         return get(TRACE_ID);
     }
-
 
     public static void setBusinessName(String businessName) {
         set(BUSINESS_NAME, businessName);

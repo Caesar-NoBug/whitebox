@@ -1,5 +1,6 @@
 package org.caesar.common.client;
 
+import org.caesar.common.log.Logger;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.article.response.GetPreferArticleResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -13,12 +14,14 @@ import java.util.List;
 @FeignClient("article-service")
 public interface ArticleClient {
 
+    @Logger("[RPC] /getPreferArticle")
     @GetMapping("/article/prefer")
     Response<GetPreferArticleResponse> getPreferArticle(
             @RequestParam Integer viewedSize,
             @RequestParam Integer preferredSize,
             @RequestParam Integer randPreferredSize);
 
+    @Logger("[RPC] /getUniqueArticle")
     @PostMapping("/article/unique")
     Response<List<Long>> getUniqueArticle(@RequestBody List<Long> articleIds);
 

@@ -28,6 +28,7 @@ import java.lang.reflect.Type;
 @Configuration
 @ComponentScan
 @ComponentScan("org.caesar.common")
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 @Import(RedisAutoConfiguration.class)
 public class GlobalConfig {
 
@@ -77,16 +78,13 @@ public class GlobalConfig {
 
     @Bean
     public RequestInterceptor requestInterceptor() {
-        return new RequestInterceptor() {
-            @Override
-            public void apply(RequestTemplate template) {
-                //TODO: 设置允许通信的服务的ip白名单，只接收来自白名单的请求，并使用https进行服务间通信
-                template.header("Content-Type", "application/json");
-                template.header(Headers.SOURCE_HEADER, "gateway");
-                template.header(Headers.USERID_HEADER, String.valueOf(ContextHolder.getUserId()));
-                template.header(Headers.TRACE_ID_HEADER, ContextHolder.getTraceId());
-                // 添加其他全局请求头
-            }
+        return template -> {
+            //TODO: 设置允许通信的服务的ip白名单，只接收来自白名单的请求，并使用https进行服务间通信
+            template.header("Content-Type", "application/json");
+            template.header(Headers.SOURCE_HEADER, "gateway");
+            template.header(Headers.USERID_HEADER, String.valueOf(ContextHolder.getUserIdIfExist()));
+            template.header(Headers.TRACE_ID_HEADER, ContextHolder.getTraceId());
+            // 添加其他全局请求头
         };
     }
 

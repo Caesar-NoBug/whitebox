@@ -13,6 +13,11 @@ public enum LogType {
     BUSINESS_LOG("Business Log"),
 
     /**
+     * 基础访问日志
+     */
+    VISIT_LOG("Visit Log"),
+
+    /**
      * 业务摘要
      */
     DIGEST_LOG("Digest Log"),

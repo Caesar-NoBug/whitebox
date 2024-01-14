@@ -2,6 +2,7 @@ package org.caesar.controller;
 
 import org.caesar.common.context.ContextHolder;
 import org.caesar.common.exception.ThrowUtil;
+import org.caesar.common.log.Logger;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.article.request.AddArticleRequest;
 import org.caesar.domain.article.request.UpdateArticleRequest;
@@ -25,6 +26,7 @@ public class ArticleController {
     private ArticleService articleService;
 
     // 添加文章
+    @Logger(value = "/addArticle", args = true, result = true)
     @PostMapping
     Response<Void> addArticle(@RequestBody AddArticleRequest request) {
         articleService.addArticle(ContextHolder.getUserId(), request);
@@ -32,7 +34,8 @@ public class ArticleController {
     }
 
     @GetMapping("/prefer")
-    Response<GetPreferArticleResponse> getRecentArticle(
+    @Logger(value = "/getPreferArticle", args = true, result = true)
+    Response<GetPreferArticleResponse> getPreferArticle(
             @Min(0) @RequestParam Integer viewedSize,
             @Min(0) @RequestParam Integer preferredSize,
             @Min(0) @RequestParam Integer randPreferredSize) {
@@ -44,7 +47,7 @@ public class ArticleController {
     @GetMapping("/detail/{articleId}")
     Response<ArticleVO> viewArticle(@PathVariable Long articleId) {
         Long userId = ContextHolder.get(ContextHolder.USER_ID);
-        ThrowUtil.ifNull(userId, "用户未登录");
+        ThrowUtil.ifNull(userId, "unauthenticated user");
         return Response.ok(articleService.viewArticle(ContextHolder.getUserId(), articleId));
     }
 

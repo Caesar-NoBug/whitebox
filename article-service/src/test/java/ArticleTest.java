@@ -1,5 +1,8 @@
 import org.caesar.ArticleServiceApplication;
+import org.caesar.common.client.UserClient;
 import org.caesar.common.repository.CacheRepository;
+import org.caesar.domain.common.vo.Response;
+import org.caesar.domain.user.vo.UserMinVO;
 import org.caesar.mapper.ArticleMapper;
 import org.caesar.model.entity.Article;
 import org.caesar.repository.ArticleRepository;
@@ -15,6 +18,9 @@ import org.springframework.data.redis.core.BoundZSetOperations;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Random;
 
 @SpringBootTest(classes = ArticleServiceApplication.class)
@@ -37,6 +43,9 @@ public class ArticleTest {
 
     @Resource
     private IncSyncArticleTask incSyncArticleTask;
+
+    @Resource
+    private UserClient userClient;
 
     @Test
     public void testMark() {
@@ -117,5 +126,10 @@ public class ArticleTest {
     @Test
     public void testSync() {
         incSyncArticleTask.run();
+    }
+
+    @Test
+    public void testUserClient() {
+        Response<Map<Long, UserMinVO>> userMin = userClient.getUserMin(Arrays.asList(0L, 2L));
     }
 }

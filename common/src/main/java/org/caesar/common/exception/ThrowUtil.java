@@ -26,10 +26,6 @@ public class ThrowUtil {
         if (isThrow) throw new BusinessException(errorCode, message);
     }
 
-    public static void ifTrue(boolean isThrow, int code, String message) {
-        if (isThrow) throw new BusinessException(code, message);
-    }
-
     public static void ifTrue(boolean isThrow, String message) {
         if (isThrow) throw new BusinessException(ErrorCode.ILLEGAL_PARAM_ERROR, message);
     }

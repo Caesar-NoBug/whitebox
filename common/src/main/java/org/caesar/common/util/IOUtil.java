@@ -11,7 +11,7 @@ public class IOUtil {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         StringBuilder sb = new StringBuilder();
 
-        String line = null;
+        String line;
         while ((line = reader.readLine()) != null)
             sb.append(line);
 

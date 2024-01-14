@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
             userId = Long.parseLong(claims.getSubject());
         } catch (Exception e) {
             //jwt不合法
-            throw new BusinessException(NumConstant.CODE_NOT_AUTHENTICATED, "非法jwt，请重新登录");
+            throw new BusinessException(ErrorCode.NOT_AUTHENTICATED_ERROR, "illegal token, please login again");
         }
 
         String realJwt = cacheRepo.getObject(RedisPrefix.AUTH_REFRESH_TOKEN + userId);

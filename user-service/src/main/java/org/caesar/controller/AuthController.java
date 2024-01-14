@@ -37,7 +37,7 @@ public class AuthController {
     public Response<Long> authorize(@RequestParam String jwt, @RequestParam String requestPath) {
 
         if (StrUtil.isBlank(jwt) || StrUtil.isBlank(requestPath)) {
-            return Response.error("jwt或请求路径不合法");
+            return Response.error("illegal token or request uri");
         }
         //TODO: 加上请求成功的信息
         return Response.ok(userService.authorize(jwt, requestPath));

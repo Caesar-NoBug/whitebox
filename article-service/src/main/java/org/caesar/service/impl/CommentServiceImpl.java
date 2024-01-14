@@ -6,7 +6,7 @@ import org.caesar.common.client.AIGCClient;
 import org.caesar.common.client.UserClient;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.repository.CacheRepository;
-import org.caesar.common.util.ClientUtil;
+import org.caesar.common.resp.RespUtil;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.aigc.request.AnalyseTextRequest;
 import org.caesar.domain.aigc.response.AnalyseTextResponse;
@@ -51,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
         long id = cacheRepo.nextId(RedisKey.commentIncId());
         Comment comment = Comment.fromAddRequest(id, userId, request);
         Response<AnalyseTextResponse> response = aigcClient.analyseText(new AnalyseTextRequest("", comment.getContent(), false));
-        AnalyseTextResponse analyseResp = ClientUtil.handleResponse(response, "审核评论失败");
+        AnalyseTextResponse analyseResp = RespUtil.handleWithThrow(response, "审核评论失败");
         ThrowUtil.ifFalse(analyseResp.isPass(), "评论审核不通过");
 
         ThrowUtil.ifFalse(commentRepo.addComment(comment), ErrorCode.SYSTEM_ERROR ,"无法添加评论");
@@ -71,7 +71,7 @@ public class CommentServiceImpl implements CommentService {
 
         Response<Map<Long, UserMinVO>> userMinResp = userClient.getUserMin(publisherIds);
 
-        Map<Long, UserMinVO> publisherMap = ClientUtil.handleResponse(userMinResp, "获取发布者信息失败");
+        Map<Long, UserMinVO> publisherMap = RespUtil.handleWithThrow(userMinResp, "获取发布者信息失败");
 
         return comments.stream()
                 .map(comment -> loadCommentVO(

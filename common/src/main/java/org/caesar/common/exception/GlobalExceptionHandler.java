@@ -1,6 +1,5 @@
 package org.caesar.common.exception;
 
-import lombok.extern.slf4j.Slf4j;
 import org.caesar.common.context.ContextHolder;
 import org.caesar.common.log.LogUtil;
 import org.caesar.domain.common.vo.Response;
@@ -13,18 +12,30 @@ import javax.validation.ConstraintViolationException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    public static final String MESSAGE_FORMAT = "[%s失败]: {%s}";
+    public static final String MESSAGE_FORMAT = "(%s) [FAIL] '%s': {%s}";
 
-    //TODO: filter获取信息，
+    public static final String MSG_BUSINESS_EXCEPTION = "(Business Exception)";
+    public static final String MSG_INVALID_REQUEST_PARAM = "(Invalid Request Parameter)";
+    public static final String MSG_SYSTEM_ERROR = "(Unexpected System Error)";
+
+    //TODO: filter获取信息
     @ExceptionHandler(BusinessException.class)
     public Response<Void> businessExceptionHandler(BusinessException e) {
+
+        ErrorCode code = e.getCode();
+
         String message = String.format(
                 MESSAGE_FORMAT,
+                code.getMessage(),
                 ContextHolder.get(ContextHolder.BUSINESS_NAME),
                 e.getMessage());
 
         //TODO: 控制日志级别
-        LogUtil.error("业务异常：", e);
+        if (!ErrorCode.SYSTEM_ERROR.equals(code)) {
+            LogUtil.warn(message, e);
+        } else {
+            LogUtil.error(message, e);
+        }
 
         return Response.error(e.getCode(), message);
     }
@@ -34,10 +45,11 @@ public class GlobalExceptionHandler {
 
         String message = String.format(
                 MESSAGE_FORMAT,
+                MSG_INVALID_REQUEST_PARAM,
                 ContextHolder.get(ContextHolder.BUSINESS_NAME),
                 e.getMessage());
 
-        LogUtil.warn("参数校验异常：", e);
+        LogUtil.warn(message, e);
 
         return Response.error(ErrorCode.ILLEGAL_PARAM_ERROR, message);
     }
@@ -45,8 +57,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public Response<Void> runtimeExceptionHandler(RuntimeException e) {
         //异常信息输出到日志中，不能直接返回给客户端
-        LogUtil.error("系统异常：", e);
+        String message = String.format(
+                MESSAGE_FORMAT,
+                MSG_SYSTEM_ERROR,
+                ContextHolder.get(ContextHolder.BUSINESS_NAME),
+                e.getMessage());
+
         ErrorCode error = ErrorCode.SYSTEM_ERROR;
+
         return Response.error(error.getCode(), error.getMessage());
     }
 

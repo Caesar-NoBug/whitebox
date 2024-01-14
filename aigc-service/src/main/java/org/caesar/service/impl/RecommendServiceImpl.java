@@ -5,7 +5,7 @@ import org.caesar.common.client.SearchClient;
 import org.caesar.common.client.UserClient;
 import org.caesar.common.repository.CacheRepository;
 import org.caesar.common.str.StrUtil;
-import org.caesar.common.util.ClientUtil;
+import org.caesar.common.resp.RespUtil;
 import org.caesar.constant.ChatPrompt;
 import org.caesar.constant.RedisKey;
 import org.caesar.domain.aigc.request.CompletionRequest;
@@ -68,7 +68,7 @@ public class RecommendServiceImpl implements RecommendService {
 
         // 去重，删除用户看过的文章
         List<Long> ids = articles.stream().map(ArticleMinVO::getId).collect(Collectors.toList());
-        List<Long> uniqueIds = ClientUtil.handleResponse(articleClient.getUniqueArticle(ids), "用户文章去重失败");
+        List<Long> uniqueIds = RespUtil.handleWithThrow(articleClient.getUniqueArticle(ids), "用户文章去重失败");
 
         articles.removeIf(article -> !uniqueIds.contains(article.getId()));
 
@@ -84,14 +84,14 @@ public class RecommendServiceImpl implements RecommendService {
         //TODO: 异步优化
 
         // 获取用户整体偏好
-        UserPreferVO userPreferVO = ClientUtil.handleResponse(
+        UserPreferVO userPreferVO = RespUtil.handleWithThrow(
                 userClient.getUserPrefer(), "获取用户偏好失败");
 
         String occupation = userPreferVO.getOccupation();
         String preference = userPreferVO.getPreference();
 
         // 获取近期偏好文章以及随机获取曾经偏好文章
-        GetPreferArticleResponse preferResp = ClientUtil.handleResponse(
+        GetPreferArticleResponse preferResp = RespUtil.handleWithThrow(
                 articleClient.getPreferArticle(PREFER_SIZE, PREFER_SIZE, PREFER_SIZE),
                 "获取用户偏好文章失败");
 
@@ -101,7 +101,7 @@ public class RecommendServiceImpl implements RecommendService {
         articles.addAll(preferResp.getRandPreferredArticles());
 
         // 处理用户搜索记录(5)
-        List<String> searchHistories = ClientUtil.handleResponse(
+        List<String> searchHistories = RespUtil.handleWithThrow(
                         searchClient.getSearchHistory(SEARCH_HISTORY_SIZE),
                         "获取用户搜索记录失败").stream()
                 .map(SearchHistoryVO::getContent).collect(Collectors.toList());
@@ -128,7 +128,7 @@ public class RecommendServiceImpl implements RecommendService {
         String[] candidates = reply.split("\n");
         // 把candidates转换成list
 
-        List<ArticleIndexVO> candidateArticles = ClientUtil.handleResponse(
+        List<ArticleIndexVO> candidateArticles = RespUtil.handleWithThrow(
                 searchClient.searchBatch(Arrays.asList(candidates), 5, DataSource.ARTICLE),
                 "查询候选文章失败"
         );
