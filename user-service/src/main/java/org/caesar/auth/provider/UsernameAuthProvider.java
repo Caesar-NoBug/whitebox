@@ -2,7 +2,7 @@ package org.caesar.auth.provider;
 
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.str.StrEncoder;
-import org.caesar.enums.AuthenticationMethod;
+import org.caesar.enums.AuthMethod;
 import org.caesar.auth.AuthenticationProvider;
 import org.caesar.model.entity.User;
 import org.caesar.repository.UserRepository;
@@ -33,8 +33,8 @@ public class UsernameAuthProvider implements AuthenticationProvider {
     }
 
     @Override
-    public AuthenticationMethod getMethod() {
-        return AuthenticationMethod.USERNAME;
+    public AuthMethod getMethod() {
+        return AuthMethod.USERNAME;
     }
 
    /* @Override

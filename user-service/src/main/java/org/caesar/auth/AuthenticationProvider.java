@@ -1,7 +1,7 @@
 package org.caesar.auth;
 
 
-import org.caesar.enums.AuthenticationMethod;
+import org.caesar.enums.AuthMethod;
 import org.caesar.model.entity.User;
 
 /**
@@ -25,5 +25,5 @@ public interface AuthenticationProvider {
     /**
      * @return 认证器对应的认证方式
      */
-    AuthenticationMethod getMethod();
+    AuthMethod getMethod();
 }

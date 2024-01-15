@@ -1,6 +1,6 @@
 package org.caesar.auth.provider;
 
-import org.caesar.enums.AuthenticationMethod;
+import org.caesar.enums.AuthMethod;
 import org.caesar.auth.AuthenticationProvider;
 import org.caesar.model.entity.User;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ public class PhoneAuthProvider implements AuthenticationProvider {
     }
 
     @Override
-    public AuthenticationMethod getMethod() {
-        return AuthenticationMethod.PHONE;
+    public AuthMethod getMethod() {
+        return AuthMethod.PHONE;
     }
 }

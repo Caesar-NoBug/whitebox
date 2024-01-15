@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
 @Component
 public class RequestPreHandleFilter extends OncePerRequestFilter {
@@ -22,17 +23,17 @@ public class RequestPreHandleFilter extends OncePerRequestFilter {
         // TODO: 打印接口访问日志
 
         String userId = request.getHeader(Headers.USERID_HEADER);
+        if(Objects.nonNull(userId)) ContextHolder.setUserId(Long.parseLong(userId));
+
         String traceId = request.getHeader(Headers.TRACE_ID_HEADER);
+        if (Objects.nonNull(traceId)) ContextHolder.setTraceId(traceId);
 
-        ContextHolder.setUserId(Long.parseLong(userId));
-        ContextHolder.setTraceId(traceId);
-
-        MDC.put("traceId", traceId);
-        MDC.put("userId", userId);
+        /*MDC.put("traceId", traceId);
+        MDC.put("userId", userId);*/
 
         chain.doFilter(request, response);
 
-        MDC.clear();
+        /*MDC.clear();*/
         //TODO: 清空ThreadLocal，避免线程污染
         ContextHolder.clear();
 

@@ -5,7 +5,7 @@ import org.caesar.common.repository.CacheRepository;
 import org.caesar.common.str.StrUtil;
 import org.caesar.constant.RedisPrefix;
 import org.caesar.domain.common.enums.StrFormat;
-import org.caesar.enums.AuthenticationMethod;
+import org.caesar.enums.AuthMethod;
 import org.caesar.auth.AuthenticationProvider;
 import org.caesar.model.entity.User;
 import org.caesar.repository.UserRepository;
@@ -41,8 +41,8 @@ public class EmailAuthProvider implements AuthenticationProvider {
     }
 
     @Override
-    public AuthenticationMethod getMethod() {
-        return AuthenticationMethod.EMAIL;
+    public AuthMethod getMethod() {
+        return AuthMethod.EMAIL;
     }
 
     /*@Override

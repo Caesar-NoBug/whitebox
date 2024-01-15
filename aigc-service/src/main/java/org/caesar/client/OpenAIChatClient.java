@@ -35,7 +35,6 @@ public class OpenAIChatClient implements ChatClient {
     //TODO: 参数配置化
     @PostConstruct
     public void init() {
-        System.out.println("初始化成功");
         //配置代理
         SimpleClientHttpRequestFactory reqFactory = new SimpleClientHttpRequestFactory();
         reqFactory.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 7890)));
@@ -58,28 +57,18 @@ public class OpenAIChatClient implements ChatClient {
 
         //  解析响应
         if (entity.getStatusCode() != HttpStatus.OK)
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "请求失败模型接口失败，响应码为：" + entity.getStatusCode());
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Fail to request the model api, the error code is " + entity.getStatusCode());
 
         OpenAIChatResponse response;
 
         try {
             response = JSON.parseObject(entity.getBody(), OpenAIChatResponse.class);
         } catch (Exception e) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "转换响应对象失败：" + e.toString());
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "fail to transfer the response object" + e.toString());
         }
 
         return response;
     }
 
-   /* public static void main(String[] args) {
-        OpenAIChatClient client = new OpenAIChatClient();
-        client.init();
-        OpenAIChatRequest request = new OpenAIChatRequest();
-        request.setPreset(new Message(Role.system, "你是一个写诗机器人，要求根据我提出的主题写一首7言绝句。"));
-        request.setPrompt("雪山 江水");
-        System.out.println("发起请求");
-        ChatResponse response = client.chat(request);
-        System.out.println(response);
-    }*/
 
 }

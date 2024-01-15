@@ -1,6 +1,6 @@
 package org.caesar.auth;
 
-import org.caesar.enums.AuthenticationMethod;
+import org.caesar.enums.AuthMethod;
 import org.caesar.model.entity.User;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class AuthenticationManager implements ApplicationContextAware {
 
-    private final Map<AuthenticationMethod, AuthenticationProvider> providerMap = new ConcurrentHashMap<>();
+    private final Map<AuthMethod, AuthenticationProvider> providerMap = new ConcurrentHashMap<>();
 
     /**
      * @param method 认证方式
@@ -24,7 +24,7 @@ public class AuthenticationManager implements ApplicationContextAware {
      * @param credential 用户认证凭证
      * 认证用户信息，认证失败则抛出异常
      */
-    public void authenticate(AuthenticationMethod method, String identity, String credential) {
+    public void authenticate(AuthMethod method, String identity, String credential) {
         providerMap.get(method).authenticate(identity, credential);
     }
 
@@ -33,7 +33,7 @@ public class AuthenticationManager implements ApplicationContextAware {
      * @param identity 用户身份标识
      * @return 身份标识对应的用户
      */
-    public User getIdenticalUser(AuthenticationMethod method, String identity) {
+    public User getIdenticalUser(AuthMethod method, String identity) {
         return providerMap.get(method).getIdenticalUser(identity);
     }
 

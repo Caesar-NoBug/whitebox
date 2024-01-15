@@ -1,4 +1,4 @@
-package org.caesar.gateway;
+package org.caesar;
 
 import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
 import org.springframework.boot.SpringApplication;
@@ -28,14 +28,12 @@ public class GatewayApplication {
     }
 
     private final String[] SERVICES = new String[]{
-            "/user-service", "/executor-service", "/question-service", "/search-service"
+            "/user-service", "/executor-service", "/question-service", "/search-service", "/aigc-service"
     };
 
     private final String SERVICE_PATH = "%s/**";
 
     private final String SERVICE_URI = "lb:/%s";
-
-
 
     /*@Autowired
     @Qualifier("ipRateLimiterFactory")
@@ -45,8 +43,7 @@ public class GatewayApplication {
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
 
         RouteLocatorBuilder.Builder routes = builder.routes();
-        for (int i = 0; i < SERVICES.length; i++) {
-            String service = SERVICES[i];
+        for (String service : SERVICES) {
             routes
                     .route(
                             r -> r.path(String.format(SERVICE_PATH, service))

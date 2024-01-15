@@ -1,9 +1,8 @@
 package org.caesar.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import org.caesar.domain.user.vo.RoleVO;
 import org.caesar.domain.user.vo.UserMinVO;
 import org.caesar.model.req.RegisterRequest;
-import org.caesar.model.po.UserPO;
 import org.caesar.model.req.LoginRequest;
 import org.caesar.model.vo.UserVO;
 
@@ -31,5 +30,7 @@ public interface UserService {
 
     Map<Long, UserMinVO> getUserMin(List<Long> userId);
 
+    // 获取更新的权限角色信息
+    List<RoleVO> getUpdatedRole(LocalDateTime updateTime);
     //TODO: update User 时同步删除userMin缓存
 }

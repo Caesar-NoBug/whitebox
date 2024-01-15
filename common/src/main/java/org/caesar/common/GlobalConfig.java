@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Objects;
 
 @Configuration
 @ComponentScan
@@ -82,10 +83,17 @@ public class GlobalConfig {
             //TODO: 设置允许通信的服务的ip白名单，只接收来自白名单的请求，并使用https进行服务间通信
             template.header("Content-Type", "application/json");
             template.header(Headers.SOURCE_HEADER, "gateway");
-            template.header(Headers.USERID_HEADER, String.valueOf(ContextHolder.getUserIdIfExist()));
-            template.header(Headers.TRACE_ID_HEADER, ContextHolder.getTraceId());
+
+            Long userId = ContextHolder.getUserIdIfExist();
+            if(Objects.nonNull(userId))
+                template.header(Headers.USERID_HEADER, String.valueOf(userId));
+
+            String traceId = ContextHolder.getTraceId();
+            if(Objects.nonNull(traceId))
+                template.header(Headers.TRACE_ID_HEADER, traceId);
             // 添加其他全局请求头
         };
+
     }
 
     @Bean

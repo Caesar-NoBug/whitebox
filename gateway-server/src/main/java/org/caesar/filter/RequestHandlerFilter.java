@@ -1,9 +1,9 @@
-package org.caesar.gateway.filter;
+package org.caesar.filter;
 
 import com.alibaba.fastjson.JSON;
 import org.caesar.domain.constant.Headers;
 import org.caesar.domain.question.request.JudgeCodeRequest;
-import org.caesar.gateway.publisher.ExecuteMessagePublisher;
+import org.caesar.publisher.ExecuteMessagePublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -27,7 +27,7 @@ public class RequestHandlerFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
         String uri = exchange.getRequest().getURI().getPath();
-
+        //TODO: 把mq消息转移到questionService中
         if(SUBMIT_URI.equals(uri)) {
 
             return DataBufferUtils.join(exchange.getRequest().getBody())

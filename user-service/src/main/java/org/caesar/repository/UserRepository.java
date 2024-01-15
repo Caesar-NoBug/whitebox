@@ -1,8 +1,12 @@
 package org.caesar.repository;
 
+import org.caesar.model.entity.Role;
+import org.caesar.model.entity.RoleMenu;
 import org.caesar.model.entity.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface UserRepository {
 
@@ -21,4 +25,6 @@ public interface UserRepository {
     boolean insertUser(User user);
 
     boolean removeUser(Long id);
+
+    List<Role> getUpdatedRoles(LocalDateTime updateTime);
 }

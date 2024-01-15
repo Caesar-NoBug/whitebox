@@ -23,8 +23,7 @@ public class JwtUtil {
     public static final String JWT_KEY = "sangeng";
 
     public static String getUUID(){
-        String token = UUID.randomUUID().toString().replaceAll("-", "");
-        return token;
+        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
     public static String getJwtSubject(String jwt) {
@@ -50,7 +49,7 @@ public class JwtUtil {
     }
 
     /**
-     * 生成jtw
+     * 生成jwt
      * @param subject token中要存放的数据（json格式）
      * @param ttlMillis token超时时间
      * @return

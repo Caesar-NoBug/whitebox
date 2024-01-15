@@ -1,4 +1,4 @@
-package org.caesar.gateway.util;
+package org.caesar.util;
 
 import com.alibaba.fastjson.JSON;
 import feign.RequestTemplate;

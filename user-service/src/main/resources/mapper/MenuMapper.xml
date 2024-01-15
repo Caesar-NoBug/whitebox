@@ -13,10 +13,24 @@
             <result property="status" column="status" jdbcType="BIT"/>
     </resultMap>
 
+    <resultMap id="RoleMap" type="org.caesar.model.entity.RoleMenu">
+        <id property="id" column="id" />
+        <id property="permission" column="permission" />
+    </resultMap>
+
     <sql id="Base_Column_List">
         id,`name`,perm_key,
         `path`,component,status
     </sql>
+
+    <insert id="insertUserRole">
+        Insert into sys_user_role (user_id, role_id)
+        VALUES
+        <foreach item="roleId" collection="roleIds" separator=",">
+            (#{userId}, #{roleId})
+        </foreach>
+
+    </insert>
 
     <select id="selectPermsByUserId" resultType="String">
         SELECT DISTINCT path
@@ -38,6 +52,7 @@
         FROM sys_user_role
         WHERE user_id = #{userId}
     </select>
+
     <select id="selectPermsByRoleId" resultType="java.lang.String">
         SELECT DISTINCT path
         FROM sys_menu m
@@ -46,6 +61,15 @@
             FROM sys_role_menu
             WHERE role_id = #{roleId}
         )
+    </select>
+
+    <select id="getUpdatedRole" resultType="org.caesar.model.entity.RoleMenu">
+        SELECT r.id   AS id,
+               m.path AS permission
+        FROM sys_role r
+                 LEFT JOIN sys_role_menu rm ON r.id = rm.role_id
+                 LEFT JOIN sys_menu m ON rm.menu_id = m.id
+        WHERE r.update_at >= #{updateTime}
     </select>
 
 </mapper>

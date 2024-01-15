@@ -3,7 +3,9 @@ package org.caesar.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.caesar.model.entity.Menu;
+import org.caesar.model.entity.RoleMenu;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -21,7 +23,9 @@ public interface MenuMapper extends BaseMapper<Menu> {
 
     List<String> selectPermsByRoleId(long roleId);
 
-    boolean insertUserRole(long userId, List<Integer> roleId);
+    List<RoleMenu> getUpdatedRole(LocalDateTime updateTime);
+
+    boolean insertUserRole(long userId, List<Integer> roleIds);
 }
 
 

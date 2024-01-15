@@ -1,4 +1,4 @@
-package org.caesar.gateway.util;
+package org.caesar.util;
 
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.stereotype.Component;

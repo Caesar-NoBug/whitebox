@@ -1,34 +1,32 @@
 package org.caesar.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.caesar.common.exception.BusinessException;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.repository.CacheRepository;
 import org.caesar.common.str.StrUtil;
-import org.caesar.domain.constant.NumConstant;
 import org.caesar.constant.RedisPrefix;
 import org.caesar.domain.common.enums.ErrorCode;
+import org.caesar.domain.user.vo.RoleVO;
 import org.caesar.domain.user.vo.UserMinVO;
-import org.caesar.enums.AuthenticationMethod;
+import org.caesar.enums.AuthMethod;
 import org.caesar.auth.AuthenticationManager;
-import org.caesar.mapper.BaseUserMapper;
 import org.caesar.mapper.MenuMapper;
+import org.caesar.model.MsMenuStruct;
 import org.caesar.model.MsUserStruct;
 import org.caesar.model.dto.TokenDTO;
 import org.caesar.model.dto.UserDTO;
+import org.caesar.model.entity.Role;
 import org.caesar.model.entity.User;
 import org.caesar.model.req.RegisterRequest;
-import org.caesar.model.po.UserPO;
 import org.caesar.model.req.LoginRequest;
 import org.caesar.model.vo.UserVO;
 import org.caesar.repository.UserRepository;
 import org.caesar.service.UserService;
 import org.caesar.common.str.JwtUtil;
 import org.caesar.common.str.PrefixMatcher;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -36,6 +34,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author caesar
@@ -55,6 +54,9 @@ public class UserServiceImpl implements UserService {
     private MsUserStruct userStruct;
 
     @Resource
+    private MsMenuStruct menuStruct;
+
+    @Resource
     private MenuMapper menuMapper;
 
     @Resource
@@ -70,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
         String identity = request.getIdentity();
         String credential = request.getCredential();
-        AuthenticationMethod method = request.getMethod();
+        AuthMethod method = request.getMethod();
 
         // 验证用户身份
         authManager.authenticate(method, identity, credential);
@@ -81,6 +83,7 @@ public class UserServiceImpl implements UserService {
         ThrowUtil.ifNull(user, "登录失败：该用户不存在！");
 
         long userId = user.getId();
+
         String authorization = JSON.toJSONString(user.getAuthorization());
 
         String token = JwtUtil.createJWT(authorization);
@@ -247,6 +250,14 @@ public class UserServiceImpl implements UserService {
         }
 
         return userMinMap;
+    }
+
+    @Override
+    public List<RoleVO> getUpdatedRole(LocalDateTime updateTime) {
+        return userRepo.getUpdatedRoles(updateTime)
+                .stream()
+                .map(menuStruct::roleDOtoVO)
+                .collect(Collectors.toList());
     }
 
 }

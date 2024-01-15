@@ -8,21 +8,18 @@ spring:
       discovery:
         locator:
           enabled: true
+    nacos:
+      discovery:
+        server-addr: 8.130.19.151:8848
 
-
-  data:
-    redis:
-      host: 127.0.0.1
-      port: 6666
-      database: 0
+  redis:
+    host: 8.130.19.151
+    port: 16379
+    database: 0
+    password: rIj12YF23S
 
 server:
   port: 7777
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://127.0.0.1:18888/eureka
 
 rocketmq:
   name-server: 127.0.0.1:9876

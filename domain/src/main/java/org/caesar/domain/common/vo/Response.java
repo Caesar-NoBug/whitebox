@@ -15,11 +15,11 @@ public class Response<T>{
     private String msg;
 
     public static <T> Response<T> ok(){
-        return new Response<T>(ErrorCode.SUCCESS.getCode(), null, "请求成功");
+        return new Response<T>(ErrorCode.SUCCESS.getCode(), null, "request success");
     }
 
     public static <T> Response<T> ok(T data){
-        return new Response<T>(ErrorCode.SUCCESS.getCode(), data, "请求成功");
+        return new Response<T>(ErrorCode.SUCCESS.getCode(), data, "request success");
     }
 
     public static <T> Response<T> ok(T data, String msg){
@@ -40,10 +40,6 @@ public class Response<T>{
 
     public static <T> Response<T> error(String msg){
         return new Response<>(ErrorCode.ILLEGAL_PARAM_ERROR.getCode(), null, msg);
-    }
-
-    public boolean isSuccess(){
-        return this.code == ErrorCode.SUCCESS.getCode();
     }
 
 }

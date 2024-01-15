@@ -5,6 +5,8 @@ spring:
     url: jdbc:mysql://8.130.19.151:13306/db_white_box
     username: root
     password: 5eqPGg62I4
+    hikari:
+      max-lifetime: 180000
 
   cloud:
     nacos:

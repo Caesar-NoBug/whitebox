@@ -1,7 +1,7 @@
 package org.caesar.model.req;
 
 import lombok.Data;
-import org.caesar.enums.AuthenticationMethod;
+import org.caesar.enums.AuthMethod;
 
 @Data
 public class RegisterRequest {
@@ -19,7 +19,7 @@ public class RegisterRequest {
     /**
      * 认证方式
      */
-    private AuthenticationMethod method;
+    private AuthMethod method;
 
     /**
      * 身份标识

@@ -7,6 +7,7 @@ import org.caesar.domain.constant.StrConstant;
 import org.caesar.common.str.StrUtil;
 import org.caesar.constant.RedisPrefix;
 import org.caesar.domain.common.enums.ErrorCode;
+import org.caesar.domain.user.vo.AuthorizationVO;
 import org.caesar.model.req.RegisterRequest;
 import org.caesar.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -116,11 +117,11 @@ public class User {
         return user;
     }
 
-    public Authorization getAuthorization() {
-        Authorization authorization = new Authorization();
-        authorization.setUserId(this.getId());
-        authorization.setRoles(this.getRoles());
-        return authorization;
+    public AuthorizationVO getAuthorization() {
+        AuthorizationVO authorizationVO = new AuthorizationVO();
+        authorizationVO.setUserId(this.getId());
+        authorizationVO.setRoles(this.getRoles());
+        return authorizationVO;
     }
 
 }

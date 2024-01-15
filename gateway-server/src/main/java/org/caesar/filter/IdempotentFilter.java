@@ -1,6 +1,6 @@
-package org.caesar.gateway.filter;
+package org.caesar.filter;
 
-import org.caesar.gateway.constant.RedisKey;
+import org.caesar.constant.RedisKey;
 import org.caesar.domain.constant.Headers;
 import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.common.exception.BusinessException;
@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 //TODO: 幂等过滤器，通过请求头的request id来来判断请求是否为重复请求
 @Component
-public class IdempotentGlobalFilter implements GlobalFilter, Ordered {
+public class IdempotentFilter implements GlobalFilter, Ordered {
 
     @Resource
     private RedisCache redisCache;

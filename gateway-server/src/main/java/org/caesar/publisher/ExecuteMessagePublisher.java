@@ -1,4 +1,4 @@
-package org.caesar.gateway.publisher;
+package org.caesar.publisher;
 
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.caesar.domain.question.request.JudgeCodeRequest;

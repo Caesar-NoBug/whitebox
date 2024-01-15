@@ -1,15 +1,16 @@
-package org.caesar.gateway.config;
+package org.caesar.config;
 
 import feign.codec.Decoder;
 import feign.codec.Encoder;
-import org.caesar.gateway.util.FastJsonDecoder;
-import org.caesar.gateway.util.FastJsonEncoder;
+import org.caesar.util.FastJsonDecoder;
+import org.caesar.util.FastJsonEncoder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class GatewayConfig {
@@ -29,7 +30,7 @@ public class GatewayConfig {
     @Value("${rateLimiter.config.uri.requestedToken:1}")
     private int URI_REQUESTED_TOKENS;
 
-    @Bean
+    /*@Bean
     Encoder feignEncoder() {
         return new FastJsonEncoder();
     }
@@ -37,12 +38,12 @@ public class GatewayConfig {
     @Bean
     Decoder feignDecoder() {
         return new FastJsonDecoder();
-    }
+    }*/
 
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOriginPattern("*");
+        config.addAllowedOrigin("*"); //addAllowedOriginPattern("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setAllowCredentials(true);
@@ -51,5 +52,9 @@ public class GatewayConfig {
         return new CorsWebFilter(source);
     }
 
+    @Bean
+    public WebClient webClient() {
+        return WebClient.create();
+    }
 
 }

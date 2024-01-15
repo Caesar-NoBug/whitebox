@@ -1,5 +1,6 @@
 package org.caesar.controller;
 
+import org.caesar.common.context.ContextHolder;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.model.dto.TokenDTO;
 import org.caesar.model.req.LoginRequest;
@@ -10,19 +11,15 @@ import org.caesar.common.str.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-/*@CrossOrigin(
-        origins = "http://localhost:8081",
-        allowedHeaders = {"token", "Content-Type"},
-        allowCredentials = "true"
-)*/
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
+    @Resource
     private UserService userService;
 
     @PostMapping("/login")
@@ -46,7 +43,7 @@ public class AuthController {
     @PostMapping("/refreshToken")
     public Response refreshToken(@RequestBody TokenDTO tokenDTO) {
         String refreshToken = tokenDTO.getRefreshToken();
-        Long userId = tokenDTO.getUserId();
+        Long userId = ContextHolder.getUserId();
         LocalDateTime lastUpdateTime = tokenDTO.getLastUpdateTime();
 
         if (StrUtil.isBlank(refreshToken) || Objects.isNull(lastUpdateTime))

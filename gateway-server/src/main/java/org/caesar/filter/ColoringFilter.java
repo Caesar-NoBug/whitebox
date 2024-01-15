@@ -1,4 +1,4 @@
-package org.caesar.gateway.filter;
+package org.caesar.filter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.caesar.domain.constant.Headers;
@@ -17,7 +17,7 @@ import java.util.UUID;
 //TODO: 禁止同一用户短时间内多次访问判题接口
 @Slf4j
 @Component
-public class ColoringGlobalFilter implements GlobalFilter, Ordered {
+public class ColoringFilter implements GlobalFilter, Ordered {
 
     private String gatewaySource = "gateway";
 

@@ -991,8 +991,8 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
     </schema>
     <schema id="275" parent="1" name="db_white_box">
       <Current>1</Current>
-      <IntrospectionTimestamp>2023-12-20.21:32:19</IntrospectionTimestamp>
-      <LocalIntrospectionTimestamp>2023-12-20.13:32:19</LocalIntrospectionTimestamp>
+      <IntrospectionTimestamp>2024-01-14.22:00:03</IntrospectionTimestamp>
+      <LocalIntrospectionTimestamp>2024-01-14.14:00:05</LocalIntrospectionTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="276" parent="1" name="mysql">
@@ -1493,11 +1493,13 @@ user_id</ColNames>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="372" parent="293" name="id">
+      <Comment>主键</Comment>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
     <column id="373" parent="293" name="name">
+      <Comment>角色名称</Comment>
       <DasType>varchar(64)|0s</DasType>
       <Position>2</Position>
     </column>
@@ -1506,85 +1508,90 @@ user_id</ColNames>
       <DasType>bit(1)|0s</DasType>
       <Position>3</Position>
     </column>
-    <index id="375" parent="293" name="PRIMARY">
+    <column id="375" parent="293" name="update_at">
+      <Comment>更新时间</Comment>
+      <DasType>datetime|0s</DasType>
+      <Position>4</Position>
+    </column>
+    <index id="376" parent="293" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="376" parent="293" name="PRIMARY">
+    <key id="377" parent="293" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="377" parent="294" name="role_id">
+    <column id="378" parent="294" name="role_id">
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="378" parent="294" name="menu_id">
+    <column id="379" parent="294" name="menu_id">
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <index id="379" parent="294" name="PRIMARY">
+    <index id="380" parent="294" name="PRIMARY">
       <ColNames>role_id
 menu_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="380" parent="294" name="PRIMARY">
+    <key id="381" parent="294" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="381" parent="295" name="id">
+    <column id="382" parent="295" name="id">
       <Comment>主键，用户唯一标识</Comment>
       <DasType>bigint|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="382" parent="295" name="username">
+    <column id="383" parent="295" name="username">
       <Comment>用户名，不多于20个字符</Comment>
       <DasType>varchar(20)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <CollationName>utf8mb4_general_ci</CollationName>
     </column>
-    <column id="383" parent="295" name="password">
+    <column id="384" parent="295" name="password">
       <Comment>密码，使用MD5加密</Comment>
       <DasType>varchar(128)|0s</DasType>
       <Position>3</Position>
       <CollationName>utf8mb4_general_ci</CollationName>
     </column>
-    <column id="384" parent="295" name="phone">
+    <column id="385" parent="295" name="phone">
       <Comment>用户电话</Comment>
       <DasType>varchar(20)|0s</DasType>
       <Position>4</Position>
     </column>
-    <column id="385" parent="295" name="email">
+    <column id="386" parent="295" name="email">
       <Comment>用户邮箱</Comment>
       <DasType>varchar(255)|0s</DasType>
       <Position>5</Position>
       <CollationName>utf8mb4_general_ci</CollationName>
     </column>
-    <column id="386" parent="295" name="avatar_url">
+    <column id="387" parent="295" name="avatar_url">
       <Comment>用户头像路径</Comment>
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>6</Position>
       <CollationName>utf8mb4_general_ci</CollationName>
     </column>
-    <column id="387" parent="295" name="wxid">
+    <column id="388" parent="295" name="wxid">
       <Comment>用户微信id</Comment>
       <DasType>varchar(255)|0s</DasType>
       <Position>7</Position>
     </column>
-    <column id="388" parent="295" name="qqid">
+    <column id="389" parent="295" name="qqid">
       <Comment>用户QQid</Comment>
       <DasType>varchar(255)|0s</DasType>
       <Position>8</Position>
     </column>
-    <column id="389" parent="295" name="create_time">
+    <column id="390" parent="295" name="create_time">
       <Comment>创建账号时间</Comment>
       <DasType>timestamp|0s</DasType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
@@ -1592,172 +1599,172 @@ menu_id</ColNames>
       <OnUpdate>CURRENT_TIMESTAMP</OnUpdate>
       <Position>9</Position>
     </column>
-    <column id="390" parent="295" name="update_time">
+    <column id="391" parent="295" name="update_time">
       <Comment>账号上次更新时间</Comment>
       <DasType>timestamp|0s</DasType>
       <Position>10</Position>
     </column>
-    <column id="391" parent="295" name="state">
+    <column id="392" parent="295" name="state">
       <Comment>账号状态：0:离线 1:在线 2:封禁中</Comment>
       <DasType>int|0s</DasType>
       <Position>11</Position>
     </column>
-    <column id="392" parent="295" name="is_delete">
+    <column id="393" parent="295" name="is_delete">
       <Comment>逻辑删除字段</Comment>
       <DasType>tinyint|0s</DasType>
       <Position>12</Position>
     </column>
-    <index id="393" parent="295" name="PRIMARY">
+    <index id="394" parent="295" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="394" parent="295" name="username">
+    <index id="395" parent="295" name="username">
       <ColNames>username</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="395" parent="295" name="phone">
+    <index id="396" parent="295" name="phone">
       <ColNames>phone</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="396" parent="295" name="email">
+    <index id="397" parent="295" name="email">
       <ColNames>email</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="397" parent="295" name="PRIMARY">
+    <key id="398" parent="295" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="398" parent="295" name="username">
+    <key id="399" parent="295" name="username">
       <UnderlyingIndexName>username</UnderlyingIndexName>
     </key>
-    <key id="399" parent="295" name="phone">
+    <key id="400" parent="295" name="phone">
       <UnderlyingIndexName>phone</UnderlyingIndexName>
     </key>
-    <key id="400" parent="295" name="email">
+    <key id="401" parent="295" name="email">
       <UnderlyingIndexName>email</UnderlyingIndexName>
     </key>
-    <column id="401" parent="296" name="id">
+    <column id="402" parent="296" name="id">
       <Comment>主键</Comment>
       <DasType>bigint|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="402" parent="296" name="name">
+    <column id="403" parent="296" name="name">
       <Comment>用户姓名</Comment>
       <DasType>varchar(48)|0s</DasType>
       <Position>2</Position>
       <CollationName>utf8mb4_general_ci</CollationName>
     </column>
-    <column id="403" parent="296" name="balance">
+    <column id="404" parent="296" name="balance">
       <Comment>用户账户余额</Comment>
       <DasType>int|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="404" parent="296" name="level">
+    <column id="405" parent="296" name="level">
       <Comment>用户等级</Comment>
       <DasType>int|0s</DasType>
       <Position>4</Position>
     </column>
-    <column id="405" parent="296" name="gender">
+    <column id="406" parent="296" name="gender">
       <Comment>用户性别</Comment>
       <DasType>char(1)|0s</DasType>
       <Position>5</Position>
     </column>
-    <column id="406" parent="296" name="birth">
+    <column id="407" parent="296" name="birth">
       <Comment>用户生日</Comment>
       <DasType>date|0s</DasType>
       <Position>6</Position>
     </column>
-    <column id="407" parent="296" name="location">
+    <column id="408" parent="296" name="location">
       <Comment>用户所在地址</Comment>
       <DasType>varchar(128)|0s</DasType>
       <Position>7</Position>
       <CollationName>utf8mb4_general_ci</CollationName>
     </column>
-    <column id="408" parent="296" name="sign">
+    <column id="409" parent="296" name="sign">
       <Comment>用户个性签名</Comment>
       <DasType>varchar(64)|0s</DasType>
       <Position>8</Position>
       <CollationName>utf8mb4_general_ci</CollationName>
     </column>
-    <column id="409" parent="296" name="tag">
+    <column id="410" parent="296" name="tag">
       <Comment>用户标签</Comment>
       <DasType>varchar(128)|0s</DasType>
       <Position>9</Position>
     </column>
-    <column id="410" parent="296" name="follow_count">
+    <column id="411" parent="296" name="follow_count">
       <Comment>用户关注数</Comment>
       <DasType>int|0s</DasType>
       <Position>10</Position>
     </column>
-    <column id="411" parent="296" name="fans_count">
+    <column id="412" parent="296" name="fans_count">
       <Comment>用户粉丝数</Comment>
       <DasType>int|0s</DasType>
       <Position>11</Position>
     </column>
-    <column id="412" parent="296" name="like_count">
+    <column id="413" parent="296" name="like_count">
       <Comment>点赞数</Comment>
       <DasType>int|0s</DasType>
       <Position>12</Position>
     </column>
-    <column id="413" parent="296" name="read_count">
+    <column id="414" parent="296" name="read_count">
       <Comment>热度</Comment>
       <DasType>int|0s</DasType>
       <Position>13</Position>
     </column>
-    <column id="414" parent="296" name="last_login">
+    <column id="415" parent="296" name="last_login">
       <Comment>用户最后一次登录时间</Comment>
       <DasType>timestamp|0s</DasType>
       <Position>14</Position>
     </column>
-    <column id="415" parent="296" name="preference">
+    <column id="416" parent="296" name="preference">
       <Comment>用户偏好标签（以&apos;/&apos;分隔）</Comment>
       <DasType>varchar(64)|0s</DasType>
       <Position>15</Position>
     </column>
-    <column id="416" parent="296" name="occupation">
+    <column id="417" parent="296" name="occupation">
       <Comment>用户职业（最好包含级别和行业）</Comment>
       <DasType>varchar(64)|0s</DasType>
       <Position>16</Position>
     </column>
-    <foreign-key id="417" parent="296" name="e_b">
+    <foreign-key id="418" parent="296" name="e_b">
       <ColNames>id</ColNames>
       <OnDelete>cascade</OnDelete>
       <RefColNames>id</RefColNames>
       <RefTableName>sys_user_base</RefTableName>
     </foreign-key>
-    <index id="418" parent="296" name="PRIMARY">
+    <index id="419" parent="296" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="419" parent="296" name="PRIMARY">
+    <key id="420" parent="296" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="420" parent="297" name="user_id">
+    <column id="421" parent="297" name="user_id">
       <DasType>bigint|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="421" parent="297" name="role_id">
+    <column id="422" parent="297" name="role_id">
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <index id="422" parent="297" name="PRIMARY">
+    <index id="423" parent="297" name="PRIMARY">
       <ColNames>user_id
 role_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="423" parent="297" name="PRIMARY">
+    <key id="424" parent="297" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>

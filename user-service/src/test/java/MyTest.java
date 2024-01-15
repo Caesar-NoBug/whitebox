@@ -1,15 +1,22 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.caesar.UserServiceApplication;
 import org.caesar.controller.AuthController;
+import org.caesar.mapper.MenuMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.annotation.Resource;
+import java.time.LocalDateTime;
 
 @SpringBootTest(classes = UserServiceApplication.class)
 public class MyTest {
 
     @Autowired
     private AuthController authController;
+
+    @Resource
+    private MenuMapper menuMapper;
 
     @Test
     public void testRedis() {
@@ -30,6 +37,12 @@ public class MyTest {
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(fu);
         System.out.println(json);*/
+    }
+
+
+    @Test
+    public void testRoles() {
+        System.out.println(menuMapper.getUpdatedRole(LocalDateTime.of(2021, 1, 1, 1, 1)));
     }
 
 }
