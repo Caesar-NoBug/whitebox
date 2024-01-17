@@ -1,6 +1,7 @@
 package org.caesar.controller;
 
 import org.caesar.common.context.ContextHolder;
+import org.caesar.common.idempotent.Idempotent;
 import org.caesar.common.log.Logger;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.user.vo.RoleVO;
@@ -41,5 +42,12 @@ public class UserController {
     @GetMapping("/updated-role")
     public Response<List<RoleVO>> getUpdatedRole(@RequestParam LocalDateTime updateTime) {
         return Response.ok(userService.getUpdatedRole(updateTime));
+    }
+
+    @Idempotent(value = "testId", reqId = "#reqId", expire = 600, msg = "芜湖")
+    @GetMapping("/testId")
+    public Response<String> testId(@RequestParam Long reqId) {
+        //int x = 1 / 0;
+        return Response.ok("hahaha");
     }
 }

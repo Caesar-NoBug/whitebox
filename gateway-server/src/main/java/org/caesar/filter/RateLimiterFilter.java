@@ -16,7 +16,6 @@ public class RateLimiterFilter implements GlobalFilter, Ordered {
     //TODO: 加一个ip黑名单，用户id黑名单
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-
         return chain.filter(exchange);
     }
 
@@ -24,5 +23,4 @@ public class RateLimiterFilter implements GlobalFilter, Ordered {
     public int getOrder() {
         return -9;
     }
-
 }

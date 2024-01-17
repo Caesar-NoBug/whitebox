@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//使用Trie实现前缀匹配（支持模糊匹配）
+//使用Trie实现前缀匹配（支持模糊匹配【*表示匹配所有】）
 public class PrefixMatcher {
 
-    private TreeNode head = new TreeNode();
+    private final TreeNode head = new TreeNode();
 
     public PrefixMatcher(String... prefixes) {
         for (String prefix : prefixes) {
@@ -27,7 +27,7 @@ public class PrefixMatcher {
         if (StrUtil.isBlank(prefix)) return;
 
         TreeNode current = head;
-        char c = '*';
+        char c;
 
         for (int i = 0; i < prefix.length(); i++) {
 
@@ -44,13 +44,12 @@ public class PrefixMatcher {
         }
 
         current.setEnd(true);
-
     }
 
     public boolean match(String string) {
 
         TreeNode current = head;
-        char c = '*';
+        char c;
 
         for (int i = 0; i < string.length(); i++) {
 
@@ -64,15 +63,6 @@ public class PrefixMatcher {
 
         return current.isEnd || current.isPrefixEnd;
     }
-
-    /*public static void main(String[] args) {
-        PrefixMatcher prefixMatcher = new PrefixMatcher("abc", "acd", "abd*");
-        System.out.println(prefixMatcher.match("ab"));
-        System.out.println(prefixMatcher.match("abc"));
-        System.out.println(prefixMatcher.match("abcd"));
-        System.out.println(prefixMatcher.match("abd"));
-        System.out.println(prefixMatcher.match("abdf"));
-    }*/
 
     /**
      * nodeMap:     下一个节点的链接

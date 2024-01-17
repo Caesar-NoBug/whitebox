@@ -1,31 +1,20 @@
-package org.caesar.common.aspect;
+package org.caesar.common.log;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.caesar.common.context.ContextHolder;
-import org.caesar.common.exception.BusinessException;
-import org.caesar.common.log.LogUtil;
-import org.caesar.common.log.Logger;
+import org.caesar.common.util.MethodUtil;
 import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.domain.common.enums.LogType;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Aspect
 @Component
 public class LogAspect {
-
-    // 缓存方法参数名称
-    private final Map<Method, List<String>> CACHE_PARAM_NAMES = new ConcurrentHashMap<>();
 
     @Around("@annotation(org.caesar.common.log.Logger)")
     public Object doLog(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -68,14 +57,14 @@ public class LogAspect {
             int i = 0;
             StringBuilder sb = new StringBuilder();
 
-            for (String name : getParamNames(method)) {
+            for (String name : MethodUtil.getParamNames(method)) {
                 sb.append(name).append(':').append(args[i++]);
             }
 
             LogUtil.info(LogType.METHOD_ARGS, sb.toString());
         } catch (Throwable e) {
             // 只警告不抛出异常避免影响业务执行
-            LogUtil.warn("Fail to log the args of method:" + method, e);
+            LogUtil.warn(ErrorCode.SYSTEM_ERROR, "Fail to log the args of method:" + method, e);
         }
 
     }
@@ -95,24 +84,6 @@ public class LogAspect {
         }
 
         return result;
-    }
-
-    private List<String> getParamNames(Method method) {
-
-        List<String> paramNames = this.CACHE_PARAM_NAMES.get(method);
-
-        if (Objects.isNull(paramNames)) {
-
-            paramNames = new ArrayList<>();
-
-            for (Parameter parameter : method.getParameters()) {
-                paramNames.add(parameter.getName());
-            }
-
-            this.CACHE_PARAM_NAMES.put(method, paramNames);
-        }
-
-        return paramNames;
     }
 
 }

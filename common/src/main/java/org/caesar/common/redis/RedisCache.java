@@ -1,9 +1,10 @@
 package org.caesar.common.redis;
 
-import com.alibaba.nacos.shaded.org.checkerframework.checker.units.qual.K;
 import org.redisson.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.redisson.client.codec.StringCodec;
 import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -20,19 +21,18 @@ public class RedisCache
 {
     //TODO: 加分布式锁功能
     @Resource
-    private RedisTemplate redisTemplate;
+    private RedisTemplate redisJSONTemplate;
 
     @Resource
     private RedissonClient redissonClient;
 
     private final Map<String, String> lastDate = new ConcurrentHashMap<>();
 
-    //2023-01-01 00:00
-    private final long BEGIN_TIMESTAMP = 1672531200L;
-
     //生成指定keyPrefix的id（保证有序且唯一）
     public long nextId(String keyPrefix) {
         LocalDateTime now = LocalDateTime.now();
+        //2023-01-01 00:00
+        long BEGIN_TIMESTAMP = 1672531200L;
         long timestamp = now.toEpochSecond(ZoneOffset.UTC) - BEGIN_TIMESTAMP;
 
         String curr = now.format(DateTimeFormatter.ofPattern("yyyy:MM:dd"));
@@ -53,8 +53,12 @@ public class RedisCache
         return timestamp << 32 + count;
     }
 
+    public RScript getScript() {
+        return redissonClient.getScript(new StringCodec());
+    }
+
     public boolean hasKey(String key) {
-        return redisTemplate.hasKey(key);
+        return redisJSONTemplate.hasKey(key);
     }
 
     public<T> RQueue<T> getQueue(String key) {
@@ -70,7 +74,7 @@ public class RedisCache
     }
 
     public <T, V> BoundZSetOperations<T, V> getSortedSet(String key) {
-        return redisTemplate.boundZSetOps(key);
+        return redisJSONTemplate.boundZSetOps(key);
     }
 
     /**
@@ -81,7 +85,7 @@ public class RedisCache
      */
     public <T> void setCacheObject(final String key, final T value)
     {
-        redisTemplate.opsForValue().set(key, value);
+        redisJSONTemplate.opsForValue().set(key, value);
     }
 
     /**
@@ -94,7 +98,7 @@ public class RedisCache
      */
     public <T> void setCacheObject(final String key, final T value, final Integer timeout, final TimeUnit timeUnit)
     {
-        redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
+        redisJSONTemplate.opsForValue().set(key, value, timeout, timeUnit);
     }
 
     /**
@@ -119,7 +123,7 @@ public class RedisCache
      */
     public boolean expire(final String key, final long timeout, final TimeUnit unit)
     {
-        return redisTemplate.expire(key, timeout, unit);
+        return redisJSONTemplate.expire(key, timeout, unit);
     }
 
     /**
@@ -130,7 +134,7 @@ public class RedisCache
      */
     public <T> T getCacheObject(final String key)
     {
-        ValueOperations<String, T> operation = redisTemplate.opsForValue();
+        ValueOperations<String, T> operation = redisJSONTemplate.opsForValue();
         return operation.get(key);
     }
 
@@ -141,7 +145,7 @@ public class RedisCache
      */
     public boolean deleteObject(final String key)
     {
-        return redisTemplate.delete(key);
+        return redisJSONTemplate.delete(key);
     }
 
     /**
@@ -152,7 +156,7 @@ public class RedisCache
      */
     public long deleteObject(final Collection collection)
     {
-        return redisTemplate.delete(collection);
+        return redisJSONTemplate.delete(collection);
     }
 
     /**
@@ -164,7 +168,7 @@ public class RedisCache
      */
     public <T> long setCacheList(final String key, final List<T> dataList)
     {
-        Long count = redisTemplate.opsForList().rightPushAll(key, dataList);
+        Long count = redisJSONTemplate.opsForList().rightPushAll(key, dataList);
         return count == null ? 0 : count;
     }
 
@@ -176,7 +180,7 @@ public class RedisCache
      */
     public <T> List<T> getCacheList(final String key)
     {
-        return redisTemplate.opsForList().range(key, 0, -1);
+        return redisJSONTemplate.opsForList().range(key, 0, -1);
     }
 
     /**
@@ -188,7 +192,7 @@ public class RedisCache
      */
     public <T> BoundSetOperations<String, T> setCacheSet(final String key, final Set<T> dataSet)
     {
-        BoundSetOperations<String, T> setOperation = redisTemplate.boundSetOps(key);
+        BoundSetOperations<String, T> setOperation = redisJSONTemplate.boundSetOps(key);
         Iterator<T> it = dataSet.iterator();
         while (it.hasNext())
         {
@@ -205,7 +209,7 @@ public class RedisCache
      */
     public <T> Set<T> getCacheSet(final String key)
     {
-        return redisTemplate.opsForSet().members(key);
+        return redisJSONTemplate.opsForSet().members(key);
     }
 
     /**
@@ -217,7 +221,7 @@ public class RedisCache
     public <T> void setCacheMap(final String key, final Map<String, T> dataMap)
     {
         if (dataMap != null) {
-            redisTemplate.opsForHash().putAll(key, dataMap);
+            redisJSONTemplate.opsForHash().putAll(key, dataMap);
         }
     }
 
@@ -229,7 +233,7 @@ public class RedisCache
      */
     public <T> Map<String, T> getCacheMap(final String key)
     {
-        return redisTemplate.opsForHash().entries(key);
+        return redisJSONTemplate.opsForHash().entries(key);
     }
 
     /**
@@ -241,7 +245,7 @@ public class RedisCache
      */
     public <T> void setCacheMapValue(final String key, final String hKey, final T value)
     {
-        redisTemplate.opsForHash().put(key, hKey, value);
+        redisJSONTemplate.opsForHash().put(key, hKey, value);
     }
 
     /**
@@ -253,7 +257,7 @@ public class RedisCache
      */
     public <T> T getCacheMapValue(final String key, final String hKey)
     {
-        HashOperations<String, String, T> opsForHash = redisTemplate.opsForHash();
+        HashOperations<String, String, T> opsForHash = redisJSONTemplate.opsForHash();
         return opsForHash.get(key, hKey);
     }
 
@@ -265,7 +269,7 @@ public class RedisCache
      */
     public void delCacheMapValue(final String key, final String hkey)
     {
-        HashOperations hashOperations = redisTemplate.opsForHash();
+        HashOperations hashOperations = redisJSONTemplate.opsForHash();
         hashOperations.delete(key, hkey);
     }
 
@@ -278,7 +282,7 @@ public class RedisCache
      */
     public <T> List<T> getMultiCacheMapValue(final String key, final Collection<Object> hKeys)
     {
-        return redisTemplate.opsForHash().multiGet(key, hKeys);
+        return redisJSONTemplate.opsForHash().multiGet(key, hKeys);
     }
 
     /**
@@ -289,7 +293,7 @@ public class RedisCache
      */
     public Collection<String> keys(final String pattern)
     {
-        return redisTemplate.keys(pattern);
+        return redisJSONTemplate.keys(pattern);
     }
 
     public RBloomFilter<Long> getBloomFilter(String key) {

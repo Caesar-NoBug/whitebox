@@ -1,0 +1,23 @@
+package org.caesar.common.idempotent;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Idempotent {
+
+    // 业务名称(用作唯一前缀)
+    String value() default "";
+
+    // 指定请求唯一标识变量(必须是Long类型)
+    String reqId() default "";
+
+    // 过期时间(单位:秒)【保证在expire期间内接收的请求不会重复执行】
+    int expire() default 600;
+
+    // 执行时返回的信息
+    String msg() default "request already being processed successfully";
+}

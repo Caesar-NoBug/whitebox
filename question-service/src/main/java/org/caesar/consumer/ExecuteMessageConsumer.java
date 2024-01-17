@@ -8,17 +8,16 @@ import org.caesar.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 @Component
 @RocketMQMessageListener(topic = "execute", consumerGroup = "group")
 public class ExecuteMessageConsumer implements RocketMQListener<JudgeCodeRequest> {
 
-    @Autowired
-    private QuestionService questionService;
-
     @Override
     public void onMessage(JudgeCodeRequest request) {
         System.out.println(request);
-        Response<JudgeCodeResponse> submitCodeResponse = questionService.judgeCode(request);
+        //Response<JudgeCodeResponse> submitCodeResponse = questionService.judgeCode(request);
     }
 
 }

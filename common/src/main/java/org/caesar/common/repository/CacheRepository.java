@@ -33,7 +33,9 @@ public interface CacheRepository {
     boolean deleteLogLog(String key);
     long getLogLogCount(String key);
     boolean addLogLogElement(String key, Object object);
-    boolean addLogLogElements(String key, List<Object> object);
+
+    // lua表达式
+    String eval(String script, List<Object> keys, Object[] args);
 
     // 队列相关
     <T> RQueue<T> getQueue(String key);

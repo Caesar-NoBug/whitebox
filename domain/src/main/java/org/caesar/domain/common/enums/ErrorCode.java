@@ -7,7 +7,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-
     //TODO: 根据标准的http状态码改一下
     SUCCESS(200, "Request Success"),
     ILLEGAL_PARAM_ERROR(400, "Invalid Request Param"),
@@ -17,7 +16,7 @@ public enum ErrorCode {
     NOT_FIND_ERROR(404, "Could Not Find"),
     ALREADY_EXIST_ERROR(405, "Data Already Exist"),
     DUPLICATE_REQUEST(406, "Duplicate Request"),
-    SYSTEM_ERROR(500, "System Error"),
+    SYSTEM_ERROR(500, "Unexpected System Error"),
     SERVICE_UNAVAILABLE_ERROR(501, "Service Unavailable");
 
     private final int code;

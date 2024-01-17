@@ -2,7 +2,6 @@ package org.caesar.filter;
 
 import com.alibaba.fastjson.JSON;
 import org.caesar.common.client.UserClient;
-import org.caesar.common.exception.BusinessException;
 import org.caesar.common.log.LogUtil;
 import org.caesar.common.resp.RespUtil;
 import org.caesar.common.str.JwtUtil;
@@ -18,6 +17,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -36,32 +36,44 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AuthorizeFilter implements GlobalFilter, Ordered {
 
     // TODO: 加上游客查看文章的接口
-    // TODO: 从数据库动态获取白名单
-    public static final String[] AUTHORIZE_WHITE_LIST = {"/user-service/auth/login", "/user-service/auth/sendCode/**",
+
+    public static String[] AUTHORIZE_WHITE_LIST = {"/user-service/auth/login", "/user-service/auth/sendCode/**",
             "/user-service/auth/refreshToken", "/user-service/auth/register/**", "/user-service/user/reset"};
 
     private static final PrefixMatcher prefixMatcher = new PrefixMatcher(AUTHORIZE_WHITE_LIST);
 
     private static final Map<Integer, PrefixMatcher> authorizeMap = new ConcurrentHashMap<>();
 
-    //@Resource
-    //private ObjectProvider<UserClient> userClientProvider;
-    //private UserClient userClient;
-
-    //@Resource
-    //private UserWebClient userWebClient;
+    // 同步权限角色信息间隔时间（2小时）
+    public static final long SYNC_INTERVAL = 3600 * 1000;
 
     @Resource
     private UserClient userClient;
 
     @PostConstruct
     private void initAuthorizeMap() {
-        //UserClient userCLient = userClientProvider.getIfAvailable();
         List<RoleVO> roles = RespUtil.handleWithThrow(userClient.getUpdatedRole(LocalDateTime.MIN),
                 "[System Init] Fail to create userClient");
         for (RoleVO role : roles) {
             authorizeMap.put(role.getId(), new PrefixMatcher(role.getPermissions()));
         }
+    }
+
+    @Scheduled(fixedRate = SYNC_INTERVAL)
+    public void syncRole() {
+        List<RoleVO> roles = RespUtil.handleWithThrow(
+                userClient.getUpdatedRole(
+                        LocalDateTime.now().minusHours(SYNC_INTERVAL * 2)
+                ),
+                "[System Init] Fail to create userClient");
+        for (RoleVO role : roles) {
+            authorizeMap.put(role.getId(), new PrefixMatcher(role.getPermissions()));
+        }
+    }
+
+    @Scheduled(fixedRate = SYNC_INTERVAL)
+    public void syncWhiteList() {
+        // TODO: 从数据库动态获取白名单
     }
 
     @Override
@@ -87,7 +99,13 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
         ThrowUtil.ifNull(token, ErrorCode.NOT_AUTHORIZED_ERROR, "illegal request without token");
 
-        Long userId = authorize(token, uri);
+        Response<Long> authorizeResp = authorize(token, uri);
+
+        if(ErrorCode.SUCCESS.getCode() != authorizeResp.getCode()) {
+            return ExchangeUtil.returnError(exchange, authorizeResp);
+        }
+
+        Long userId = authorizeResp.getData();
 
         ServerHttpRequest processedRequest = request.mutate()
                 .headers(h -> h.remove(Headers.TOKEN_HEADER))
@@ -95,31 +113,6 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
                 .build();
 
         return chain.filter(exchange.mutate().request(processedRequest).build());
-
-        //CompletableFuture<Response<Long>> future = userClientProvider.getIfAvailable().authorize(token, uri);
-
-        /*return Mono.fromFuture(future)
-                .timeout(Duration.ofSeconds(5))
-                .onErrorResume(resp -> {
-                    // TODO: 改成日志调用
-                    // System.out.println("错误：" + resp);
-                    return Mono.error(new BusinessException(ErrorCode.NOT_AUTHORIZED_ERROR, "authentication failure"));
-                })
-                .flatMap(
-                authorizeResponse -> {
-
-                    ThrowUtil.ifTrue(authorizeResponse.getCode() != ErrorCode.SUCCESS.getCode(), ErrorCode.NOT_AUTHORIZED_ERROR, "授权失败：用户无权限访问");
-
-                    Long userId = authorizeResponse.getData();
-
-                    ServerHttpRequest processedRequest = request.mutate()
-                            .headers(h -> h.remove(Headers.TOKEN_HEADER))
-                            .header(Headers.USERID_HEADER, String.valueOf(userId))
-                            .build();
-
-                    return chain.filter(exchange.mutate().request(processedRequest).build());
-                }
-        );*/
     }
 
     @Override
@@ -131,7 +124,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
      * @param token       用户凭证
      * @param requestPath 用户请求路径
      */
-    public Long authorize(String token, String requestPath) {
+    public Response<Long> authorize(String token, String requestPath) {
 
         long userId;
         AuthorizationVO authorization;
@@ -143,21 +136,21 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         } catch (Exception e) {
             //jwt不合法
             LogUtil.warn("[Unauthenticated User] token is illegal or expired, please login again");
-            throw new BusinessException(ErrorCode.NOT_AUTHENTICATED_ERROR, "token is illegal or expired, please login again");
+            return new Response<>(ErrorCode.NOT_AUTHENTICATED_ERROR, null,"token is illegal or expired, please login again");
         }
 
         if (Objects.isNull(authorization))
-            throw new BusinessException(ErrorCode.NOT_AUTHENTICATED_ERROR, "token is illegal or expired, please login again");
+            return new Response<>(ErrorCode.NOT_AUTHENTICATED_ERROR, null,"token is illegal or expired, please login again");
 
         userId = authorization.getUserId();
         List<Integer> roles = authorization.getRoles();
 
         for (Integer role : roles) {
             PrefixMatcher authorizeMatcher = authorizeMap.get(role);
-            if(authorizeMatcher.match(requestPath)) return userId;
+            if(authorizeMatcher.match(requestPath)) return Response.ok(userId);
         }
 
-        throw new BusinessException(ErrorCode.NOT_AUTHORIZED_ERROR, "user does not have the permission to access");
+        return new Response<>(ErrorCode.NOT_AUTHORIZED_ERROR, null, "user does not have the permission to access");
     }
 
     //TODO: 定时同步角色和path的关系

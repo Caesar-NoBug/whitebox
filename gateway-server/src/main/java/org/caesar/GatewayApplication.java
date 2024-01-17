@@ -21,8 +21,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableFeignClients
 @Import(RocketMQAutoConfiguration.class)
 public class GatewayApplication {
-    //TODO: 测试跨域
-    //TODO: 添加统一缓存机制
+
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);
     }
@@ -48,16 +47,7 @@ public class GatewayApplication {
                     .route(
                             r -> r.path(String.format(SERVICE_PATH, service))
                                     .filters(f -> f
-                                                    .rewritePath(
-                                                            service, ""
-                                                    )/*.filter(
-                                                            ipRateLimiterFactory.apply(c -> {})
-                                                    )*/
-                                            /*.requestRateLimiter(
-                                                c -> c.setKeyResolver(new IPKeyResolver())
-                                                        .setRateLimiter(redisRateLimiter)
-                                                        .setStatusCode(HttpStatus.TOO_MANY_REQUESTS)
-                                            )*/
+                                                    .rewritePath(service, "")
                                     )
                                     .uri(String.format(SERVICE_URI, service))
                     );

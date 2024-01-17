@@ -94,8 +94,8 @@ public class RedisCacheRepository implements CacheRepository {
     }
 
     @Override
-    public boolean addLogLogElements(String key, List<Object> object) {
-        return redisCache.getHyperLogLog(key).addAll(object);
+    public String eval(String script, List<Object> keys, Object[] args) {
+        return redisCache.getScript().eval(RScript.Mode.READ_WRITE, script, RScript.ReturnType.VALUE, keys, args);
     }
 
     @Override

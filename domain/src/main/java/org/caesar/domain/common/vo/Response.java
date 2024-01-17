@@ -14,6 +14,12 @@ public class Response<T>{
     private T data;
     private String msg;
 
+    public Response(ErrorCode code, T data, String msg){
+        this.code = code.getCode();
+        this.data = data;
+        this.msg = msg;
+    }
+
     public static <T> Response<T> ok(){
         return new Response<T>(ErrorCode.SUCCESS.getCode(), null, "request success");
     }

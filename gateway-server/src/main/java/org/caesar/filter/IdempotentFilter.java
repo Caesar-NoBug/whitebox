@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 //TODO: 幂等过滤器，通过请求头的request id来来判断请求是否为重复请求
-@Component
+//@Component
 public class IdempotentFilter implements GlobalFilter, Ordered {
 
     @Resource
