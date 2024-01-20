@@ -1,24 +1,27 @@
 spring:
-  data:
-    redis:
-      host: 127.0.0.1
-      port: 6666
-      database: 0
-
   application:
     name: executor-service
 
   cloud:
     nacos:
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: 8.130.19.151:8848
+  redis:
+    host: 8.130.19.151
+    port: 16379
+    database: 4
+    password: rIj12YF23S
+
 server:
   port: 6789
 
 rocketmq:
-  name-server: 192.168.10.130:9876
-  topic: execute
-
+  name-server: 8.130.26.7:9876
+  consumer:
+    topic: execute-code
+  producer:
+    group: executor-service
+    topic: execute-code-resp
 
 logging:
   level:

@@ -4,6 +4,8 @@ import lombok.*;
 import org.caesar.domain.executor.enums.CodeLanguage;
 
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -18,15 +20,22 @@ import java.util.List;
 @AllArgsConstructor
 public class ExecuteCodeRequest {
 
-    //@StringChecker(name = "code", maxLength = 8192)
+    //允许的最大运行时间为5s
+    public static final long MAX_TIME_LIMIT = 5000;
+    //允许的最大运行内存为256MB
+    public static final long MAX_MEMORY_LIMIT = 1 << 8;
+
     private String code;
 
-    //@ObjectChecker(name = "代码语言")
+    @NotNull
     private CodeLanguage language;
 
     private List<String> inputCase;
 
+    @Max(MAX_TIME_LIMIT)
     private Long timeLimit;
+
+    @Max(MAX_MEMORY_LIMIT)
     private Long memoryLimit;
 
 }

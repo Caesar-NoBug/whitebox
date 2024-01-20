@@ -10,8 +10,6 @@ import feign.codec.Decoder;
 import feign.codec.EncodeException;
 import feign.codec.Encoder;
 import org.caesar.common.context.ContextHolder;
-import org.caesar.common.util.FastJsonDecoder;
-import org.caesar.common.util.FastJsonEncoder;
 import org.caesar.common.util.IOUtil;
 import org.caesar.domain.constant.Headers;
 import org.caesar.common.redis.RedisJsonSerializer;
@@ -84,7 +82,7 @@ public class GlobalConfig {
             template.header("Content-Type", "application/json");
             template.header(Headers.SOURCE_HEADER, "gateway");
 
-            Long userId = ContextHolder.getUserIdIfExist();
+            Long userId = ContextHolder.getUserId();
             if(Objects.nonNull(userId))
                 template.header(Headers.USERID_HEADER, String.valueOf(userId));
 

@@ -11,8 +11,6 @@ import org.caesar.common.str.JSONUtil;
 import org.caesar.common.vo.StatusMap;
 import org.caesar.model.vo.JudgeParam;
 import org.caesar.judge.QuestionJudgeManager;
-
-import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +19,6 @@ import java.util.List;
 @NoArgsConstructor
 public class Question implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     //默认时间限制为2s

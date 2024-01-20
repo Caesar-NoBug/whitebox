@@ -21,7 +21,7 @@ public class QuestionIndexVO implements IndexVO {
     /**
      * 补全字段
      */
-    private Completion suggestion;
+    /*private Completion suggestion;*/
 
     /**
      * 问题标题

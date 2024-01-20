@@ -17,11 +17,11 @@ spring:
     username: root
     password: 5eqPGg62I4
 
-  data:
-    redis:
-      host: 127.0.0.1
-      port: 6379
-      database: 0
+  redis:
+    host: 8.130.19.151
+    port: 16379
+    database: 2
+    password: rIj12YF23S
 
 server:
   port: 10098
@@ -32,6 +32,10 @@ server:
 #      defaultZone: http://127.0.0.1:18888/eureka
 
 rocketmq:
-  name-server: 127.0.0.1:9876
-  topic: execute
+  name-server: 8.130.26.7:9876
+  consumer:
+    topic: execute-code-resp
+  producer:
+    group: question-service
+    topic: execute-code
 #    group: question-service

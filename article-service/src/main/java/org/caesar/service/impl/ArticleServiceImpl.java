@@ -165,13 +165,13 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public void markArticle(long userId, long articleId, int mark) {
-        ThrowUtil.ifFalse(articleRepo.existArticle(articleId), ErrorCode.ILLEGAL_PARAM_ERROR, "文章不存在");
+        ThrowUtil.ifFalse(articleRepo.existArticle(articleId), ErrorCode.INVALID_ARGS_ERROR, "文章不存在");
         ThrowUtil.ifFalse(articleRepo.markArticle(userId, articleId, mark), ErrorCode.SYSTEM_ERROR, "");
     }
 
     @Override
     public void favorArticle(long userId, long articleId, boolean isFavor) {
-        ThrowUtil.ifFalse(articleRepo.existArticle(articleId), ErrorCode.ILLEGAL_PARAM_ERROR, "文章不存在");
+        ThrowUtil.ifFalse(articleRepo.existArticle(articleId), ErrorCode.INVALID_ARGS_ERROR, "文章不存在");
         ThrowUtil.ifFalse(articleRepo.favorArticle(userId, articleId, isFavor), ErrorCode.SYSTEM_ERROR, "");
     }
 

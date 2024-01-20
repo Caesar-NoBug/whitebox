@@ -18,7 +18,6 @@ import org.caesar.model.MsMenuStruct;
 import org.caesar.model.MsUserStruct;
 import org.caesar.model.dto.TokenDTO;
 import org.caesar.model.dto.UserDTO;
-import org.caesar.model.entity.Role;
 import org.caesar.model.entity.User;
 import org.caesar.model.req.RegisterRequest;
 import org.caesar.model.req.LoginRequest;
@@ -204,7 +203,7 @@ public class UserServiceImpl implements UserService {
         try {
             userId = JwtUtil.getJwtSubject(token);
         } catch (Exception e) {
-            throw new BusinessException(ErrorCode.ILLEGAL_PARAM_ERROR, "退出登录失败：非法token");
+            throw new BusinessException(ErrorCode.INVALID_ARGS_ERROR, "退出登录失败：非法token");
         }
 
         ThrowUtil.ifNull(userId, "退出失败，用户不存在");

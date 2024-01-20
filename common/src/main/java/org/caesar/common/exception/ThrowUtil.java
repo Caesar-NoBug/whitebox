@@ -2,10 +2,13 @@ package org.caesar.common.exception;
 
 import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.common.str.StrUtil;
+import org.caesar.domain.common.vo.Response;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 public class ThrowUtil {
 
@@ -15,7 +18,7 @@ public class ThrowUtil {
     }
 
     public static void ifFalse(boolean test, String message) {
-        if (!test) throw new BusinessException(ErrorCode.ILLEGAL_PARAM_ERROR, message);
+        if (!test) throw new BusinessException(ErrorCode.INVALID_ARGS_ERROR, message);
     }
 
     public static void ifFalse(boolean test, ErrorCode errorCode, String message) {
@@ -27,7 +30,7 @@ public class ThrowUtil {
     }
 
     public static void ifTrue(boolean isThrow, String message) {
-        if (isThrow) throw new BusinessException(ErrorCode.ILLEGAL_PARAM_ERROR, message);
+        if (isThrow) throw new BusinessException(ErrorCode.INVALID_ARGS_ERROR, message);
     }
 
     /**
@@ -36,7 +39,7 @@ public class ThrowUtil {
      *                   throw 校验异常
      */
     public static void validate(boolean validation, String message) {
-        if (!validation) throw new ValidationException(message);
+        if (!validation) throw new BusinessException(ErrorCode.INVALID_ARGS_ERROR, message);
     }
 
     /**
@@ -46,7 +49,7 @@ public class ThrowUtil {
      * @param message 抛出的异常信息
      */
     public static void ifNull(Object object, String message) {
-        ifNull(object, ErrorCode.ILLEGAL_PARAM_ERROR, message);
+        ifNull(object, ErrorCode.INVALID_ARGS_ERROR, message);
     }
 
     /**
@@ -79,7 +82,7 @@ public class ThrowUtil {
      */
     public static void testStr(String string, String message) {
         if (!StrUtil.checkString(string))
-            throw new BusinessException(ErrorCode.ILLEGAL_PARAM_ERROR, message);
+            throw new BusinessException(ErrorCode.INVALID_ARGS_ERROR, message);
     }
 
     /**
@@ -91,7 +94,6 @@ public class ThrowUtil {
      */
     public static void testStr(String string, int maxLength, String message) {
         if (!StrUtil.checkString(string, maxLength))
-            throw new BusinessException(ErrorCode.ILLEGAL_PARAM_ERROR, message);
+            throw new BusinessException(ErrorCode.INVALID_ARGS_ERROR, message);
     }
-
 }

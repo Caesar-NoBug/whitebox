@@ -52,9 +52,4 @@ public class GatewayConfig {
         return new CorsWebFilter(source);
     }
 
-    @Bean
-    public WebClient webClient() {
-        return WebClient.create();
-    }
-
 }

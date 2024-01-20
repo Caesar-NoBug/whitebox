@@ -65,7 +65,7 @@ public class IncSyncQuestionTask {
         for (int i = 0; i < updatedSize; i += pageSize) {
             int end = Math.min(i + pageSize, updatedSize);
             log.info("sync from {} to {}", i, end);
-            searchClient.syncArticleIndex(updatedQuestion.subList(i, end), DataSource.QUESTION);
+            searchClient.syncQuestionIndex(updatedQuestion.subList(i, end));
         }
         log.info("SyncQuestionToEs end, total {}", updatedSize);
 
@@ -73,7 +73,7 @@ public class IncSyncQuestionTask {
         for (int i = 0; i < removedSize; i += pageSize) {
             int end = Math.min(i + pageSize, removedSize);
                 log.info("remove from {} to {}", i, end);
-            searchClient.syncArticleIndex(removedQuestion.subList(i, end), DataSource.QUESTION);
+            searchClient.syncQuestionIndex(removedQuestion.subList(i, end));
         }
         log.info("RemoveQuestionToEs end, total {}", removedSize);
     }

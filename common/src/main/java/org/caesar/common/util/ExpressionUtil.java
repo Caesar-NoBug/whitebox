@@ -6,6 +6,12 @@ import java.util.Random;
 
 public class ExpressionUtil {
 
+    /**
+     * 生成一个随机的表达式，用于生成验证码
+     * @param numCount 表达式中数字的个数
+     * @param numBound 表达式中数字的范围
+     * @return 随机表达式及结果
+     */
     public static Expression genExpression(int numCount, int numBound) {
 
         Random random = new Random();

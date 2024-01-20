@@ -1,14 +1,18 @@
+import org.apache.rocketmq.common.TopicConfig;
 import org.caesar.QuestionApplication;
 import org.caesar.domain.executor.enums.CodeLanguage;
+import org.caesar.domain.executor.request.ExecuteCodeRequest;
 import org.caesar.domain.question.request.JudgeCodeRequest;
 import org.caesar.controller.QuestionController;
 import org.caesar.domain.question.request.AddQuestionRequest;
 import org.caesar.model.entity.Question;
+import org.caesar.publisher.ExecuteCodePublisher;
 import org.caesar.repository.QuestionRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,6 +24,9 @@ public class MyTest {
 
     @Autowired
     private QuestionRepository repository;
+
+    @Resource
+    private ExecuteCodePublisher publisher;
 
     @Test
     public void test() {
@@ -56,7 +63,7 @@ public class MyTest {
     @Test
     public void testSubmitCode() {
         JudgeCodeRequest request = new JudgeCodeRequest();
-        request.setId(234);
+        //request.setId(234);
         request.setCode("import java.util.Scanner;\n" +
                 "\n" +
                 "public class Main {\n" +
@@ -70,6 +77,16 @@ public class MyTest {
         request.setLanguage(CodeLanguage.JAVA);
         request.setQId(0);
         System.out.println(controller.submitCode(request));
+    }
+
+    @Test
+    public void testMq() {
+
+        ExecuteCodeRequest request = new ExecuteCodeRequest();
+        request.setCode("fsdfsdfsd");
+        request.setLanguage(CodeLanguage.PYTHON);
+
+        publisher.sendExecuteCodeMessage(request);
     }
 
 }

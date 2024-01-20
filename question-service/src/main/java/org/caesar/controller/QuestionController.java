@@ -1,8 +1,5 @@
 package org.caesar.controller;
 
-
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import org.caesar.common.check.CheckManager;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.common.exception.ThrowUtil;
@@ -14,11 +11,14 @@ import org.caesar.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.Min;
+
 @RestController
 @RequestMapping("/question")
 public class QuestionController {
 
-    @Autowired
+    @Resource
     private QuestionService questionService;
 
     @PostMapping
@@ -55,7 +55,7 @@ public class QuestionController {
 
     @GetMapping("result/{id}")
     public Response<JudgeCodeResponse> getSubmitResult(@Min(0) @PathVariable Long id) {
-
+        return null;
     }
 
 }

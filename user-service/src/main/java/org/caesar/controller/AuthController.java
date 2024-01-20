@@ -8,7 +8,6 @@ import org.caesar.model.req.RegisterRequest;
 import org.caesar.model.vo.UserVO;
 import org.caesar.service.UserService;
 import org.caesar.common.str.StrUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -43,7 +42,7 @@ public class AuthController {
     @PostMapping("/refreshToken")
     public Response refreshToken(@RequestBody TokenDTO tokenDTO) {
         String refreshToken = tokenDTO.getRefreshToken();
-        Long userId = ContextHolder.getUserId();
+        Long userId = ContextHolder.getUserIdRequired();
         LocalDateTime lastUpdateTime = tokenDTO.getLastUpdateTime();
 
         if (StrUtil.isBlank(refreshToken) || Objects.isNull(lastUpdateTime))

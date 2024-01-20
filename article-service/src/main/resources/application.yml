@@ -14,7 +14,7 @@ spring:
   redis:
     host: 8.130.19.151
     port: 16379
-    database: 0
+    database: 5
     password: rIj12YF23S
 
   application:

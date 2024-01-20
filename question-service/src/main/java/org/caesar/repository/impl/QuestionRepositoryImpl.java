@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class QuestionRepositoryImpl implements QuestionRepository {
@@ -43,7 +44,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     @Override
     public List<Question> getUpdatedQuestion(LocalDateTime afterTime) {
         List<QuestionPO> questionDOList = questionMapper.selectQuestionByUpdateTime(afterTime);
-        return questionDOList.stream().map(poMapper::POtoDO).toList();
+        return questionDOList.stream().map(poMapper::POtoDO).collect(Collectors.toList());
     }
 
 }

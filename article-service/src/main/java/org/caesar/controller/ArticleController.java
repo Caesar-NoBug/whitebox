@@ -29,7 +29,7 @@ public class ArticleController {
     @Logger(value = "/addArticle", args = true, result = true)
     @PostMapping
     Response<Void> addArticle(@RequestBody AddArticleRequest request) {
-        articleService.addArticle(ContextHolder.getUserId(), request);
+        articleService.addArticle(ContextHolder.getUserIdRequired(), request);
         return Response.ok();
     }
 
@@ -39,7 +39,7 @@ public class ArticleController {
             @Min(0) @RequestParam Integer viewedSize,
             @Min(0) @RequestParam Integer preferredSize,
             @Min(0) @RequestParam Integer randPreferredSize) {
-        long userId = ContextHolder.getUserId();
+        long userId = ContextHolder.getUserIdRequired();
         return Response.ok(articleService.getPreferArticle(userId, viewedSize, preferredSize, randPreferredSize));
     }
 
@@ -48,26 +48,26 @@ public class ArticleController {
     Response<ArticleVO> viewArticle(@PathVariable Long articleId) {
         Long userId = ContextHolder.get(ContextHolder.USER_ID);
         ThrowUtil.ifNull(userId, "unauthenticated user");
-        return Response.ok(articleService.viewArticle(ContextHolder.getUserId(), articleId));
+        return Response.ok(articleService.viewArticle(ContextHolder.getUserIdRequired(), articleId));
     }
 
     // 查看文章历史
     @GetMapping("/history")
     Response<List<ArticleHistoryVO>> getArticleHistory(@RequestParam Integer from, @RequestParam Integer size) {
-        return Response.ok(articleService.getArticleHistory(ContextHolder.getUserId(), from, size));
+        return Response.ok(articleService.getArticleHistory(ContextHolder.getUserIdRequired(), from, size));
     }
 
     // 修改文章
     @PutMapping
     Response<Void> updateArticle(@RequestBody UpdateArticleRequest request) {
-        articleService.updateArticle(ContextHolder.getUserId(), request);
+        articleService.updateArticle(ContextHolder.getUserIdRequired(), request);
         return Response.ok();
     }
 
     // 删除文章
     @DeleteMapping("/{articleId}")
     Response<Void> deleteArticle(@PathVariable Long articleId) {
-        articleService.deleteArticle(ContextHolder.getUserId(), articleId);
+        articleService.deleteArticle(ContextHolder.getUserIdRequired(), articleId);
         return Response.ok();
     }
 
@@ -76,17 +76,17 @@ public class ArticleController {
     Response<Void> markArticle(@PathVariable Long articleId,@RequestParam Integer mark, @RequestParam Boolean isFavor) {
 
         if(Objects.nonNull(mark))
-            articleService.markArticle(ContextHolder.getUserId(), articleId, mark);
+            articleService.markArticle(ContextHolder.getUserIdRequired(), articleId, mark);
 
         if(Objects.nonNull(isFavor))
-            articleService.favorArticle(ContextHolder.getUserId(), articleId, isFavor);
+            articleService.favorArticle(ContextHolder.getUserIdRequired(), articleId, isFavor);
 
         return Response.ok();
     }
 
     @PostMapping("/unique")
     Response<List<Long>> getUniqueArticle(@RequestBody List<Long> articleIds) {
-        long userId = ContextHolder.getUserId();
+        long userId = ContextHolder.getUserIdRequired();
         return Response.ok(articleService.getUniqueArticle(userId, articleIds));
     }
 

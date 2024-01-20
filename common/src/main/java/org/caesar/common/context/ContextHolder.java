@@ -1,7 +1,6 @@
 package org.caesar.common.context;
 
 import org.caesar.common.exception.ThrowUtil;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,19 +30,19 @@ public class ContextHolder {
         return map == null ? null : (T) map.get(key);
     }
 
-    public static void setUserId(long userId) {
+    public static void setUserId(Long userId) {
         set(USER_ID, userId);
     }
 
     // 获取用户ID, 如果为空抛出异常
-    public static long getUserId() {
+    public static Long getUserIdRequired() {
         Long userId = get(USER_ID);
         ThrowUtil.ifNull(userId, "Unauthenticated User!");
         return userId;
     }
 
     // 获取用户ID, 如果为空返回null(不抛出异常)
-    public static Long getUserIdIfExist() {
+    public static Long getUserId() {
         return get(USER_ID);
     }
 

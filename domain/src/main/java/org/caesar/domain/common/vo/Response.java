@@ -36,7 +36,7 @@ public class Response<T>{
         return new Response<T>(ErrorCode.ILLEGAL_PARAM_ERROR.getCode(), data, msg);
     }*/
 
-    public static <T> Response<Void> error(ErrorCode errorCode, String msg){
+    public static <T> Response<T> error(ErrorCode errorCode, String msg){
         return new Response<>(errorCode.getCode(), null, msg);
     }
 
@@ -45,7 +45,7 @@ public class Response<T>{
     }
 
     public static <T> Response<T> error(String msg){
-        return new Response<>(ErrorCode.ILLEGAL_PARAM_ERROR.getCode(), null, msg);
+        return new Response<>(ErrorCode.INVALID_ARGS_ERROR.getCode(), null, msg);
     }
 
 }

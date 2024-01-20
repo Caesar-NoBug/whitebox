@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -103,7 +101,6 @@ public class QuestionPO implements Serializable {
      */
     private LocalDateTime updateTime;
 
-    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

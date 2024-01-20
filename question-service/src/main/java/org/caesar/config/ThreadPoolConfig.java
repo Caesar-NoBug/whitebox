@@ -9,11 +9,11 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
-@EnableAsync
-@Configuration
-@ConfigurationProperties(prefix = "thread.pool")
+//@EnableAsync
+//@Configuration
+//@ConfigurationProperties(prefix = "thread.pool")
 public class ThreadPoolConfig {
-
+//TODO: 重新弄一下线程池
     private Integer corePoolSize;
 
     private Integer maxPoolSize;

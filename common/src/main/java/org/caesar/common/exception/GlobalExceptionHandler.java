@@ -1,6 +1,5 @@
 package org.caesar.common.exception;
 
-import org.caesar.common.context.ContextHolder;
 import org.caesar.common.log.LogUtil;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.common.enums.ErrorCode;
@@ -16,7 +15,7 @@ public class GlobalExceptionHandler {
 
     //TODO: filter获取信息
     @ExceptionHandler(BusinessException.class)
-    public Response<Void> businessExceptionHandler(BusinessException e) {
+    public<T> Response<T> businessExceptionHandler(BusinessException e) {
 
         ErrorCode code = e.getCode();
 
@@ -31,9 +30,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public Response<Void> constraintViolationExceptionHandler(ConstraintViolationException e) {
+    public <T> Response<T> constraintViolationExceptionHandler(ConstraintViolationException e) {
 
-        ErrorCode code = ErrorCode.ILLEGAL_PARAM_ERROR;
+        ErrorCode code = ErrorCode.INVALID_ARGS_ERROR;
 
         LogUtil.warn(code, e.getMessage());
 
@@ -41,7 +40,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public Response<Void> runtimeExceptionHandler(RuntimeException e) {
+    public <T> Response<T> runtimeExceptionHandler(RuntimeException e) {
 
         ErrorCode code = ErrorCode.SYSTEM_ERROR;
         LogUtil.error(code, e.getMessage(), e);

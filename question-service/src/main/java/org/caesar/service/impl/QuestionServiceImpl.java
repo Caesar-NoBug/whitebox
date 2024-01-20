@@ -20,10 +20,9 @@ import org.caesar.model.entity.Question;
 import org.caesar.repository.QuestionRepository;
 import org.caesar.service.QuestionService;
 import org.caesar.mapper.QuestionMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 
 /**
@@ -36,18 +35,18 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, QuestionPO>
         implements QuestionService {
 
     //TODO: 改成防腐层接口
-    @Autowired
+    @Resource
     private QuestionRepository questionRepository;
 
-    @Autowired
+    @Resource
     private CacheRepository cacheRepository;
 
-    @Autowired
+    @Resource
     private ExecutorClient executorClient;
 
     //TODO: 优化校验逻辑，整合到Question中
     @Override
-    public Response<Void> addQuestion(AddQuestionRequest request) {
+    public void addQuestion(AddQuestionRequest request) {
 
         Long id = cacheRepository.nextId(CachePrefix.QUESTION_INC_ID);
 
@@ -62,20 +61,16 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, QuestionPO>
 
         ThrowUtil.ifTrue(!insertResult, ErrorCode.SYSTEM_ERROR, "添加问题失败");
 
-        return Response.ok(null, "添加问题成功");
     }
 
     @Override
-    public Response<Void> deleteQuestion(Long qId) {
-
-        boolean deleteResult = questionRepository.deleteQuestion(qId);
-
-        return deleteResult ? Response.ok(null, "删除成功")
-                : Response.error("删除失败，题目不存在");
+    public void deleteQuestion(Long qId) {
+        ThrowUtil.ifFalse(questionRepository.deleteQuestion(qId), ErrorCode.NOT_FIND_ERROR,
+                "question does not exist or fail to remove the question");
     }
 
     @Override
-    public Response<Void> updateQuestion(UpdateQuestionRequest request) {
+    public void updateQuestion(UpdateQuestionRequest request) {
         LocalDateTime now = LocalDateTime.now();
 
         Question question = new Question(request.getId(), request.getTitle(), request.getContent(),
@@ -85,11 +80,11 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, QuestionPO>
 
         boolean updateFlag = questionRepository.updateQuestion(question);
 
-        return updateFlag ? Response.ok(null, "更新成功") : Response.error("更新失败");
+        ThrowUtil.ifFalse(updateFlag, ErrorCode.NOT_FIND_ERROR, "fail to update the question");
     }
 
     @Override
-    public Response<String> judgeCode(JudgeCodeRequest request) {
+    public String judgeCode(JudgeCodeRequest request) {
 
         //从数据库查询问题信息
         Question question = questionRepository.getQuestionById(request.getQId());
@@ -100,10 +95,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, QuestionPO>
 
         doJudgeCode(submitId, request, question);
 
-        return Response.ok(submitId);
+        return submitId;
     }
 
-    @Async
     @Override
     //异步执行判题逻辑
     public void doJudgeCode(String submitId, JudgeCodeRequest request, Question question) {

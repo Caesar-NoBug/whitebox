@@ -16,13 +16,13 @@ import org.springframework.scheduling.annotation.Async;
  */
 public interface QuestionService extends IService<QuestionPO> {
     //TODO: 不要返回Response
-    Response<Void> addQuestion(AddQuestionRequest request);
+    void addQuestion(AddQuestionRequest request);
 
-    Response<Void> deleteQuestion(Long qId);
+    void deleteQuestion(Long qId);
 
-    Response<Void> updateQuestion(UpdateQuestionRequest request);
+    void updateQuestion(UpdateQuestionRequest request);
 
-    Response<String> judgeCode(JudgeCodeRequest request);
+    String judgeCode(JudgeCodeRequest request);
 
     @Async
     void doJudgeCode(String submitId, JudgeCodeRequest request, Question question);

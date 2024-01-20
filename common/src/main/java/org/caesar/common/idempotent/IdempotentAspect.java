@@ -120,7 +120,7 @@ public class IdempotentAspect {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "fail to evaluate the expression(Illegal expr or requestId type)");
         }
 
-        return String.format(REQUEST_ID_PATTERN, prefix, ContextHolder.getUserId(), id);
+        return String.format(REQUEST_ID_PATTERN, prefix, ContextHolder.getUserIdRequired(), id);
     }
 
     private Expression getExpression(Method method, String key) {

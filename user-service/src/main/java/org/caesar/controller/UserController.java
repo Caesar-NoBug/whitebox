@@ -35,7 +35,7 @@ public class UserController {
 
     @GetMapping("/prefer")
     public Response<UserPreferVO> getUserPrefer() {
-        long userId = ContextHolder.getUserId();
+        long userId = ContextHolder.getUserIdRequired();
         return Response.ok(userExtraService.getUserPrefer(userId));
     }
 
