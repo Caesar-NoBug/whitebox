@@ -8,15 +8,28 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
     //TODO: 根据标准的http状态码改一下
+
+    // 请求成功
     SUCCESS(200, "Request Success"),
-    INVALID_ARGS_ERROR(400, "Invalid argument"),
+    // 请求参数错误
+    INVALID_ARGS_ERROR(400, "Invalid Argument"),
+    // 未认证
     NOT_AUTHENTICATED_ERROR(401, "Unauthenticated"),
+    // 未授权
     NOT_AUTHORIZED_ERROR(402, "Unauthorized"),
+    // 请求过多
     TOO_MUCH_REQUEST_ERROR(429, "To Many Request"),
+    // 请求未找到资源
     NOT_FIND_ERROR(404, "Resource Could Not Found"),
+    // 请求资源已存在
     ALREADY_EXIST_ERROR(405, "Data Already Exist"),
+    // 请求重复
     DUPLICATE_REQUEST(406, "Duplicate Request"),
+    // 请求正在处理中
+    REQUEST_PROCESSING_ERROR(407, "Request Is Been Processing"),
+    // 系统错误
     SYSTEM_ERROR(500, "Unexpected System Error"),
+    // 服务不可用
     SERVICE_UNAVAILABLE_ERROR(501, "Service Unavailable");
 
     private final int code;

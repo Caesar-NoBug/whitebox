@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.validation.ConstraintViolationException;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Component
@@ -14,6 +15,7 @@ public class ExceptionHandler {
     private GlobalExceptionHandler globalExceptionHandler;
 
     /**
+     * 用于处理controller方法外的异常，并且返回封装好的结果
      * @param supplier 实际运行的方法
      * @param <T>      返回值类型
      * @return 方法的返回值（当发生异常时则转换成对应的Response对象）
@@ -33,6 +35,5 @@ public class ExceptionHandler {
 
         return result;
     }
-
 
 }

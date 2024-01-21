@@ -4,10 +4,9 @@ import org.redisson.api.*;
 import org.springframework.data.redis.core.BoundZSetOperations;
 
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 public interface CacheRepository {
 
@@ -27,6 +26,20 @@ public interface CacheRepository {
     boolean expire(String key, int expire, TimeUnit timeUnit);
     void deleteObject(String key);
     <T> T getObject(String key);
+
+
+    /**
+     * @param key           缓存key
+     * @param minExpire     最小过期时间(默认10分钟)
+     * @param expireFloat   过期时间浮动值(默认10分钟)
+     * @param supplier      实际数据的提供者
+     * @param <T>           数据类型
+     * @return              缓存中或supplier的数据
+     */
+    <T> T handleCache(String key, int minExpire, int expireFloat, Supplier<T> supplier);
+
+    <T> T handleCache(String key, Supplier<T> supplier);
+
     boolean exist(String key);
 
     // 基数统计相关

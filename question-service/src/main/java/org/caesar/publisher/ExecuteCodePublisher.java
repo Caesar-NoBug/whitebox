@@ -1,9 +1,12 @@
 package org.caesar.publisher;
 
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.caesar.common.exception.BusinessException;
 import org.caesar.common.vo.MessageDTO;
+import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.domain.executor.request.ExecuteCodeRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -22,7 +25,11 @@ public class ExecuteCodePublisher {
     }
 
     public void sendExecuteCodeMessage(ExecuteCodeRequest request) {
-        rocketMQTemplate.convertAndSend(topic, new MessageDTO<>(request));
+        try {
+            rocketMQTemplate.convertAndSend(topic, new MessageDTO<>(request));
+        } catch (MessagingException e) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Fail to send execute code message.");
+        }
     }
 
 }

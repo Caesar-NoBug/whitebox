@@ -153,7 +153,7 @@ public class Question implements Serializable {
         List<String> outputArray = getOutputArray();
         //执行出现异常则直接返回
         if (!executeResponse.isSuccess()) {
-            return new JudgeCodeResponse(false, executeResponse.getType(),  executeResponse.getMessage(), time, memory);
+            return new JudgeCodeResponse(true, false, executeResponse.getType(),  executeResponse.getMessage(), time, memory);
         }
 
         List<String> codeResult = executeResponse.getResult();
@@ -192,6 +192,7 @@ public class Question implements Serializable {
 
         }
 
+        judgeCodeResponse.setComplete(true);
         judgeCodeResponse.setSuccess(success);
 
         if(!success) judgeCodeResponse.setType(resultTypes);

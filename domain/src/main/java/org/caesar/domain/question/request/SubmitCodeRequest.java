@@ -6,13 +6,9 @@ import org.caesar.domain.executor.enums.CodeLanguage;
 import java.io.Serializable;
 
 @Data
-public class JudgeCodeRequest implements Serializable {
+public class SubmitCodeRequest implements Serializable {
 
-    //@NumberChecker(name = "用户id", min = 0)
-    private long userId;
-
-    //@NumberChecker(name = "问题id", min = 0)
-    private long qId;
+    private Long qId;
 
     //@StringChecker(name = "用户代码")
     private String code;

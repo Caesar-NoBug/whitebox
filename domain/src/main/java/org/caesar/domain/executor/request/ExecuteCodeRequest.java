@@ -22,20 +22,31 @@ public class ExecuteCodeRequest {
 
     //允许的最大运行时间为5s
     public static final long MAX_TIME_LIMIT = 5000;
+
     //允许的最大运行内存为256MB
     public static final long MAX_MEMORY_LIMIT = 1 << 8;
 
+    // 问题id
+    private long questionId;
+
+    // 提交ID
+    private long submitId;
+
+    // 用户代码
     private String code;
 
+    // 用户代码语言
     @NotNull
     private CodeLanguage language;
 
+    // 输入用例
     private List<String> inputCase;
 
+    // 执行时间限制
     @Max(MAX_TIME_LIMIT)
     private Long timeLimit;
 
+    // 运行内存限制
     @Max(MAX_MEMORY_LIMIT)
     private Long memoryLimit;
-
 }

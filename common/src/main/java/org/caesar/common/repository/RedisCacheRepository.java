@@ -3,17 +3,32 @@ package org.caesar.common.repository;
 import org.caesar.common.redis.RedisCache;
 import org.redisson.api.*;
 import org.springframework.data.redis.core.BoundZSetOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Queue;
+import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Component
 public class RedisCacheRepository implements CacheRepository {
+    // 默认最小过期时间（10分钟）
+    public static final int DEFAULT_MIN_EXPIRE = 600;
+    // 默认过期浮动时间（10分钟）
+    public static final int DEFAULT_EXPIRE_FLOAT = 600;
+
+    public final String GET_AND_EXPIRE_LUA_SCRIPT = "local res = redis.call('GET', KEYS[1]);\n"
+            + "if(res ~= nil)\n" +
+            "then\n" +
+            "   redis.call('EXPIRE', KEYS[1], ARGV[1]);" +
+            "end" +
+            "return res;";
+
+    private final Random random = new Random();
 
     @Resource
     private RedisCache redisCache;
@@ -71,6 +86,36 @@ public class RedisCacheRepository implements CacheRepository {
     @Override
     public <T> T getObject(String key) {
         return redisCache.getCacheObject(key);
+    }
+
+    @Override
+    public <T> T handleCache(String key, int minExpire, int expireFloat, Supplier<T> supplier) {
+
+        T result = getObject(key);
+
+        // 如果缓存存在，直接返回缓存数据并更新缓存存活时间
+        if(Objects.nonNull(result)) {
+            // 设置缓存过期时间为最大值
+            expire(key, minExpire + expireFloat, TimeUnit.SECONDS);
+        } else {
+            // 如果缓存不存在，则获取数据并设置缓存
+            result = supplier.get();
+
+            if(Objects.isNull(result)) {
+                return null;
+            }
+
+            int expire = minExpire + random.nextInt(expireFloat);
+
+            setObject(key, result, expire, TimeUnit.SECONDS);
+        }
+
+        return result;
+    }
+
+    @Override
+    public <T> T handleCache(String key, Supplier<T> supplier) {
+        return handleCache(key, DEFAULT_MIN_EXPIRE, DEFAULT_EXPIRE_FLOAT, supplier);
     }
 
     @Override

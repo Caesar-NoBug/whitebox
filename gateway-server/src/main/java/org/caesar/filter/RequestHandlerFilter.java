@@ -2,7 +2,7 @@ package org.caesar.filter;
 
 import com.alibaba.fastjson.JSON;
 import org.caesar.domain.constant.Headers;
-import org.caesar.domain.question.request.JudgeCodeRequest;
+import org.caesar.domain.question.request.SubmitCodeRequest;
 import org.caesar.publisher.ExecuteMessagePublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -38,7 +38,7 @@ public class RequestHandlerFilter implements GlobalFilter, Ordered {
                         dataBuffer.read(bytes);
                         String body = new String(bytes, StandardCharsets.UTF_8);
                         String userId = exchange.getRequest().getHeaders().getFirst(Headers.USERID_HEADER);
-                        JudgeCodeRequest request = JSON.parseObject(body, JudgeCodeRequest.class);
+                        SubmitCodeRequest request = JSON.parseObject(body, SubmitCodeRequest.class);
                         request.setUserId(Long.parseLong(userId));
 
                         //发送消息

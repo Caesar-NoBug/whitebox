@@ -42,7 +42,7 @@ public class AuthController {
     @PostMapping("/refreshToken")
     public Response refreshToken(@RequestBody TokenDTO tokenDTO) {
         String refreshToken = tokenDTO.getRefreshToken();
-        Long userId = ContextHolder.getUserIdRequired();
+        Long userId = ContextHolder.getUserIdNecessarily();
         LocalDateTime lastUpdateTime = tokenDTO.getLastUpdateTime();
 
         if (StrUtil.isBlank(refreshToken) || Objects.isNull(lastUpdateTime))

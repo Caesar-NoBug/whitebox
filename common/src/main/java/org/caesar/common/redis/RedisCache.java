@@ -138,6 +138,11 @@ public class RedisCache
         return operation.get(key);
     }
 
+   /* public <T> Object getCacheObject(String key) {
+        ValueOperations<String, T> operation = redisJSONTemplate.opsForValue();
+        return operation.get(key);
+    }*/
+
     /**
      * 删除单个对象
      *

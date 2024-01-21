@@ -1,6 +1,8 @@
 package org.caesar.task;
+import com.sun.xml.internal.bind.v2.TODO;
 import lombok.extern.slf4j.Slf4j;
 import org.caesar.common.client.SearchClient;
+import org.caesar.common.log.LogUtil;
 import org.caesar.domain.search.enums.DataSource;
 import org.caesar.domain.search.vo.QuestionIndexVO;
 import org.caesar.model.QuestionPOMapper;
@@ -23,12 +25,12 @@ public class IncSyncQuestionTask {
     @Resource
     private QuestionRepository questionRepository;
 
-    @Autowired
+    @Resource
     private SearchClient searchClient;
 
-    @Autowired
+    @Resource
     private QuestionPOMapper poMapper;
-
+    //TODO: 把 log.info 改成 LogUtil.info
     /**
      * 每分钟执行一次
      */

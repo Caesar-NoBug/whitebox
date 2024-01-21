@@ -49,7 +49,11 @@ public class GlobalExceptionHandler {
     }
 
     private String toResponseMessage(ErrorCode code, String detailMessage) {
-        return String.format(RESP_MSG_FORMAT, code.getMessage(), detailMessage);
+        // 为安全考虑，系统错误的详细原因不返回给前端
+        if(!ErrorCode.SYSTEM_ERROR.equals(code))
+            return String.format(RESP_MSG_FORMAT, code.getMessage(), detailMessage);
+        else
+            return code.getMessage();
     }
 
 }

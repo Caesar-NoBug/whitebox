@@ -64,7 +64,7 @@ public class SearchController {
 
     @GetMapping("/history")
     public Response<List<SearchHistoryVO>> getSearchHistory(@RequestParam Integer size) {
-        long userId = ContextHolder.getUserIdRequired();
+        long userId = ContextHolder.getUserIdNecessarily();
         return Response.ok(searchHistoryService.getSearchHistory(userId, size));
     }
 

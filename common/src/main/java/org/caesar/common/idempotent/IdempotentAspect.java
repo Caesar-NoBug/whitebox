@@ -29,7 +29,7 @@ public class IdempotentAspect {
 
     public static final String REQUEST_ID_PATTERN = "reqId:%s:%s:%s";
 
-    public static final String IDEMPOTENT_LUA = "local status = redis.call('EXISTS',KEYS[1]);\n" +
+    public static final String IDEMPOTENT_LUA_SCRIPT = "local status = redis.call('EXISTS',KEYS[1]);\n" +
             "if status == 0\n" +
             "then\n" +
             "   redis.call('SETEX',KEYS[1],ARGV[1],1)\n" +
@@ -49,16 +49,16 @@ public class IdempotentAspect {
 
         Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
 
-        Idempotent idempotent = method.getAnnotation(Idempotent.class);
+        Idempotent reqInfo = method.getAnnotation(Idempotent.class);
 
-        String key = getRequestId(method, idempotent, joinPoint.getArgs());
+        String key = getRequestId(method, reqInfo, joinPoint.getArgs());
 
-        String status = tryLock(key, idempotent.expire());
+        String status = tryLock(key, reqInfo.expire());
 
         switch (status) {
             // 正在处理中
             case "1": {
-                throw new BusinessException(ErrorCode.DUPLICATE_REQUEST, "The current request is being processed.");
+                throw new BusinessException(ErrorCode.REQUEST_PROCESSING_ERROR, reqInfo.processingMsg());
             }
             // 尚未开始处理，开始执行
             case "2": {
@@ -75,7 +75,7 @@ public class IdempotentAspect {
             }
             // 已处理成功
             case "3": {
-                return Response.ok(null, idempotent.msg());
+                throw new BusinessException(ErrorCode.DUPLICATE_REQUEST, reqInfo.successMsg());
             }
             // 非法status
             default: {
@@ -86,7 +86,7 @@ public class IdempotentAspect {
 
     // 尝试获取锁
     private String tryLock(String key, int expire) {
-        return cacheRepo.eval(IDEMPOTENT_LUA, Collections.singletonList(key), new Object[] {String.valueOf(expire)});
+        return cacheRepo.eval(IDEMPOTENT_LUA_SCRIPT, Collections.singletonList(key), new Object[] {String.valueOf(expire)});
     }
 
     // 设置锁为完成状态
@@ -98,11 +98,11 @@ public class IdempotentAspect {
         cacheRepo.deleteObject(key);
     }
 
-    private String getRequestId(Method method, Idempotent idempotent, Object[] args) {
+    private String getRequestId(Method method, Idempotent reqInfo, Object[] args) {
 
-        String prefix = idempotent.value();
+        String prefix = reqInfo.value();
 
-        Expression expression = getExpression(method, idempotent.reqId());
+        Expression expression = getExpression(method, reqInfo.reqId());
 
         List<String> paramNames = MethodUtil.getParamNames(method);
 
@@ -112,15 +112,15 @@ public class IdempotentAspect {
             context.setVariable(paramNames.get(i), args[i]);
         }
 
-        Long id;
+        String id;
 
         try {
-            id = expression.getValue(context, Long.class);
+            id = expression.getValue(context, String.class);
         } catch (EvaluationException e) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "fail to evaluate the expression(Illegal expr or requestId type)");
         }
 
-        return String.format(REQUEST_ID_PATTERN, prefix, ContextHolder.getUserIdRequired(), id);
+        return String.format(REQUEST_ID_PATTERN, prefix, ContextHolder.getUserIdNecessarily(), id);
     }
 
     private Expression getExpression(Method method, String key) {

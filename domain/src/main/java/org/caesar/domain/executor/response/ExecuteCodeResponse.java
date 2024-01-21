@@ -6,6 +6,8 @@ import org.caesar.domain.executor.enums.CodeResultType;
 import java.util.List;
 
 /**
+ * questionId:  题目id
+ * submitId:    提交id
  * success:     代码运行无异常发生
  * type:        代码运行结果类型
  * result:      执行结果
@@ -15,7 +17,8 @@ import java.util.List;
  */
 @Data
 public class ExecuteCodeResponse {
-    private String id;
+    private long questionId;
+    private int submitId;
     private boolean success;
     private List<CodeResultType> type;
     private String message;

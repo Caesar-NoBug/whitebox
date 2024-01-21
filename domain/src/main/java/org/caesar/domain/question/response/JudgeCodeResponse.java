@@ -8,6 +8,7 @@ import org.caesar.domain.executor.enums.CodeResultType;
 import java.util.List;
 
 /**
+ * complete:    是否判题结束完成
  * success:     代码是否正确
  * type:        代码运行结果类型
  * message:     第一个错误代码错误信息
@@ -18,9 +19,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JudgeCodeResponse {
+
+    public static final JudgeCodeResponse JUDGING = new JudgeCodeResponse(false, false, null, null, null, null);
+
+    private boolean complete;
     private boolean success;
     private List<CodeResultType> type;
     private String message;
     private List<Long> time;
     private List<Long> memory;
+
+    public static JudgeCodeResponse judging() {
+        return JUDGING;
+    }
 }

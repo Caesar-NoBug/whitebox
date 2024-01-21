@@ -54,7 +54,7 @@ public class ChatController {
 
     @PostMapping("/recommend-article")
     public Response<List<ArticleMinVO>> recommendArticle(@RequestBody RecommendArticleRequest request) {
-        long userId = ContextHolder.getUserIdRequired();
+        long userId = ContextHolder.getUserIdNecessarily();
         return Response.ok(recommendService.recommendArticle(userId, request));
     }
 

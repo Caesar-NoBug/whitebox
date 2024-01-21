@@ -1,8 +1,7 @@
-import org.apache.rocketmq.common.TopicConfig;
 import org.caesar.QuestionApplication;
 import org.caesar.domain.executor.enums.CodeLanguage;
 import org.caesar.domain.executor.request.ExecuteCodeRequest;
-import org.caesar.domain.question.request.JudgeCodeRequest;
+import org.caesar.domain.question.request.SubmitCodeRequest;
 import org.caesar.controller.QuestionController;
 import org.caesar.domain.question.request.AddQuestionRequest;
 import org.caesar.model.entity.Question;
@@ -62,7 +61,7 @@ public class MyTest {
 
     @Test
     public void testSubmitCode() {
-        JudgeCodeRequest request = new JudgeCodeRequest();
+        SubmitCodeRequest request = new SubmitCodeRequest();
         //request.setId(234);
         request.setCode("import java.util.Scanner;\n" +
                 "\n" +

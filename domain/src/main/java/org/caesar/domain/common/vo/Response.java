@@ -10,6 +10,8 @@ import org.caesar.domain.common.enums.ErrorCode;
 @AllArgsConstructor
 public class Response<T>{
 
+    public static final Response<Void> SUCCESS_RESPONSE = new Response<>(ErrorCode.SUCCESS.getCode(), null, "request success");
+
     private int code;
     private T data;
     private String msg;
@@ -20,8 +22,8 @@ public class Response<T>{
         this.msg = msg;
     }
 
-    public static <T> Response<T> ok(){
-        return new Response<T>(ErrorCode.SUCCESS.getCode(), null, "request success");
+    public static Response<Void> ok(){
+        return SUCCESS_RESPONSE;
     }
 
     public static <T> Response<T> ok(T data){

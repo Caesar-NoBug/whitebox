@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
         //获取用户信息
         User user = authManager.getIdenticalUser(method, identity);
 
-        ThrowUtil.ifNull(user, "登录失败：该用户不存在！");
+        ThrowUtil.ifNull(user, "fail to login: user does not exists.");
 
         long userId = user.getId();
 

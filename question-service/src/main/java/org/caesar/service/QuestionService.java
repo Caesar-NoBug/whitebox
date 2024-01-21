@@ -1,13 +1,12 @@
 package org.caesar.service;
 
-import org.caesar.domain.common.vo.Response;
+import org.caesar.domain.executor.response.ExecuteCodeResponse;
 import org.caesar.domain.question.request.AddQuestionRequest;
-import org.caesar.domain.question.request.JudgeCodeRequest;
+import org.caesar.domain.question.request.SubmitCodeRequest;
 import org.caesar.domain.question.request.UpdateQuestionRequest;
-import org.caesar.model.entity.Question;
+import org.caesar.domain.question.response.JudgeCodeResponse;
 import org.caesar.model.po.QuestionPO;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.scheduling.annotation.Async;
 
 /**
  * @author caesar
@@ -22,9 +21,10 @@ public interface QuestionService extends IService<QuestionPO> {
 
     void updateQuestion(UpdateQuestionRequest request);
 
-    String judgeCode(JudgeCodeRequest request);
+    void submitCode(long userId, SubmitCodeRequest request);
 
-    @Async
-    void doJudgeCode(String submitId, JudgeCodeRequest request, Question question);
+    void judgeCode(long userId, ExecuteCodeResponse response);
+
+    JudgeCodeResponse getJudgeCodeResult(long userId, long qId, int submitId);
 }
 

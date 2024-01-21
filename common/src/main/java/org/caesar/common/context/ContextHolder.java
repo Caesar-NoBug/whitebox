@@ -35,7 +35,7 @@ public class ContextHolder {
     }
 
     // 获取用户ID, 如果为空抛出异常
-    public static Long getUserIdRequired() {
+    public static Long getUserIdNecessarily() {
         Long userId = get(USER_ID);
         ThrowUtil.ifNull(userId, "Unauthenticated User!");
         return userId;

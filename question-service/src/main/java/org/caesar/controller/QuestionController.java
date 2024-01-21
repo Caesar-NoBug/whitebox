@@ -1,14 +1,15 @@
 package org.caesar.controller;
 
 import org.caesar.common.check.CheckManager;
+import org.caesar.common.context.ContextHolder;
+import org.caesar.common.idempotent.Idempotent;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.domain.question.request.AddQuestionRequest;
-import org.caesar.domain.question.request.JudgeCodeRequest;
+import org.caesar.domain.question.request.SubmitCodeRequest;
 import org.caesar.domain.question.request.UpdateQuestionRequest;
 import org.caesar.domain.question.response.JudgeCodeResponse;
 import org.caesar.service.QuestionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -26,7 +27,9 @@ public class QuestionController {
 
         CheckManager.checkThrowException(request, AddQuestionRequest.class);
 
-        return questionService.addQuestion(request);
+        questionService.addQuestion(request);
+
+        return Response.ok(null, "Added question successfully.");
     }
 
     @DeleteMapping("/{qId}")
@@ -34,7 +37,9 @@ public class QuestionController {
 
         ThrowUtil.ifNull(qId, "问题id为空");
 
-        return questionService.deleteQuestion(qId);
+        questionService.deleteQuestion(qId);
+
+        return Response.ok(null, "Deleted question successfully.");
     }
 
     @PutMapping
@@ -42,20 +47,30 @@ public class QuestionController {
 
         CheckManager.checkThrowException(request, UpdateQuestionRequest.class);
 
-        return questionService.updateQuestion(request);
+        questionService.updateQuestion(request);
+
+        return Response.ok(null, "Updated question successfully.");
     }
 
+    @Idempotent(value = "submitCode:", reqId = "#request.submitId", expire = 600,
+            successMsg = "提交代码请求已经被处理成功了!",
+            processingMsg = "提交代码请求正在处理中，请稍候!")
     @PostMapping("/submit")
-    public Response<String> submitCode(@RequestBody JudgeCodeRequest request) {
+    public Response<Void> submitCode(@RequestBody SubmitCodeRequest request) {
 
-        CheckManager.checkThrowException(request, JudgeCodeRequest.class);
+        CheckManager.checkThrowException(request, SubmitCodeRequest.class);
 
-        return questionService.judgeCode(request);
+        Long userId = ContextHolder.getUserId();
+
+        questionService.submitCode(userId, request);
+
+        return Response.ok();
     }
 
-    @GetMapping("result/{id}")
-    public Response<JudgeCodeResponse> getSubmitResult(@Min(0) @PathVariable Long id) {
-        return null;
+    @GetMapping("/judge-result")
+    public Response<JudgeCodeResponse> getJudgeCodeResult(@Min(0) @RequestParam Long qId, @RequestParam Integer submitId) {
+        Long userId = ContextHolder.getUserIdNecessarily();
+        return Response.ok(questionService.getJudgeCodeResult(userId, qId, submitId));
     }
 
 }

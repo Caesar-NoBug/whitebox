@@ -4,59 +4,41 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64792235-44ae-4705-bdf4-1ada63ec6571" name="Changes" comment="实现统一的幂等切面处理逻辑">
-      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/exception/ExceptionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/vo/MessageDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/manager/ExecutorManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/publisher/ExecuteCodeRespPublisher.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/manager/JudgeCodeManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+    <list default="true" id="64792235-44ae-4705-bdf4-1ada63ec6571" name="Changes" comment="引入rocketmq实现判题逻辑的异步化，实现消息传递过程中传递额外链路信息">
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/constant/CacheKey.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/task/SyncJudgeResultTask.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/aigc-service/src/main/java/org/caesar/controller/ChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/aigc-service/src/main/java/org/caesar/controller/ChatController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aigc-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/aigc-service/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/controller/ArticleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/controller/ArticleController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/service/impl/ArticleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/java/org/caesar/service/impl/ArticleServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/GlobalConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/GlobalConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/check/handler/NumberCheckHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/check/handler/NumberCheckHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/check/handler/ObjectCheckHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/check/handler/ObjectCheckHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/check/handler/StringCheckHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/check/handler/StringCheckHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/context/ContextHolder.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/context/ContextHolder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/exception/ExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/exception/ExceptionHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/exception/GlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/exception/ThrowUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/exception/ThrowUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/exception/ValidationException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/idempotent/Idempotent.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/idempotent/Idempotent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/idempotent/IdempotentAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/idempotent/IdempotentAspect.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/resp/RespUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/resp/RespUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/resp/ResponseHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/resp/ResponseHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/util/ExpressionUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/util/ExpressionUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/redis/RedisCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/redis/RedisCache.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/repository/CacheRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/repository/CacheRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/repository/RedisCacheRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/repository/RedisCacheRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/common/enums/ErrorCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/common/enums/ErrorCode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/common/vo/Response.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/common/vo/Response.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/executor/request/ExecuteCodeRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/executor/request/ExecuteCodeRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/executor/response/ExecuteCodeResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/executor/response/ExecuteCodeResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/vo/QuestionIndexVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/search/vo/QuestionIndexVO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/controller/ExecutorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/controller/ExecutorController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/service/impl/ExecutorServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/service/impl/ExecutorServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/subscriber/ExecuteMessageSubscriber.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/subscriber/ExecuteCodeSubscriber.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/config/GatewayConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/config/GatewayConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/config/ThreadPoolConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/config/ThreadPoolConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/consumer/ExecuteMessageConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/subscriber/ExecuteMessageSubscriber.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/question/request/JudgeCodeRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/question/request/SubmitCodeRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/question/response/JudgeCodeResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/question/response/JudgeCodeResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/RequestHandlerFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/RequestHandlerFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/publisher/ExecuteMessagePublisher.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/publisher/ExecuteMessagePublisher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/constant/CachePrefix.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/controller/QuestionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/controller/QuestionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/QuestionPOMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/QuestionPOMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/manager/JudgeCodeManager.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/entity/Question.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/entity/Question.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/po/QuestionPO.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/po/QuestionPO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/publisher/ExecuteMessagePublisher.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/publisher/ExecuteCodePublisher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/repository/impl/QuestionRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/repository/impl/QuestionRepositoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/publisher/ExecuteCodePublisher.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/publisher/ExecuteCodePublisher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/repository/QuestionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/repository/QuestionRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/service/QuestionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/service/QuestionService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/service/impl/QuestionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/service/impl/QuestionServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/subscriber/ExecuteMessageSubscriber.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/subscriber/ExecuteMessageSubscriber.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/task/IncSyncQuestionTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/task/IncSyncQuestionTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/question-service/src/test/java/MyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/test/java/MyTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/controller/SearchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/java/org/caesar/controller/SearchController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/search-service/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/controller/AuthController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/controller/UserController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/service/impl/UserServiceImpl.java" afterDir="false" />
@@ -599,7 +581,10 @@
       <workItem from="1705575683737" duration="1417000" />
       <workItem from="1705629808967" duration="6786000" />
       <workItem from="1705661758257" duration="9274000" />
-      <workItem from="1705717292537" duration="5596000" />
+      <workItem from="1705717292537" duration="5760000" />
+      <workItem from="1705752700463" duration="4669000" />
+      <workItem from="1705803405408" duration="6427000" />
+      <workItem from="1705836763362" duration="8800000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -697,7 +682,15 @@
       <option name="project" value="LOCAL" />
       <updated>1705496997492</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="引入rocketmq实现判题逻辑的异步化，实现消息传递过程中传递额外链路信息">
+      <option name="closed" value="true" />
+      <created>1705724449443</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1705724449443</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -729,7 +722,8 @@
     <MESSAGE value="完善日志切面和RespUtil工具类" />
     <MESSAGE value="优化网关统一认证鉴权：将认证鉴权移动到网关直接进行，并优化网关错误处理方式：抛出异常改成提前终止过滤链" />
     <MESSAGE value="实现统一的幂等切面处理逻辑" />
-    <option name="LAST_COMMIT_MESSAGE" value="实现统一的幂等切面处理逻辑" />
+    <MESSAGE value="引入rocketmq实现判题逻辑的异步化，实现消息传递过程中传递额外链路信息" />
+    <option name="LAST_COMMIT_MESSAGE" value="引入rocketmq实现判题逻辑的异步化，实现消息传递过程中传递额外链路信息" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -741,7 +735,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/publisher/ExecuteMessagePublisher.java</url>
-          <line>24</line>
+          <line>23</line>
           <option name="timeStamp" value="62" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -756,7 +750,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/common/src/main/java/org/caesar/common/redis/RedisCache.java</url>
-          <line>147</line>
+          <line>152</line>
           <option name="timeStamp" value="94" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">

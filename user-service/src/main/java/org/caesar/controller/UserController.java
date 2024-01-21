@@ -35,7 +35,7 @@ public class UserController {
 
     @GetMapping("/prefer")
     public Response<UserPreferVO> getUserPrefer() {
-        long userId = ContextHolder.getUserIdRequired();
+        long userId = ContextHolder.getUserIdNecessarily();
         return Response.ok(userExtraService.getUserPrefer(userId));
     }
 
@@ -44,7 +44,7 @@ public class UserController {
         return Response.ok(userService.getUpdatedRole(updateTime));
     }
 
-    @Idempotent(value = "testId", reqId = "#reqId", expire = 600, msg = "芜湖")
+    @Idempotent(value = "testId", reqId = "#reqId", expire = 600, successMsg = "芜湖")
     @GetMapping("/testId")
     public Response<String> testId(@RequestParam Long reqId) {
         //int x = 1 / 0;

@@ -1,8 +1,7 @@
 package org.caesar.publisher;
 
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.caesar.domain.question.request.JudgeCodeRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.caesar.domain.question.request.SubmitCodeRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +20,7 @@ public class ExecuteMessagePublisher {
         this.template = template;
     }
 
-    public void sendJudgeMessage(JudgeCodeRequest request) {
+    public void sendJudgeMessage(SubmitCodeRequest request) {
         template.convertAndSend(topic, request);
     }
 
