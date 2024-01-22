@@ -2,6 +2,7 @@ package org.caesar.executor.publisher;
 
 
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.caesar.common.log.Logger;
 import org.caesar.common.vo.MessageDTO;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.executor.response.ExecuteCodeResponse;
@@ -23,6 +24,7 @@ public class ExecuteCodeRespPublisher {
         this.rocketMQTemplate = template;
     }
 
+    @Logger("send execute code response")
     public void sendExecuteCodeRespMessage(Response<ExecuteCodeResponse> response) {
         rocketMQTemplate.convertAndSend(topic, new MessageDTO<>(response));
     }

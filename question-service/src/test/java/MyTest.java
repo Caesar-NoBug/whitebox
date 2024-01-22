@@ -1,12 +1,13 @@
 import org.caesar.QuestionApplication;
+import org.caesar.common.context.ContextHolder;
 import org.caesar.domain.executor.enums.CodeLanguage;
 import org.caesar.domain.executor.request.ExecuteCodeRequest;
 import org.caesar.domain.question.request.SubmitCodeRequest;
-import org.caesar.controller.QuestionController;
+import org.caesar.question.controller.QuestionController;
 import org.caesar.domain.question.request.AddQuestionRequest;
-import org.caesar.model.entity.Question;
-import org.caesar.publisher.ExecuteCodePublisher;
-import org.caesar.repository.QuestionRepository;
+import org.caesar.question.model.entity.Question;
+import org.caesar.question.publisher.ExecuteCodePublisher;
+import org.caesar.question.repository.QuestionRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -61,9 +62,13 @@ public class MyTest {
 
     @Test
     public void testSubmitCode() {
+
+        ContextHolder.setUserId(0L);
         SubmitCodeRequest request = new SubmitCodeRequest();
-        //request.setId(234);
-        request.setCode("import java.util.Scanner;\n" +
+
+        request.setSubmitId(1999);
+        request.setCode(
+                "import java.util.Scanner;\n" +
                 "\n" +
                 "public class Main {\n" +
                 "    public static void main(String[] args) {\n" +
@@ -74,7 +79,7 @@ public class MyTest {
                 "    }\n" +
                 "}\n");
         request.setLanguage(CodeLanguage.JAVA);
-        request.setQId(0);
+        request.setQuestionId(0L);
         System.out.println(controller.submitCode(request));
     }
 

@@ -12,8 +12,11 @@ public @interface Idempotent {
     // 业务名称(用作唯一前缀)
     String value() default "";
 
-    // 指定请求唯一标识变量(必须是字符串类型)
+    // 指定请求唯一标识变量
     String reqId() default "";
+
+    // 唯一标识数据类型
+    Class<?> idType() default String.class;
 
     // 过期时间(单位:秒)【保证在expire期间内接收的请求不会重复执行】
     int expire() default 600;

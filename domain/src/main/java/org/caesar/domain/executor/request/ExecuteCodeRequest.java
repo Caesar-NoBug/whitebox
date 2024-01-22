@@ -30,7 +30,7 @@ public class ExecuteCodeRequest {
     private long questionId;
 
     // 提交ID
-    private long submitId;
+    private int submitId;
 
     // 用户代码
     private String code;

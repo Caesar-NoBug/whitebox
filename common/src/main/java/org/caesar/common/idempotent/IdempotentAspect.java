@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -79,7 +80,9 @@ public class IdempotentAspect {
             }
             // 非法status
             default: {
-                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "illegal result status of idempotent lua eval.");
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR,
+                        "illegal result status of idempotent lua eval: " + status
+                + ", key: " + key);
             }
         }
     }
@@ -91,7 +94,7 @@ public class IdempotentAspect {
 
     // 设置锁为完成状态
     private void setLockComplete(String key) {
-        cacheRepo.setObject(key, "3");
+        cacheRepo.setObject(key, 3);
     }
 
     private void removeLock(String key) {
@@ -112,10 +115,10 @@ public class IdempotentAspect {
             context.setVariable(paramNames.get(i), args[i]);
         }
 
-        String id;
+        Object id;
 
         try {
-            id = expression.getValue(context, String.class);
+            id = expression.getValue(context, reqInfo.idType());
         } catch (EvaluationException e) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "fail to evaluate the expression(Illegal expr or requestId type)");
         }

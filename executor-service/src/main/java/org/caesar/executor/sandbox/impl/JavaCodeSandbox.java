@@ -70,12 +70,12 @@ public class JavaCodeSandbox extends CodeSandbox {
     protected TaskResult<String> saveCode(String code) {
 
         //当前请求的代码目录
-        String userCodeDirPath = basicCodePath + File.separator + UUID.randomUUID().toString();
+        String userCodeDirPath = basicCodePath + File.separator + UUID.randomUUID();
 
         try {
             FileUtil.writeString(code, userCodeDirPath + File.separator + GLOBAL_CODE_FILE_NAME, StandardCharsets.UTF_8).getAbsolutePath();
         } catch (IORuntimeException e) {
-            return TaskResult.err("保存代码文件错误:" + e.toString());
+            return TaskResult.err("Fail to save code file:" + e.getMessage());
         }
 
         return TaskResult.ok(userCodeDirPath);
@@ -92,15 +92,15 @@ public class JavaCodeSandbox extends CodeSandbox {
 
             if (value != 0) {
                 String message = IOUtil.readAll(compileProcess.getErrorStream());
-                return TaskResult.err("编译失败: " + message);
+                return TaskResult.err("Fail to compile code: " + message);
             }
 
             compileProcess.destroy();
 
         } catch (IOException e) {
-            return TaskResult.err("读取代码文件失败: " + e.getMessage());
+            return TaskResult.err("Fail to read code file: " + e.getMessage());
         } catch (InterruptedException e) {
-            return TaskResult.err("编译失败：" + e.getMessage());
+            return TaskResult.err("Fail to compile code" + e.getMessage());
         }
 
         return TaskResult.ok(null);

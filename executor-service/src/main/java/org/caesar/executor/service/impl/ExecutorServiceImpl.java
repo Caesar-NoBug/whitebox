@@ -1,6 +1,7 @@
 package org.caesar.executor.service.impl;
 
 import org.caesar.common.exception.ExceptionHandler;
+import org.caesar.common.log.Logger;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.executor.request.ExecuteCodeRequest;
 import org.caesar.domain.executor.response.ExecuteCodeResponse;
@@ -19,6 +20,7 @@ public class ExecutorServiceImpl implements ExecutorService {
     @Resource
     private CodeSandboxFactory factory;
 
+    @Logger(value = "executeCode", args = true, result = true, time = true)
     @Override
     public Response<ExecuteCodeResponse> executeCode(ExecuteCodeRequest request) {
 
@@ -26,8 +28,12 @@ public class ExecutorServiceImpl implements ExecutorService {
 
         ThrowUtil.ifNull(codeSandBox, "Unsupported code language.");
 
-        //TODO: 把所有Response.error改成抛异常再由ExceptionHandler处理的形式
-        return Response.ok(codeSandBox.executeCode(request));
+        ExecuteCodeResponse response = codeSandBox.executeCode(request);
+
+        response.setQuestionId(request.getQuestionId());
+        response.setSubmitId(request.getSubmitId());
+
+        return Response.ok(response);
     }
 
 }

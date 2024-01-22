@@ -5,6 +5,7 @@ import org.caesar.common.client.UserClient;
 import org.caesar.common.log.LogUtil;
 import org.caesar.common.resp.RespUtil;
 import org.caesar.common.str.JwtUtil;
+import org.caesar.common.str.StrUtil;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.constant.Headers;
 import org.caesar.domain.common.enums.ErrorCode;
@@ -101,7 +102,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
         Response<Long> authorizeResp = authorize(token, uri);
 
-        if(ErrorCode.SUCCESS.getCode() != authorizeResp.getCode()) {
+        if (ErrorCode.SUCCESS.getCode() != authorizeResp.getCode()) {
             return ExchangeUtil.returnError(exchange, authorizeResp);
         }
 
@@ -129,29 +130,27 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         long userId;
         AuthorizationVO authorization;
 
-        try {
-            String jsonAuthorization = JwtUtil.getJwtSubject(token);
-            authorization = JSON.parseObject(jsonAuthorization, AuthorizationVO.class);
+        String jsonAuthorization = JwtUtil.getJwtSubject(token);
 
-        } catch (Exception e) {
-            //jwt不合法
-            LogUtil.warn("[Unauthenticated User] token is illegal or expired, please login again");
-            return new Response<>(ErrorCode.NOT_AUTHENTICATED_ERROR, null,"token is illegal or expired, please login again");
+        //jwt不合法
+        if(StrUtil.isBlank(jsonAuthorization)) {
+            LogUtil.warn(ErrorCode.NOT_AUTHENTICATED_ERROR, "Token is illegal or expired, please login again.");
+            return new Response<>(ErrorCode.NOT_AUTHENTICATED_ERROR, null, "token is illegal or expired, please login again");
         }
 
+        authorization = JSON.parseObject(jsonAuthorization, AuthorizationVO.class);
+
         if (Objects.isNull(authorization))
-            return new Response<>(ErrorCode.NOT_AUTHENTICATED_ERROR, null,"token is illegal or expired, please login again");
+            return new Response<>(ErrorCode.NOT_AUTHENTICATED_ERROR, null, "token is illegal or expired, please login again");
 
         userId = authorization.getUserId();
         List<Integer> roles = authorization.getRoles();
 
         for (Integer role : roles) {
             PrefixMatcher authorizeMatcher = authorizeMap.get(role);
-            if(authorizeMatcher.match(requestPath)) return Response.ok(userId);
+            if (authorizeMatcher.match(requestPath)) return Response.ok(userId);
         }
 
         return new Response<>(ErrorCode.NOT_AUTHORIZED_ERROR, null, "user does not have the permission to access");
     }
-
-    //TODO: 定时同步角色和path的关系
 }

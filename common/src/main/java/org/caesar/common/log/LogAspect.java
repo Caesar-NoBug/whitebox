@@ -80,7 +80,7 @@ public class LogAspect {
         try {
             result = joinPoint.proceed();
         } finally {
-            LogUtil.info(LogType.METHOD_EXECUTE_TIME, String.valueOf(System.currentTimeMillis() - start));
+            LogUtil.info(LogType.METHOD_EXECUTE_TIME, String.valueOf(System.currentTimeMillis() - start) + "ms.");
         }
 
         return result;

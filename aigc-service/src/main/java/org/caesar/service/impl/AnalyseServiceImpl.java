@@ -51,8 +51,7 @@ public class AnalyseServiceImpl implements AnalyseService {
             response.setDigest(generatedContents[0]);
             response.setTags(generatedContents[1]);
         } catch (ArrayIndexOutOfBoundsException e) {
-            log.error("分析响应结果格式错误:{错误结果:" + "analyseResult" + "}");
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "分析响应结果格式错误");
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Invalid analyse response: {" + analyseResult + "}", e);
         }
 
         return response;

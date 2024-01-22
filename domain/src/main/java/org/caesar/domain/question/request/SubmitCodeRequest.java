@@ -8,7 +8,11 @@ import java.io.Serializable;
 @Data
 public class SubmitCodeRequest implements Serializable {
 
-    private Long qId;
+    // 提交id
+    private Integer submitId;
+
+    // 问题id
+    private Long questionId;
 
     //@StringChecker(name = "用户代码")
     private String code;

@@ -41,8 +41,8 @@ public class LogUtil {
     /**
      * 正常执行流程记录相关信息
      */
-    public static void info(LogType type, String message) {
-        log.info(toLogString(type, message));
+    public static void info(LogType type, String message, Object... params) {
+        log.info(toLogString(type, message), params);
     }
 
     public static void info(boolean isLog, LogType type, String message) {
@@ -53,8 +53,8 @@ public class LogUtil {
      * 打印业务日志【INFO级别】
      * @param message 日志信息
      */
-    public static void bizLog(String message) {
-        info(LogType.BUSINESS_LOG, message);
+    public static void bizLog(String message, Object... params) {
+        info(LogType.BUSINESS_LOG, message, params);
     }
 
     public static void bizLog(boolean isLog, String message) {

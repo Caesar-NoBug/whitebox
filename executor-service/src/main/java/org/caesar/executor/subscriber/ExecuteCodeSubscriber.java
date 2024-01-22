@@ -2,6 +2,8 @@ package org.caesar.executor.subscriber;
 
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
+import org.caesar.common.log.LogUtil;
+import org.caesar.common.log.Logger;
 import org.caesar.common.vo.MessageDTO;
 import org.caesar.domain.executor.request.ExecuteCodeRequest;
 import org.caesar.executor.manager.ExecutorManager;
@@ -18,8 +20,6 @@ public class ExecuteCodeSubscriber implements RocketMQListener<MessageDTO<Execut
 
     @Override
     public void onMessage(MessageDTO<ExecuteCodeRequest> executeCodeRequest) {
-
-        System.out.println(executeCodeRequest);
         ExecuteCodeRequest request = executeCodeRequest.getPayload();
         executorManager.executeCode(request);
     }
