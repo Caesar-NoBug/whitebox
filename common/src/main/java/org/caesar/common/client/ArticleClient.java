@@ -1,5 +1,6 @@
 package org.caesar.common.client;
 
+import org.caesar.common.client.fallback.ArticleClientFallback;
 import org.caesar.common.log.Logger;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.article.response.GetPreferArticleResponse;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient("article-service")
+@FeignClient(value = "article-service", fallback = ArticleClientFallback.class)
 public interface ArticleClient {
 
     @Logger("[RPC] /getPreferArticle")

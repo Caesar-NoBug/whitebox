@@ -1,8 +1,11 @@
 package org.caesar.controller;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import jdk.nashorn.internal.objects.annotations.Getter;
 import org.caesar.common.context.ContextHolder;
 import org.caesar.common.idempotent.Idempotent;
 import org.caesar.common.log.Logger;
+import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.user.vo.RoleVO;
 import org.caesar.domain.user.vo.UserMinVO;
@@ -50,4 +53,16 @@ public class UserController {
         //int x = 1 / 0;
         return Response.ok("hahaha");
     }
+
+    @GetMapping("/circuit-breaker")
+    public Response<String> testCircuitBreaker() {
+        //System.out.println(1 / 0);
+        //return Response.ok("Everything is good.");
+        return Response.error(ErrorCode.SYSTEM_ERROR, "system error occurred");
+    }
+
+    public Response defaultFallback(Throwable e) {
+        return Response.error(ErrorCode.SYSTEM_ERROR, "[User Service UserController] Service unavailable" + e.getMessage());
+    }
+
 }

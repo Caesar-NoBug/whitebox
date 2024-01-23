@@ -1,7 +1,6 @@
 package org.caesar.common.resp;
 
 import org.caesar.common.exception.BusinessException;
-import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.log.LogUtil;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.common.enums.ErrorCode;
@@ -25,7 +24,7 @@ public class RespUtil {
 
         handler.handle(Objects.isNull(response), ErrorCode.SYSTEM_ERROR, message + ": null response");
 
-        ErrorCode code = ErrorCode.getErrorCode(response.getCode());
+        ErrorCode code = ErrorCode.of(response.getCode());
 
         handler.handle(!ErrorCode.SUCCESS.equals(code), code,
                 message + ": (Server)" + response.getMsg());

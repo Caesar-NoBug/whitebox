@@ -32,17 +32,23 @@ public enum ErrorCode {
     // 服务不可用
     SERVICE_UNAVAILABLE_ERROR(501, "Service Unavailable");
 
+    // 错误码
     private final int code;
 
+    // 错误信息
     private final String message;
 
-    public static ErrorCode getErrorCode(int code) {
+    public static ErrorCode of(int code) {
         for (ErrorCode errorCode : values()) {
             if (errorCode.getCode() == code) {
                 return errorCode;
             }
         }
         return null;
+    }
+
+    public boolean isFatal() {
+        return code >= 500;
     }
 
 }

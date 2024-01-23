@@ -16,7 +16,7 @@ public @interface Idempotent {
     String reqId() default "";
 
     // 唯一标识数据类型
-    Class<?> idType() default String.class;
+    Class<?> idType() default Integer.class;
 
     // 过期时间(单位:秒)【保证在expire期间内接收的请求不会重复执行】
     int expire() default 600;

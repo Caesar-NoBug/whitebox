@@ -14,6 +14,7 @@ import org.caesar.common.util.IOUtil;
 import org.caesar.domain.constant.Headers;
 import org.caesar.common.redis.RedisJsonSerializer;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.context.annotation.*;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,7 +33,7 @@ import java.util.Objects;
 @Import(RedisAutoConfiguration.class)
 public class GlobalConfig {
 
-    private String source = "gateway";
+    private final String source = "gateway";
 
     @Bean
     @SuppressWarnings({"unchecked", "rawtypes"})

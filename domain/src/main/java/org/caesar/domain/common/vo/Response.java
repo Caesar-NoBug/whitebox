@@ -49,5 +49,4 @@ public class Response<T>{
     public static <T> Response<T> error(String msg){
         return new Response<>(ErrorCode.INVALID_ARGS_ERROR.getCode(), null, msg);
     }
-
 }

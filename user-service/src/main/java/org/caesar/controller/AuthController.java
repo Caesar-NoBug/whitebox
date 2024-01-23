@@ -1,5 +1,6 @@
 package org.caesar.controller;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.caesar.common.context.ContextHolder;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.model.dto.TokenDTO;
@@ -29,6 +30,7 @@ public class AuthController {
     //TODO: 将权限相关信息根据角色进行缓存,将角色信息存储至jwt中，把这些操作移动至gateway中，并想清楚同步机制
     //TODO: 删除所有User模块中的跨域设置
     //TODO: 缓存一下非法的token避免DDos
+    @CircuitBreaker(name = "authorize", fallbackMethod = "defaultFallback")
     @GetMapping("/authorize")
     public Response<Long> authorize(@RequestParam String jwt, @RequestParam String requestPath) {
 
@@ -39,7 +41,8 @@ public class AuthController {
         return Response.ok(userService.authorize(jwt, requestPath));
     }
 
-    @PostMapping("/refreshToken")
+    @CircuitBreaker(name = "refreshToken", fallbackMethod = "defaultFallback")
+    @PostMapping("/refresh-token")
     public Response refreshToken(@RequestBody TokenDTO tokenDTO) {
         String refreshToken = tokenDTO.getRefreshToken();
         Long userId = ContextHolder.getUserIdNecessarily();
@@ -55,6 +58,7 @@ public class AuthController {
     //TODO: 加一个人机校验(captcha)
     //TODO: 对邮箱做更严格的格式校验和处理，防止恶意邮箱注册
     //TODO: 要求用户密码为一个较为复杂的格式
+    @CircuitBreaker(name = "register", fallbackMethod = "defaultFallback")
     @PostMapping("/register")
     public Response register(@RequestBody RegisterRequest request) {
 
@@ -64,6 +68,7 @@ public class AuthController {
         return Response.ok(userService.register(request));
     }
 
+    @CircuitBreaker(name = "logout", fallbackMethod = "defaultFallback")
     @DeleteMapping("/logout")
     public Response<Void> logout(@RequestBody TokenDTO tokenDTO) {
 

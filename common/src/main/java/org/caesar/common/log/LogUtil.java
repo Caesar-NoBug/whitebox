@@ -13,8 +13,12 @@ public class LogUtil {
     public static final String LOG_FORMAT = "[%s] '%s': {%s}";
 
     /**
-     * 错误信息，系统内部错误，但是不影响系统其他功能
+     * 错误信息，系统内部错误
      */
+    public static void error(ErrorCode code, String message) {
+        log.error(toLogString(code, message));
+    }
+
     public static void error(ErrorCode code, String message, Throwable e) {
         log.error(toLogString(code, message), e);
     }

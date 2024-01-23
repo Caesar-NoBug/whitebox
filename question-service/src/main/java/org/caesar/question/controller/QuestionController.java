@@ -52,7 +52,7 @@ public class QuestionController {
         return Response.ok(null, "Updated question successfully.");
     }
 
-    @Idempotent(value = "submitCode", reqId = "#request.submitId", idType = Integer.class,
+    @Idempotent(value = "submitCode", reqId = "#request.submitId",
             successMsg = "提交代码请求已经被处理成功了!",
             processingMsg = "提交代码请求正在处理中，请稍候!")
     @PostMapping("/submit")

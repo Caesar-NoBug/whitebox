@@ -1,5 +1,6 @@
 package org.caesar.common.client;
 
+import org.caesar.common.client.fallback.SearchClientFallback;
 import org.caesar.common.log.Logger;
 import org.caesar.domain.common.vo.PageVO;
 import org.caesar.domain.common.vo.Response;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient("search-service")
+@FeignClient(value = "search-service", fallback = SearchClientFallback.class)
 public interface SearchClient {
 
     @Logger("[RPC] /search")

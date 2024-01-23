@@ -31,6 +31,8 @@ server:
 #  level:
 
 feign:
+  circuitbreaker:
+    enabled: true
   client:
     config:
       aigc-service:

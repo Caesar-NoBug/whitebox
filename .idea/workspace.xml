@@ -4,55 +4,37 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64792235-44ae-4705-bdf4-1ada63ec6571" name="Changes" comment="实现question-service侧的判题逻辑和获取执行结果的逻辑,实现了统一缓存方法">
-      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/mapper/QuestionSubmitResultMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/model/po/QuestionSubmitResult.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/question-service/src/main/resources/mapper/QuestionSubmitResultMapper.xml" afterDir="false" />
+    <list default="true" id="64792235-44ae-4705-bdf4-1ada63ec6571" name="Changes" comment="实现完整的判题逻辑和结果存储及获取的逻辑">
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/fallback/AIGCClientFallback.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/fallback/ArticleClientFallback.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/fallback/ExecutorClientFallback.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/fallback/SearchClientFallback.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/fallback/UserClientFallback.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/config/Resilience4jConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/7017b0d2-8a93-4b3f-bd49-a71ed4f8ca3c.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7017b0d2-8a93-4b3f-bd49-a71ed4f8ca3c.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7017b0d2-8a93-4b3f-bd49-a71ed4f8ca3c/storage_v2/_src_/schema/db_white_box.ND6YRQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7017b0d2-8a93-4b3f-bd49-a71ed4f8ca3c/storage_v2/_src_/schema/db_white_box.ND6YRQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/mybatisx/templates.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mybatisx/templates.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aigc-service/src/main/java/org/caesar/service/impl/AnalyseServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/aigc-service/src/main/java/org/caesar/service/impl/AnalyseServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/exception/BusinessException.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/exception/BusinessException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/article-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/article-service/src/test/java/ArticleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/article-service/src/test/java/ArticleTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/common/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/GlobalConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/GlobalConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/AIGCClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/AIGCClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/ArticleClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/ArticleClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/ExecutorClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/ExecutorClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/SearchClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/SearchClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/UserClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/client/UserClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/idempotent/Idempotent.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/idempotent/Idempotent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/idempotent/IdempotentAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/idempotent/IdempotentAspect.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/log/LogAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/log/LogAspect.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/log/LogUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/log/LogUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/executor/request/ExecuteCodeRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/executor/request/ExecuteCodeRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/question/request/SubmitCodeRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/question/request/SubmitCodeRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/question/response/JudgeCodeResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/question/response/SubmitCodeResult.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/ExecutorApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/ExecutorApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/manager/ExecutorManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/manager/ExecutorManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/publisher/ExecuteCodeRespPublisher.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/publisher/ExecuteCodeRespPublisher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/sandbox/impl/JavaCodeSandbox.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/sandbox/impl/JavaCodeSandbox.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/service/impl/ExecutorServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/service/impl/ExecutorServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/subscriber/ExecuteCodeSubscriber.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/main/java/org/caesar/executor/subscriber/ExecuteCodeSubscriber.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/executor-service/src/test/java/MyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/executor-service/src/test/java/MyTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/AuthorizeFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/filter/AuthorizeFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/config/ThreadPoolConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/config/ThreadPoolConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/constant/CacheKey.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/constant/CacheKey.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/controller/QuestionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/controller/QuestionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/judge/QuestionJudgeManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/judge/QuestionJudgeManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/judge/strategy/DefaultStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/judge/strategy/DefaultStrategy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/judge/strategy/JudgeStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/judge/strategy/JudgeStrategy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/judge/strategy/RoundStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/judge/strategy/RoundStrategy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/judge/strategy/UnorderedStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/judge/strategy/UnorderedStrategy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/mapper/QuestionMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/mapper/QuestionMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/QuestionPOMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/model/MsQuestionStruct.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/entity/Question.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/model/entity/Question.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/po/QuestionPO.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/model/po/QuestionPO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/model/vo/JudgeParam.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/model/vo/JudgeParam.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/publisher/ExecuteCodePublisher.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/publisher/ExecuteCodePublisher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/repository/QuestionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/repository/QuestionRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/repository/impl/QuestionRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/repository/impl/QuestionRepositoryImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/service/QuestionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/service/QuestionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/service/impl/QuestionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/service/impl/QuestionServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/subscriber/ExecuteMessageSubscriber.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/subscriber/ExecuteMessageSubscriber.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/task/IncSyncQuestionTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/task/IncSyncQuestionTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/task/SyncJudgeResultTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/task/SyncJudgeResultTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/main/resources/mapper/QuestionMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/resources/mapper/QuestionMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question-service/src/test/java/MyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/test/java/MyTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/resp/RespUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/org/caesar/common/resp/RespUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/common/enums/ErrorCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/common/enums/ErrorCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/common/vo/Response.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/org/caesar/domain/common/vo/Response.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/GatewayApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/java/org/caesar/GatewayApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-server/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-server/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/controller/QuestionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/controller/QuestionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/UserServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/UserServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/org/caesar/controller/UserController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,46 +76,46 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "jdk.selected.JAVA_MODULE": "1.8.0_362",
-    "last_opened_file_path": "D:/Code/java/whitebox/domain/src/main/java/org/caesar/domain/search/vo",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "vcs.Git",
-    "settings.editor.splitter.proportion": "0.27299702",
-    "spring.configuration.checksum": "85362a665a8ea8fcdd7bd1fcb16cac9f",
-    "sql.rename.search.for.storage.occurrences": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;1.8.0_362&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Code/java/whitebox/domain/src/main/java/org/caesar/domain/search/vo&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;,
+    &quot;settings.editor.splitter.proportion&quot;: &quot;0.27299702&quot;,
+    &quot;spring.configuration.checksum&quot;: &quot;85362a665a8ea8fcdd7bd1fcb16cac9f&quot;,
+    &quot;sql.rename.search.for.storage.occurrences&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql",
-      "redis"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;,
+      &quot;redis&quot;
     ],
-    "com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect": [
-      "MySQL"
+    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect&quot;: [
+      &quot;MySQL&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -179,12 +161,12 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.MyTest.testSubmitCode">
-    <configuration name="MyTest.testMq" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="question-service" />
+  <component name="RunManager" selected="JUnit.ArticleTest.testUserClient">
+    <configuration name="ArticleTest.testUserClient" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="article-service" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="MyTest" />
-      <option name="METHOD_NAME" value="testMq" />
+      <option name="MAIN_CLASS_NAME" value="ArticleTest" />
+      <option name="METHOD_NAME" value="testUserClient" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -251,19 +233,19 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="JUnit.ArticleTest.testUserClient" />
       <item itemvalue="JUnit.MyTest.testSubmitCode" />
-      <item itemvalue="JUnit.MyTest.testMq" />
       <item itemvalue="Spring Boot.QuestionApplication" />
       <item itemvalue="Spring Boot.ExecutorApplication" />
       <item itemvalue="Spring Boot.UserServiceApplication" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.ArticleTest.testUserClient" />
+        <item itemvalue="Spring Boot.UserServiceApplication" />
+        <item itemvalue="JUnit.MyTest.testSubmitCode" />
         <item itemvalue="Spring Boot.QuestionApplication" />
         <item itemvalue="Spring Boot.ExecutorApplication" />
-        <item itemvalue="JUnit.MyTest.testSubmitCode" />
-        <item itemvalue="JUnit.MyTest.testMq" />
-        <item itemvalue="Spring Boot.UserServiceApplication" />
       </list>
     </recent_temporary>
   </component>
@@ -596,7 +578,11 @@
       <workItem from="1705752700463" duration="4669000" />
       <workItem from="1705803405408" duration="6427000" />
       <workItem from="1705836763362" duration="8956000" />
-      <workItem from="1705884768296" duration="11270000" />
+      <workItem from="1705884768296" duration="11887000" />
+      <workItem from="1705923859558" duration="71000" />
+      <workItem from="1705923942560" duration="3911000" />
+      <workItem from="1705977238717" duration="3453000" />
+      <workItem from="1706009978045" duration="8769000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -710,7 +696,15 @@
       <option name="project" value="LOCAL" />
       <updated>1705845729580</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="实现完整的判题逻辑和结果存储及获取的逻辑">
+      <option name="closed" value="true" />
+      <created>1705897183885</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1705897183885</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -744,7 +738,8 @@
     <MESSAGE value="实现统一的幂等切面处理逻辑" />
     <MESSAGE value="引入rocketmq实现判题逻辑的异步化，实现消息传递过程中传递额外链路信息" />
     <MESSAGE value="实现question-service侧的判题逻辑和获取执行结果的逻辑,实现了统一缓存方法" />
-    <option name="LAST_COMMIT_MESSAGE" value="实现question-service侧的判题逻辑和获取执行结果的逻辑,实现了统一缓存方法" />
+    <MESSAGE value="实现完整的判题逻辑和结果存储及获取的逻辑" />
+    <option name="LAST_COMMIT_MESSAGE" value="实现完整的判题逻辑和结果存储及获取的逻辑" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -784,11 +779,6 @@
           <line>28</line>
           <option name="timeStamp" value="102" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/question-service/src/main/java/org/caesar/question/controller/QuestionController.java</url>
-          <line>62</line>
-          <option name="timeStamp" value="103" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$USER_HOME$/AppData/Local/Temp/leetcode/editor/cn/P134GasStation .java</url>
           <line>53</line>
@@ -805,6 +795,10 @@
         <breakpoint enabled="true" type="java-exception">
           <properties class="java.lang.StackOverflowError" package="java.lang" />
           <option name="timeStamp" value="82" />
+        </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.ArithmeticException" package="java.lang" />
+          <option name="timeStamp" value="103" />
         </breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -130,6 +130,8 @@ public class ArticleTest {
 
     @Test
     public void testUserClient() {
-        Response<Map<Long, UserMinVO>> userMin = userClient.getUserMin(Arrays.asList(0L, 2L));
+        System.out.println(userClient.testCircuitBreaker());
+        //Response<Map<Long, UserMinVO>> userMin = userClient.getUserMin(Arrays.asList(0L, 2L));
     }
+
 }
