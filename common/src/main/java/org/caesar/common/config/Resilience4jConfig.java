@@ -2,6 +2,10 @@ package org.caesar.common.config;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import io.github.resilience4j.ratelimiter.RateLimiterConfig;
+import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
+import io.github.resilience4j.timelimiter.TimeLimiterConfig;
+import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
 import org.caesar.common.exception.BusinessException;
 import org.caesar.common.log.LogUtil;
 import org.caesar.domain.common.enums.ErrorCode;
@@ -43,36 +47,78 @@ public class Resilience4jConfig {
     @Bean
     public CircuitBreakerRegistry circuitBreakerRegistry() {
 
-        CircuitBreakerConfig defaultConfig = CircuitBreakerConfig.custom()
+        CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
                 .failureRateThreshold(failureRateThreshold)
                 .maxWaitDurationInHalfOpenState(Duration.ofSeconds(waitDurationInOpenState))
                 .minimumNumberOfCalls(minimumNumberOfCalls)
                 .permittedNumberOfCallsInHalfOpenState(permittedNumberOfCallsInHalfOpenState)
                 .slidingWindowSize(slidingWindowSize)
                 .slowCallRateThreshold(showCallRateThreshold)
-                .recordResult(res -> {
-                    System.out.println("Circuit Breaker invoked");
-                    if(res instanceof Response) {
-                        Response response = (Response) res;
+                .recordResult(this::recordResult)
+                .recordException(this::recordException)
+                .build();
 
-                        ErrorCode code = ErrorCode.of(response.getCode());
+        return CircuitBreakerRegistry.of(circuitBreakerConfig);
+    }
 
-                        if (Objects.isNull(code)) {
-                            LogUtil.error(ErrorCode.SYSTEM_ERROR, "Invalid response error code.");
-                            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Invalid response error code.");
-                        }
+    @Bean
+    public TimeLimiterRegistry timeLimiterRegistry() {
+        // 设置超时时间为2秒
+        TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
+                .timeoutDuration(Duration.ofSeconds(2)).build();
 
-                        if(code.isFatal()) {
-                            LogUtil.error(ErrorCode.SYSTEM_ERROR, response.getMsg());
-                            throw new BusinessException(code, response.getMsg());
-                        }
+        return TimeLimiterRegistry.of(timeLimiterConfig);
+    }
 
-                        return true;
-                    }
+    /*@Bean
+    public RateLimiterRegistry defaultRateLimiterRegistry() {
 
-                    return true;
-                }).build();
+        RateLimiterConfig config = RateLimiterConfig.custom()
+                .timeoutDuration(Duration.ofSeconds(2))
+                .limitForPeriod(10)
+                .limitRefreshPeriod(Duration.ofSeconds(2))
+                .build();
 
-        return CircuitBreakerRegistry.of(defaultConfig);
+        return RateLimiterRegistry.of(config);
+    }*/
+
+    private boolean recordResult(Object res) {
+        System.out.println("Circuit breaker record result invoked");
+        if (res instanceof Response) {
+            Response<?> response = (Response<?>) res;
+
+            ErrorCode code = ErrorCode.of(response.getCode());
+
+            if (Objects.isNull(code)) {
+                LogUtil.error(ErrorCode.SYSTEM_ERROR, "Invalid response error code.");
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Invalid response error code.");
+            }
+
+            if (code.isFatal()) {
+                LogUtil.error(ErrorCode.SYSTEM_ERROR, response.getMsg());
+                throw new BusinessException(code, response.getMsg());
+            }
+
+            return true;
+        }
+
+        return true;
+    }
+
+    private boolean recordException(Throwable throwable) {
+        System.out.println("Circuit breaker record exception invoked");
+
+        ErrorCode code;
+        if(throwable instanceof BusinessException) {
+            code = ((BusinessException) throwable).getCode();
+        } else {
+            code = ErrorCode.SYSTEM_ERROR;
+        }
+        if(code.isFatal()) {
+            LogUtil.error(code, throwable.getMessage(), throwable);
+            return true;
+        }
+
+        return false;
     }
 }

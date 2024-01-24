@@ -7,11 +7,13 @@ import reactor.core.publisher.Mono;
 
 import java.util.Objects;
 
-
+@Component
 public class IPKeyResolver implements KeyResolver {
+
     @Override
     public Mono<String> resolve(ServerWebExchange exchange) {
         String host = Objects.requireNonNull(exchange.getRequest().getRemoteAddress()).getHostString();
         return Mono.just(host);
     }
+
 }

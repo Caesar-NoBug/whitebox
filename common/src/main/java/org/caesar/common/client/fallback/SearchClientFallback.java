@@ -28,7 +28,7 @@ public class SearchClientFallback implements SearchClient {
 
     @Override
     public Response<List<SearchHistoryVO>> getSearchHistory(Integer size) {
-        return Response.error(ErrorCode.SERVICE_UNAVAILABLE_ERROR, "[Search Service] 'getSearchHistory' service unavailable");return null;
+        return Response.error(ErrorCode.SERVICE_UNAVAILABLE_ERROR, "[Search Service] 'getSearchHistory' service unavailable");
     }
 
     @Override

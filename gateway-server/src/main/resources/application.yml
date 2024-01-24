@@ -21,18 +21,11 @@ spring:
 server:
   port: 7777
 
-rocketmq:
-  name-server: 127.0.0.1:9876
-  producer:
-    group: gateway
+
 #logging:
 #  level:
 #logging:
 #  level:
 #    org.springframework.cloud.openfeign: trace
 #    reactor: trace
-
-feign:
-  hystrix:
-    enabled: true
 #    org.springframework.cloud.gateway: debug

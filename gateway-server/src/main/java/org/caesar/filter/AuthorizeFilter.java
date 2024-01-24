@@ -2,6 +2,7 @@ package org.caesar.filter;
 
 import com.alibaba.fastjson.JSON;
 import org.caesar.common.client.UserClient;
+import org.caesar.common.context.ContextHolder;
 import org.caesar.common.log.LogUtil;
 import org.caesar.common.resp.RespUtil;
 import org.caesar.common.str.JwtUtil;
@@ -21,10 +22,12 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.CoreSubscriber;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.naming.Context;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -81,8 +84,10 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
         String uri = exchange.getRequest().getURI().getPath();
+        ContextHolder.setBusinessName(uri);
+
         System.out.println("visit uri:" + uri);
-        //if(1 == 1) return ExchangeUtil.returnError(exchange, Response.error("hello world"));
+
         //若在白名单中，则无需认证
         if (prefixMatcher.match(uri))
             return chain.filter(
@@ -98,7 +103,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         ServerHttpRequest request = exchange.getRequest();
         String token = request.getHeaders().getFirst(Headers.TOKEN_HEADER);
 
-        ThrowUtil.ifNull(token, ErrorCode.NOT_AUTHORIZED_ERROR, "illegal request without token");
+        ThrowUtil.ifNull(token, ErrorCode.NOT_AUTHORIZED_ERROR, "unauthenticated request without token");
 
         Response<Long> authorizeResp = authorize(token, uri);
 
@@ -107,13 +112,15 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         }
 
         Long userId = authorizeResp.getData();
+        ContextHolder.setUserId(userId);
 
         ServerHttpRequest processedRequest = request.mutate()
                 .headers(h -> h.remove(Headers.TOKEN_HEADER))
                 .header(Headers.USERID_HEADER, String.valueOf(userId))
                 .build();
 
-        return chain.filter(exchange.mutate().request(processedRequest).build());
+        return chain.filter(exchange.mutate().request(processedRequest).build())
+                .then(Mono.fromRunnable(ContextHolder::clear));
     }
 
     @Override

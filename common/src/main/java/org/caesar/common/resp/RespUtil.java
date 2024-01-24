@@ -27,7 +27,7 @@ public class RespUtil {
         ErrorCode code = ErrorCode.of(response.getCode());
 
         handler.handle(!ErrorCode.SUCCESS.equals(code), code,
-                message + ": (Server)" + response.getMsg());
+                message + ": " + response.getMsg());
 
         T data = response.getData();
 

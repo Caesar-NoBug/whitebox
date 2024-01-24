@@ -22,5 +22,5 @@ public @interface Logger {
     boolean result() default false;
 
     // 是否打印执行时间
-    boolean time() default false;
+    boolean time() default true;
 }

@@ -9,12 +9,10 @@ import org.caesar.domain.user.vo.UserPreferVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 @FeignClient(value = "user-service", fallback = UserClientFallback.class)
 public interface UserClient {
@@ -31,6 +29,6 @@ public interface UserClient {
     @GetMapping("/user/updated-role")
     Response<List<RoleVO>> getUpdatedRole(@RequestParam LocalDateTime updateTime);
 
-    @GetMapping("/user/circuit-breaker")
+    @GetMapping("/user/test-circuit-breaker")
     Response<String> testCircuitBreaker();
 }

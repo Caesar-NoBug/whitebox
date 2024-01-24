@@ -1,19 +1,14 @@
 package org.caesar.config;
 
-import feign.codec.Decoder;
-import feign.codec.Encoder;
-import org.caesar.util.FastJsonDecoder;
-import org.caesar.util.FastJsonEncoder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class GatewayConfig {
+public class CorsConfig {
 
     //TODO: 解决无法读取配置文件的问题
     @Value("${rateLimiter.config.ip.replenishRate:1}")

@@ -58,7 +58,6 @@ public class AuthController {
     //TODO: 加一个人机校验(captcha)
     //TODO: 对邮箱做更严格的格式校验和处理，防止恶意邮箱注册
     //TODO: 要求用户密码为一个较为复杂的格式
-    @CircuitBreaker(name = "register", fallbackMethod = "defaultFallback")
     @PostMapping("/register")
     public Response register(@RequestBody RegisterRequest request) {
 
@@ -68,7 +67,6 @@ public class AuthController {
         return Response.ok(userService.register(request));
     }
 
-    @CircuitBreaker(name = "logout", fallbackMethod = "defaultFallback")
     @DeleteMapping("/logout")
     public Response<Void> logout(@RequestBody TokenDTO tokenDTO) {
 

@@ -30,7 +30,7 @@ public class UserController {
     private UserExtraService userExtraService;
 
     //TODO: 把所有日志和报错信息都改成英文
-    @Logger(value = "getUserMin", time = true)
+    @Logger(value = "/getUserMin")
     @GetMapping("/min")
     public Response<Map<Long, UserMinVO>> getUserMin(@RequestParam List<Long> id) {
         return Response.ok(userService.getUserMin(id));
@@ -47,22 +47,20 @@ public class UserController {
         return Response.ok(userService.getUpdatedRole(updateTime));
     }
 
-    @Idempotent(value = "testId", reqId = "#reqId", expire = 600, successMsg = "芜湖")
+    @Idempotent(value = "testId", reqId = "#reqId", successMsg = "芜湖")
     @GetMapping("/testId")
     public Response<String> testId(@RequestParam Long reqId) {
         //int x = 1 / 0;
         return Response.ok("hahaha");
     }
 
-    @GetMapping("/circuit-breaker")
-    public Response<String> testCircuitBreaker() {
+    @GetMapping("/test-circuit-breaker")
+    public Response<String> testCircuitBreaker() throws InterruptedException {
         //System.out.println(1 / 0);
         //return Response.ok("Everything is good.");
+        System.out.println("test invoked");
+        Thread.sleep(10000);
         return Response.error(ErrorCode.SYSTEM_ERROR, "system error occurred");
-    }
-
-    public Response defaultFallback(Throwable e) {
-        return Response.error(ErrorCode.SYSTEM_ERROR, "[User Service UserController] Service unavailable" + e.getMessage());
     }
 
 }

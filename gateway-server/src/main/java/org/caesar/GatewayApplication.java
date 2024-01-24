@@ -1,6 +1,5 @@
 package org.caesar;
 
-import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -18,10 +17,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @ComponentScan
 @SpringBootConfiguration
 @EnableAutoConfiguration
-@EnableCircuitBreaker
 @EnableDiscoveryClient
 @EnableFeignClients
-@Import(RocketMQAutoConfiguration.class)
 public class GatewayApplication {
 
     public static void main(String[] args) {
@@ -29,34 +26,38 @@ public class GatewayApplication {
     }
 
     private final String[] SERVICES = new String[]{
-            "/user-service", "/executor-service", "/question-service", "/search-service", "/aigc-service"
+            "/user-service", "/executor-service", "/question-service", "/search-service", "/aigc-service", "/article-service"
     };
 
     private final String SERVICE_PATH = "%s/**";
+
+    public final String DEFAULT_PATH = "/**";
 
     private final String SERVICE_URI = "lb:/%s";
 
     /*@Autowired
     @Qualifier("ipRateLimiterFactory")
-    private RequestRateLimiterGatewayFilterFactory ipRateLimiterFactory;*/
+    private RequestRateLimiterGatewayFilterFactory ipRateLimite
+    rFactory;*/
 
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
 
         RouteLocatorBuilder.Builder routes = builder.routes();
         for (String service : SERVICES) {
-            routes
-                    .route(
-                            r -> r.path(String.format(SERVICE_PATH, service))
-                                    .filters(f -> f
-                                                    .rewritePath(service, "")
-                                    )
-                                    .uri(String.format(SERVICE_URI, service))
-                    );
+            routes.route(
+                    r -> r.path(String.format(SERVICE_PATH, service))
+                            .filters(f -> f
+                                    .rewritePath(service, "")
+                                    .circuitBreaker(config -> {
+                                        config.setName(service).setFallbackUri("/fallback" + service);
+                                    })
+                            )
+                            .uri(String.format(SERVICE_URI, service))
+            );
         }
 
         return routes.build();
     }
-
 
 }

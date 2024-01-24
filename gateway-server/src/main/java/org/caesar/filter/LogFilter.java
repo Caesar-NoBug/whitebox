@@ -13,7 +13,6 @@ public class LogFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        System.out.println("log filter");
         return chain.filter(exchange);
     }
 
