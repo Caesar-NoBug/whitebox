@@ -34,6 +34,10 @@ public class IDRateLimiterFilter implements GlobalFilter, Ordered {
 
     private final String URI_RATE_LIMITER = "uriRateLimiter:";
 
+    private final int DEFAULT_ACCESS_FREQUENCY = 40;
+
+    private final int RESTRICTED_ACCESS_FREQUENCY = 2;
+
     @Resource
     private RedissonReactiveClient redissonClient;
 
@@ -66,15 +70,15 @@ public class IDRateLimiterFilter implements GlobalFilter, Ordered {
         return rateLimiter.isExists().flatMap(isExists -> {
             if (isExists) return Mono.just(rateLimiter);
 
-            return rateLimiter.trySetRate(RateType.OVERALL, 30, 1, RateIntervalUnit.MINUTES)
+            return rateLimiter.trySetRate(RateType.OVERALL, DEFAULT_ACCESS_FREQUENCY, 1, RateIntervalUnit.MINUTES)
                     .thenReturn(rateLimiter);
         });
     }
 
-    // 如果频繁访问则放入黑名单,10分钟内每分钟只允许访问一次，如果仍在频繁访问则持续刷新黑名单时间
+    // 如果频繁访问则放入黑名单,10分钟内每分钟只允许访问2次，如果仍在频繁访问则持续刷新黑名单时间
     private Mono<Boolean> handleFrequentAccess(RRateLimiterReactive rateLimiter) {
         LogUtil.warn(ErrorCode.TOO_MUCH_REQUEST_ERROR, "Frequent request from user.");
-        return rateLimiter.setRate(RateType.OVERALL, 1, 1, RateIntervalUnit.MINUTES)
+        return rateLimiter.setRate(RateType.OVERALL, RESTRICTED_ACCESS_FREQUENCY, 1, RateIntervalUnit.MINUTES)
                 .then(rateLimiter.expire(10, TimeUnit.MINUTES));
     }
 
@@ -86,6 +90,7 @@ public class IDRateLimiterFilter implements GlobalFilter, Ordered {
             if (isExists) return Mono.just(rateLimiter);
 
             return rateLimiter.trySetRate(RateType.OVERALL, 1000, 1, RateIntervalUnit.SECONDS)
+                    .then(rateLimiter.expire(2, TimeUnit.HOURS))
                     .thenReturn(rateLimiter);
         });
     }
