@@ -21,9 +21,16 @@ spring:
 server:
   port: 7777
 
+rate-limiter:
+  config:
+    - uri: /question-service/question/submit
+      user: 10
+      total: 1000
 
-#logging:
-#  level:
+
+
+
+
 #logging:
 #  level:
 #    org.springframework.cloud.openfeign: trace

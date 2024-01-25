@@ -1,8 +1,9 @@
 package org.caesar.filter;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.caesar.common.context.ContextHolder;
 import org.caesar.common.log.LogUtil;
+import org.caesar.config.RateLimiterConfig;
+import org.caesar.config.RateLimiterProperties;
 import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.util.ExchangeUtil;
@@ -18,81 +19,81 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.Resource;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 //处理基本的限流操作
 //TODO： 熔断处理器, 用nacos加sentinel进行限流
 //TODO: 限制验证码访问频率
 @Component
-public class IDRateLimiterFilter implements GlobalFilter, Ordered {
+public class IdRateLimiterFilter implements GlobalFilter, Ordered {
 
+    // id限流器的key的前缀
     private final String ID_RATE_LIMITER = "gateway:idRateLimiter:";
 
-    private final String ID_BLACK_LIST = "gateway:idBlackList";
-
-    private final String URI_RATE_LIMITER = "uriRateLimiter:";
-
+    // 默认访问频率
     private final int DEFAULT_ACCESS_FREQUENCY = 40;
 
+    // 默认限流器过期时间
+    private final int DEFAULT_LIMITER_EXPIRE = 60;
+
+    // 限制访问频率
     private final int RESTRICTED_ACCESS_FREQUENCY = 2;
+
+    // 限制限流器过期时间
+    private final int RESTRICTED_LIMITER_EXPIRE = 10;
 
     @Resource
     private RedissonReactiveClient redissonClient;
 
+    @Resource
+    private RateLimiterProperties rateLimiterProperties;
+
     private final Response<Void> FREQUENT_ACCESS_RESPONSE = Response.error(ErrorCode.TOO_MUCH_REQUEST_ERROR,
             "Access Restricted: Your access has been restricted due to frequent access. Please wait a minutes");
 
-    private final Set<Long> idBlackList = new HashSet<>();
-
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+
+        String uri = ContextHolder.getBusinessName();
         Long userId = ContextHolder.getUserId();
 
-        if (idBlackList.contains(userId))
-            return ExchangeUtil.returnError(exchange, FREQUENT_ACCESS_RESPONSE);
-
-        return getIdRateLimiter(userId).flatMap(
+        return getIdRateLimiter(uri, userId).flatMap(
                 rateLimiter -> rateLimiter.tryAcquire().flatMap(
                         acquired -> {
                             if (acquired) return chain.filter(exchange);
                             else {
-                                handleFrequentAccess(rateLimiter);
-                                return ExchangeUtil.returnError(exchange, FREQUENT_ACCESS_RESPONSE);
+                                return handleFrequentAccess(rateLimiter)
+                                        .then(ExchangeUtil.returnError(exchange, FREQUENT_ACCESS_RESPONSE));
                             }
                         }));
     }
 
-    private Mono<RRateLimiterReactive> getIdRateLimiter(Long userId) {
+    private Mono<RRateLimiterReactive> getIdRateLimiter(String uri, Long userId) {
         RRateLimiterReactive rateLimiter = redissonClient.getRateLimiter(ID_RATE_LIMITER + userId);
 
         return rateLimiter.isExists().flatMap(isExists -> {
             if (isExists) return Mono.just(rateLimiter);
 
-            return rateLimiter.trySetRate(RateType.OVERALL, DEFAULT_ACCESS_FREQUENCY, 1, RateIntervalUnit.MINUTES)
+            return rateLimiter.trySetRate(RateType.OVERALL, getRate(uri), 1, RateIntervalUnit.MINUTES)
+                    .then(rateLimiter.expire(DEFAULT_LIMITER_EXPIRE, TimeUnit.MINUTES))
                     .thenReturn(rateLimiter);
         });
+    }
+
+    private int getRate(String uri) {
+        RateLimiterConfig config = rateLimiterProperties.getUriConfig(uri);
+
+        if(Objects.isNull(config) || config.getUser() == null) return DEFAULT_ACCESS_FREQUENCY;
+
+        return config.getUser();
     }
 
     // 如果频繁访问则放入黑名单,10分钟内每分钟只允许访问2次，如果仍在频繁访问则持续刷新黑名单时间
     private Mono<Boolean> handleFrequentAccess(RRateLimiterReactive rateLimiter) {
         LogUtil.warn(ErrorCode.TOO_MUCH_REQUEST_ERROR, "Frequent request from user.");
         return rateLimiter.setRate(RateType.OVERALL, RESTRICTED_ACCESS_FREQUENCY, 1, RateIntervalUnit.MINUTES)
-                .then(rateLimiter.expire(10, TimeUnit.MINUTES));
-    }
-
-    private Mono<RRateLimiterReactive> getUriRateLimiter(String key) {
-
-        RRateLimiterReactive rateLimiter = redissonClient.getRateLimiter(URI_RATE_LIMITER + key);
-
-        return rateLimiter.isExists().flatMap(isExists -> {
-            if (isExists) return Mono.just(rateLimiter);
-
-            return rateLimiter.trySetRate(RateType.OVERALL, 1000, 1, RateIntervalUnit.SECONDS)
-                    .then(rateLimiter.expire(2, TimeUnit.HOURS))
-                    .thenReturn(rateLimiter);
-        });
+                .then(rateLimiter.expire(RESTRICTED_LIMITER_EXPIRE, TimeUnit.MINUTES));
     }
 
     @Override
