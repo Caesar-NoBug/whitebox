@@ -1,6 +1,9 @@
 package org.caesar.service.impl;
 
+import org.caesar.common.exception.BusinessException;
 import org.caesar.common.exception.ThrowUtil;
+import org.caesar.common.log.LogUtil;
+import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.domain.common.vo.PageVO;
 import org.caesar.domain.search.enums.ArticleSortField;
 import org.caesar.domain.search.enums.DataSource;
@@ -127,20 +130,28 @@ public class ArticleSearchService implements SearchService<ArticleIndexVO> {
     }
 
     @Override
-    public boolean insertIndex(List<ArticleIndexVO> indices) {
-        System.out.println("成功同步:" + indices.size());
+    public void insertIndex(List<ArticleIndexVO> indices) {
+
         List<ArticleIndex> indicesDO = indices.stream()
                 .map(ArticleIndex::new).collect(Collectors.toList());
-        System.out.println(indicesDO);
-        operations.save(indicesDO);
-        return true;
+
+        try {
+            operations.save(indicesDO);
+        } catch (Exception e) {
+            LogUtil.error(ErrorCode.SYSTEM_ERROR, "Sync failed indices:" + indicesDO);
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Fail to insert index to elasticsearch.");
+        }
     }
 
     @Override
-    public boolean deleteIndex(List<Long> ids) {
+    public void deleteIndex(List<Long> ids) {
         Criteria criteria = new Criteria("id").in(ids);
-        operations.delete(criteria);
-        return true;
+        try {
+            operations.delete(criteria);
+        } catch (Exception e) {
+            LogUtil.error(ErrorCode.SYSTEM_ERROR, "Delete failed indices" + ids);
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Fail to delete index from elasticsearch.");
+        }
     }
 
     @Override

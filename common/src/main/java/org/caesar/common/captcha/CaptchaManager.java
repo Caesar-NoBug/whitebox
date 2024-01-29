@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class CaptchaManager implements ApplicationContextAware {
 
-    private final Map<CaptchaType, CaptchaGenerator> generatorMap = new ConcurrentHashMap<>();
+    private final Map<CaptchaType, CaptchaGenerator> generatorMap = new HashMap<>();
 
     // 随机生成验证码
     public Captcha genRandCaptcha(int width, int height) {
@@ -27,16 +28,20 @@ public class CaptchaManager implements ApplicationContextAware {
     }
 
     /**
-     * @param type 验证码类型
-     * @param width 图片宽度
+     * @param type   验证码类型
+     * @param width  图片宽度
      * @param height 图片高度
      */
     public Captcha genCaptcha(CaptchaType type, int width, int height) {
         return generatorMap.get(type).genCaptcha(width, height);
     }
 
+    public CaptchaChecker genCaptchaChecker(Captcha captcha) {
+        return new CaptchaChecker(captcha.getType(), captcha.getAnswer());
+    }
+
     /**
-     * @param result 用户输入的答案
+     * @param result  用户输入的答案
      * @param checker 服务端存储的验证码校验器
      * @return 是否验证通过
      */

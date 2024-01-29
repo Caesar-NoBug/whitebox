@@ -39,16 +39,14 @@ public interface SearchService<V extends IndexVO> {
     /**
      * 插入索引，若指定id已存在，则会覆盖旧数据
      * @param indices 新增或更新的索引数据
-     * @return        是否更新成功
      */
-    boolean insertIndex(List<V> indices);
+    void insertIndex(List<V> indices);
 
     /**
      * 删除索引
      * @param ids       待删除索引id
-     * @return          是否删除成功
      */
-    boolean deleteIndex(List<Long> ids);
+    void deleteIndex(List<Long> ids);
 
     /**
      * @return 服务能够处理的数据类型

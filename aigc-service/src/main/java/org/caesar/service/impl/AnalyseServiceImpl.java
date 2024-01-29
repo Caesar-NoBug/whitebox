@@ -2,6 +2,8 @@ package org.caesar.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.caesar.common.exception.BusinessException;
+import org.caesar.config.ChatConfig;
+import org.caesar.config.ChatProperties;
 import org.caesar.constant.ChatPrompt;
 import org.caesar.constant.Patterns;
 import org.caesar.domain.aigc.request.AnalyseTextRequest;
@@ -12,6 +14,7 @@ import org.caesar.service.AnalyseService;
 import org.caesar.service.ChatService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.regex.Matcher;
 
@@ -22,30 +25,42 @@ public class AnalyseServiceImpl implements AnalyseService {
     @Resource
     private ChatService chatService;
 
+    private ChatConfig detectTextConfig;
+
+    private ChatConfig analyseTextConfig;
+
+    AnalyseServiceImpl(ChatProperties chatProperties) {
+        analyseTextConfig = chatProperties.getChatConfig(ChatProperties.ANALYSE_TEXT);
+        detectTextConfig = chatProperties.getChatConfig(ChatProperties.DETECT_TEXT);
+    }
+
     @Override
     public AnalyseTextResponse analyseText(AnalyseTextRequest request) {
         String title = request.getTitle();
         String content = simplifyArticle(request.getContent());
         boolean genContent = request.isGenContent();
-        String prompt = String.format(ChatPrompt.PROMPT_TEXT_INFO, title, content);
+        String detectTextPrompt = String.format(detectTextConfig.getPrompt(), title, content);
 
         // 审核文章
-        String detectResult = chatService.completion(new CompletionRequest(ChatPrompt.PRESET_DETECT_TEXT, prompt)).getReply();
+        String detectResult = chatService.completion(
+                new CompletionRequest(detectTextConfig.getPreset(), detectTextPrompt)).getReply();
 
         System.out.println("detectResult:" + detectResult);
 
         AnalyseTextResponse response = new AnalyseTextResponse();
 
         // 是否通过审核
-        response.setPass(ChatPrompt.DETECT_TEXT_PASS.equals(detectResult));
+        response.setPass(detectTextConfig.getReply().equals(detectResult));
 
         // 未通过或不生成摘要、标签则直接结束
         if(!response.isPass() || !genContent)
             return response;
 
-        String analyseResult = chatService.completion(new CompletionRequest(ChatPrompt.PRESET_ANALYSE_ARTICLE, prompt)).getReply();
+        String analysePrompt = String.format(analyseTextConfig.getPrompt(), title, content);
+        String analyseResult = chatService.completion(
+                new CompletionRequest(analyseTextConfig.getPreset(), analysePrompt)).getReply();
 
-        String[] generatedContents = analyseResult.split("@@@");
+        String[] generatedContents = analyseResult.split(analyseTextConfig.getSeparator());
 
         try {
             response.setDigest(generatedContents[0]);

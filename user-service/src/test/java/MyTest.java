@@ -1,7 +1,8 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.caesar.UserServiceApplication;
-import org.caesar.controller.AuthController;
-import org.caesar.mapper.MenuMapper;
+import org.caesar.common.repository.CacheRepository;
+import org.caesar.user.controller.AuthController;
+import org.caesar.user.mapper.MenuMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,13 +19,12 @@ public class MyTest {
     @Resource
     private MenuMapper menuMapper;
 
+    @Resource
+    private CacheRepository cacheRepository;
+
     @Test
     public void testRedis() {
-        /*UserPO user = new UserPO();
-        user.setUsername("dfasdf");
-        user.setPassword("wer72340r");
-        user.setEmail("42134@qq.com");
-        userController.register(user);*/
+        System.out.println(cacheRepository.getAndExpire("name", String.class, 999));
     }
 
     @Test

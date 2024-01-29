@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.caesar.mapper.BaseUserMapper">
+<mapper namespace="org.caesar.user.mapper.BaseUserMapper">
 
-    <resultMap id="BaseResultMap" type="org.caesar.model.po.UserPO">
+    <resultMap id="BaseResultMap" type="org.caesar.user.model.po.UserPO">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>

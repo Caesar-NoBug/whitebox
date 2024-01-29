@@ -11,11 +11,12 @@ import org.caesar.domain.search.vo.QuestionIndexVO;
 import org.caesar.domain.search.vo.SearchHistoryVO;
 import org.caesar.domain.common.vo.PageVO;
 import org.caesar.service.SearchHistoryService;
-import org.caesar.service.SearchManager;
+import org.caesar.manager.SearchManager;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -32,11 +33,23 @@ public class SearchController {
 
     @GetMapping("/search/{dataSource}")
     public Response<PageVO<? extends IndexVO>> search(@RequestParam String text, @RequestParam int from, @RequestParam int size,
-                                                    @RequestParam SortField field, @PathVariable DataSource dataSource) {
-        if(Objects.isNull(field))
+                                                      @RequestParam SortField field, @PathVariable DataSource dataSource) {
+        if (Objects.isNull(field))
             return Response.ok(searchManager.search(dataSource, text, from, size));
         else
             return Response.ok(searchManager.sortSearch(dataSource, text, field, from, size));
+    }
+
+    @GetMapping("/search-batch/{dataSource}")
+    Response<List<?>> searchBatch(@RequestParam List<String> texts, @RequestParam int size, @PathVariable DataSource dataSource) {
+        return Response.ok(searchManager.searchBatch(texts, size, dataSource));
+    }
+
+    @GetMapping("/search-aggregation")
+    Response<Map<DataSource, PageVO<? extends IndexVO>>> searchAggregation(@RequestParam String text,
+                                                                           @RequestParam int from,
+                                                                           @RequestParam int size) {
+        return Response.ok(searchManager.searchAggregation(text, from, size));
     }
 
     @GetMapping("/suggestion")
@@ -46,8 +59,8 @@ public class SearchController {
 
     @PostMapping("/sync/question-index")
     public Response<Void> syncQuestionIndex(@RequestBody List<QuestionIndexVO> indices) {
-        boolean success = searchManager.insertIndex(DataSource.QUESTION, indices);
-        return success ? Response.ok() : Response.error(ErrorCode.SYSTEM_ERROR, "更新索引失败");
+        searchManager.insertIndex(DataSource.QUESTION, indices);
+        return Response.ok();
     }
 
     @PostMapping("/sync/article-index")

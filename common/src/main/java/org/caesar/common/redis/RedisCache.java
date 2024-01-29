@@ -309,4 +309,8 @@ public class RedisCache
         return redissonClient.getBitSet(key);
     }
 
+    public long getExpire(String key) {
+        return redisJSONTemplate.getExpire(key);
+    }
+
 }

@@ -1,17 +1,14 @@
 package org.caesar.common.repository;
 
+import com.alibaba.fastjson.JSON;
 import org.caesar.common.redis.RedisCache;
 import org.redisson.api.*;
 import org.springframework.data.redis.core.BoundZSetOperations;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Component
@@ -20,14 +17,6 @@ public class RedisCacheRepository implements CacheRepository {
     public static final int DEFAULT_MIN_EXPIRE = 600;
     // 默认过期浮动时间（10分钟）
     public static final int DEFAULT_EXPIRE_FLOAT = 600;
-
-    public final String GET_AND_EXPIRE_LUA_SCRIPT = "local res = redis.call('GET', KEYS[1]);\n"
-            + "if(res ~= nil)\n" +
-            "then\n" +
-            "   redis.call('EXPIRE', KEYS[1], ARGV[1]);" +
-            "end" +
-            "return res;";
-
     private final Random random = new Random();
 
     @Resource
@@ -69,8 +58,18 @@ public class RedisCacheRepository implements CacheRepository {
     }
 
     @Override
+    public <T> void setObject(String key, T object, int expire) {
+        redisCache.setCacheObject(key, object, expire, TimeUnit.SECONDS);
+    }
+
+    @Override
     public boolean expire(String key, int expire, TimeUnit timeUnit) {
         return redisCache.expire(key, expire, timeUnit);
+    }
+
+    @Override
+    public long getExpire(String key) {
+        return redisCache.getExpire(key);
     }
 
     @Override

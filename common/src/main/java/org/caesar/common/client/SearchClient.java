@@ -23,12 +23,12 @@ public interface SearchClient {
                                    @RequestParam SortField field, @PathVariable DataSource dataSource);
 
     @Logger("[RPC] /searchBatch")
-    @GetMapping("/searchBatch")
-    <T> Response<List<T>> searchBatch(@RequestParam List<String> texts, @RequestParam int size, @RequestParam DataSource dataSource);
+    @GetMapping("/search-batch/{dataSource}")
+    <T> Response<List<T>> searchBatch(@RequestParam List<String> texts, @RequestParam int size, @PathVariable DataSource dataSource);
 
     @Logger("[RPC] /getSearchHistory")
     @GetMapping("/history")
-    Response<List<SearchHistoryVO>> getSearchHistory(@RequestParam Integer size);
+    Response<List<SearchHistoryVO>> getSearchHistory(@RequestParam Integer size, @RequestParam DataSource dataSource);
 
     @Logger("[RPC] /syncArticleIndex")
     @PostMapping("/sync/article-index")

@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.caesar.mapper.MenuMapper">
+<mapper namespace="org.caesar.user.mapper.MenuMapper">
 
-    <resultMap id="BaseResultMap" type="org.caesar.model.entity.Menu">
+    <resultMap id="BaseResultMap" type="org.caesar.user.model.entity.Menu">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="permKey" column="perm_key" jdbcType="VARCHAR"/>
@@ -13,7 +13,7 @@
             <result property="status" column="status" jdbcType="BIT"/>
     </resultMap>
 
-    <resultMap id="RoleMap" type="org.caesar.model.entity.RoleMenu">
+    <resultMap id="RoleMap" type="org.caesar.user.model.entity.RoleMenu">
         <id property="id" column="id" />
         <id property="permission" column="permission" />
     </resultMap>
@@ -63,7 +63,7 @@
         )
     </select>
 
-    <select id="getUpdatedRole" resultType="org.caesar.model.entity.RoleMenu">
+    <select id="getUpdatedRole" resultType="org.caesar.user.model.entity.RoleMenu">
         SELECT r.id   AS id,
                m.path AS permission
         FROM sys_role r
