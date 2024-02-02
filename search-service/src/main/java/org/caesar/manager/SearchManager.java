@@ -1,12 +1,11 @@
 package org.caesar.manager;
 
 import org.caesar.domain.common.vo.PageVO;
-import org.caesar.common.repository.CacheRepository;
+import org.caesar.common.cache.CacheRepository;
 import org.caesar.constant.RedisPrefix;
 import org.caesar.domain.search.enums.DataSource;
 import org.caesar.domain.search.enums.SortField;
 import org.caesar.domain.search.vo.IndexVO;
-import org.caesar.model.entity.Index;
 import org.caesar.service.SearchService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -14,7 +13,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.xml.crypto.Data;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;

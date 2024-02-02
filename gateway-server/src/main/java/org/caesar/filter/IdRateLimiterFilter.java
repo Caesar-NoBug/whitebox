@@ -28,20 +28,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class IdRateLimiterFilter implements GlobalFilter, Ordered {
 
-    // id限流器的key的前缀
-    private final String ID_RATE_LIMITER = "gateway:idRateLimiter:";
-
-    // 默认访问频率
-    private final int DEFAULT_ACCESS_FREQUENCY = 40;
-
     // 默认限流器过期时间
     private final int DEFAULT_LIMITER_EXPIRE = 60;
-
-    // 限制访问频率
-    private final int RESTRICTED_ACCESS_FREQUENCY = 2;
-
-    // 限制限流器过期时间
-    private final int RESTRICTED_LIMITER_EXPIRE = 10;
 
     @Resource
     private RedissonReactiveClient redissonClient;
@@ -70,6 +58,8 @@ public class IdRateLimiterFilter implements GlobalFilter, Ordered {
     }
 
     private Mono<RRateLimiterReactive> getIdRateLimiter(String uri, Long userId) {
+        // id限流器的key的前缀
+        String ID_RATE_LIMITER = "gateway:idRateLimiter:";
         RRateLimiterReactive rateLimiter = redissonClient.getRateLimiter(ID_RATE_LIMITER + userId);
 
         return rateLimiter.isExists().flatMap(isExists -> {
@@ -84,6 +74,8 @@ public class IdRateLimiterFilter implements GlobalFilter, Ordered {
     private int getRate(String uri) {
         RateLimiterConfig config = rateLimiterProperties.getUriConfig(uri);
 
+        // 默认访问频率
+        int DEFAULT_ACCESS_FREQUENCY = 40;
         if(Objects.isNull(config) || config.getUser() == null) return DEFAULT_ACCESS_FREQUENCY;
 
         return config.getUser();
@@ -92,6 +84,10 @@ public class IdRateLimiterFilter implements GlobalFilter, Ordered {
     // 如果频繁访问则放入黑名单,10分钟内每分钟只允许访问2次，如果仍在频繁访问则持续刷新黑名单时间
     private Mono<Boolean> handleFrequentAccess(RRateLimiterReactive rateLimiter) {
         LogUtil.warn(ErrorCode.TOO_MUCH_REQUEST_ERROR, "Frequent request from user.");
+        // 限制访问频率
+        int RESTRICTED_ACCESS_FREQUENCY = 2;
+        // 限制限流器过期时间
+        int RESTRICTED_LIMITER_EXPIRE = 10;
         return rateLimiter.setRate(RateType.OVERALL, RESTRICTED_ACCESS_FREQUENCY, 1, RateIntervalUnit.MINUTES)
                 .then(rateLimiter.expire(RESTRICTED_LIMITER_EXPIRE, TimeUnit.MINUTES));
     }

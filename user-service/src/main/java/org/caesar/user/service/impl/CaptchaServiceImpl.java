@@ -1,9 +1,9 @@
 package org.caesar.user.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import org.caesar.common.captcha.CaptchaManager;
-import org.caesar.common.captcha.vo.Captcha;
-import org.caesar.common.captcha.vo.CaptchaChecker;
+import org.caesar.user.captcha.CaptchaManager;
+import org.caesar.user.captcha.vo.Captcha;
+import org.caesar.user.captcha.vo.CaptchaChecker;
 import org.caesar.common.exception.BusinessException;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.log.LogUtil;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.Objects;
 
 @Service
 public class CaptchaServiceImpl implements CaptchaService {
@@ -28,7 +29,7 @@ public class CaptchaServiceImpl implements CaptchaService {
     public static final int CAPTCHA_RETRY_TIME = 3;
 
     @Override
-    public void validate(String key, String answer, HttpSession session) {
+    public void validate(String answer, HttpSession session) {
 
         Integer lastResult = (Integer) session.getAttribute(SESSION_CAPTCHA_RESULT);
         ThrowUtil.ifTrue(lastResult <= -CAPTCHA_RETRY_TIME, "Captcha expired, please refresh the captcha.");
@@ -45,6 +46,12 @@ public class CaptchaServiceImpl implements CaptchaService {
             throw new BusinessException(ErrorCode.INVALID_ARGS_ERROR, "Invalid captcha answer, please input again.");
         }
 
+    }
+
+    @Override
+    public boolean validated(HttpSession session) {
+        Object result = session.getAttribute(SESSION_CAPTCHA_RESULT);
+        return Objects.nonNull(result) && (int) result == 1;
     }
 
     @Override

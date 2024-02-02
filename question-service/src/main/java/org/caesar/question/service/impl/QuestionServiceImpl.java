@@ -1,6 +1,6 @@
 package org.caesar.question.service.impl;
 
-import org.caesar.common.repository.CacheRepository;
+import org.caesar.common.cache.CacheRepository;
 import org.caesar.question.constant.CacheKey;
 import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.domain.executor.request.ExecuteCodeRequest;
@@ -91,6 +91,7 @@ public class QuestionServiceImpl implements QuestionService {
                 question.getInputArray(), question.getTimeLimit(), question.getMemoryLimit());
 
         publisher.sendExecuteCodeMessage(executeRequest);
+        //TODO: 同时更新问题提交数
 
         String submitResultKey = CacheKey.getSubmitResultKey(userId, qId, submitId);
 
@@ -99,7 +100,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     // 从缓存中获取问题信息
     private Question getCacheQuestion(long id) {
-        return cacheRepo.handleCache(CacheKey.CACHE_QUESTION + id, () -> questionRepo.getQuestionById(id));
+        return cacheRepo.cache(CacheKey.CACHE_QUESTION + id, () -> questionRepo.getQuestionById(id));
     }
 
     @Override
@@ -127,7 +128,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         String submitResultKey = CacheKey.getSubmitResultKey(userId, qId, submitId);
 
-        SubmitCodeResult result = cacheRepo.handleCache(submitResultKey, () -> questionRepo.getSubmitResult(userId, qId, submitId));
+        SubmitCodeResult result = cacheRepo.cache(submitResultKey, () -> questionRepo.getSubmitResult(userId, qId, submitId));
 
         ThrowUtil.ifNull(result, ErrorCode.NOT_FIND_ERROR, "The submit code request does not exist or judge failed.");
 

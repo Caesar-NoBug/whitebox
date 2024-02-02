@@ -1,6 +1,6 @@
 package org.caesar.user.controller;
 
-import org.caesar.common.captcha.vo.Captcha;
+import org.caesar.user.captcha.vo.Captcha;
 import org.caesar.common.context.ContextHolder;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.domain.common.enums.ErrorCode;
@@ -13,6 +13,7 @@ import org.caesar.domain.user.vo.UserVO;
 import org.caesar.user.service.CaptchaService;
 import org.caesar.user.service.UserService;
 import org.caesar.common.str.StrUtil;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,7 @@ public class AuthController {
     public Response<UserVO> login(HttpServletRequest httpServletRequest,
                                   @Validated @RequestBody LoginRequest request) {
 
-        ThrowUtil.ifFalse(captchaPassed(httpServletRequest), ErrorCode.NOT_AUTHENTICATED_ERROR,
+        ThrowUtil.ifFalse(captchaService.validated(httpServletRequest.getSession()), ErrorCode.NOT_AUTHENTICATED_ERROR,
                 "Captcha failed, please pass the captcha first.");
 
         return Response.ok(userService.login(request));
@@ -61,7 +62,7 @@ public class AuthController {
     public Response<UserVO> register(HttpServletRequest httpServletRequest,
                                      @Validated @RequestBody RegisterRequest request) {
 
-        ThrowUtil.ifFalse(captchaPassed(httpServletRequest), ErrorCode.NOT_AUTHENTICATED_ERROR,
+        ThrowUtil.ifFalse(captchaService.validated(httpServletRequest.getSession()), ErrorCode.NOT_AUTHENTICATED_ERROR,
                 "Captcha failed, please pass the captcha first.");
 
         if (StrUtil.isBlank(request.getIdentity()) || StrUtil.isBlank(request.getUsername()) || StrUtil.isBlank(request.getPassword()))
@@ -74,36 +75,18 @@ public class AuthController {
     public Response<Captcha> genCaptcha(HttpServletRequest httpServletRequest,
                                         @Min(20) @RequestParam Integer width,
                                         @Min(20) @RequestParam Integer height) {
-        return Response.ok(captchaService.refreshCaptcha());
+        return Response.ok(captchaService.refreshCaptcha(width, height, httpServletRequest.getSession()));
     }
 
     @PostMapping("captcha")
     public Response<Void> captcha(HttpServletRequest httpServletRequest,
                                   @RequestBody CaptchaRequest request) {
+        captchaService.validate(request.getAnswer(), httpServletRequest.getSession());
+        return Response.ok();
     }
 
     @RequestMapping("/reset")
     public Response<Void> reset() {
         return null;
     }
-
-    private boolean captchaPassed(HttpServletRequest httpServletRequest) {
-        Object result = httpServletRequest.getSession().getAttribute(SESSION_CAPTCHA_RESULT);
-
-        return Objects.nonNull(result) && (Integer) result == 1;
-    }
-
-    private void checkAuthenticationTime(HttpServletRequest httpServletRequest) {
-        Object authTime = httpServletRequest.getSession().getAttribute(SESSION_AUTHENTICATION_TIME);
-        ThrowUtil.ifTrue((Integer)authTime > AUTHENTICATION_RETRY_TIME,
-                ErrorCode.NOT_AUTHENTICATED_ERROR, "Too much retry times, please refresh the code.");
-    }
-
-    private void addAuthenticationTime(HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Object authTime = session.getAttribute(SESSION_AUTHENTICATION_TIME);
-        if (Objects.isNull(authTime)) session.setAttribute(SESSION_AUTHENTICATION_TIME, 0);
-        else session.setAttribute(SESSION_AUTHENTICATION_TIME, (Integer) authTime + 1);
-    }
-
 }

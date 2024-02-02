@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.log.LogUtil;
-import org.caesar.common.repository.CacheRepository;
+import org.caesar.common.cache.CacheRepository;
 import org.caesar.common.str.StrUtil;
 import org.caesar.user.constant.CacheKey;
 import org.caesar.domain.common.enums.ErrorCode;
@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
 
         user = User.register(userId, request);
 
-        ThrowUtil.ifTrue(!userRepo.insertUser(user), ErrorCode.SYSTEM_ERROR, "Fail to insert user to database.");
+        ThrowUtil.ifTrue(!userRepo.insertUser(user), ErrorCode.SYSTEM_ERROR, "Fail to insert user into database.");
 
         return loadUserWithToken(user);
     }

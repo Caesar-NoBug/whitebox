@@ -1,7 +1,7 @@
 package org.caesar.user.controller;
 
 import org.caesar.domain.common.vo.Response;
-import org.caesar.common.captcha.vo.Captcha;
+import org.caesar.user.captcha.vo.Captcha;
 import org.caesar.user.service.CodeService;
 import org.caesar.common.str.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;

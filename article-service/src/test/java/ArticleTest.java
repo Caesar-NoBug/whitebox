@@ -1,26 +1,19 @@
 import org.caesar.ArticleServiceApplication;
 import org.caesar.common.client.UserClient;
-import org.caesar.common.repository.CacheRepository;
-import org.caesar.domain.common.vo.Response;
-import org.caesar.domain.user.vo.UserMinVO;
-import org.caesar.mapper.ArticleMapper;
-import org.caesar.model.entity.Article;
-import org.caesar.repository.ArticleRepository;
-import org.caesar.service.ArticleService;
+import org.caesar.common.cache.CacheRepository;
+import org.caesar.article.mapper.ArticleMapper;
+import org.caesar.article.model.entity.Article;
+import org.caesar.article.repository.ArticleRepository;
+import org.caesar.article.service.ArticleService;
 import org.caesar.common.str.StrUtil;
-import org.caesar.task.HotArticleTask;
-import org.caesar.task.IncSyncArticleTask;
-import org.caesar.util.RedisKey;
+import org.caesar.article.task.HotArticleTask;
+import org.caesar.article.task.IncSyncArticleTask;
+import org.caesar.article.constant.CacheKey;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.BoundZSetOperations;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
 import java.util.Random;
 
 @SpringBootTest(classes = ArticleServiceApplication.class)
@@ -118,8 +111,8 @@ public class ArticleTest {
         Random random = new Random();
         for (long i = 0; i < 40; i++) {
 
-            cacheRepo.setLongValue(RedisKey.articleFavorCount(i), random.nextInt(1000));
-            cacheRepo.setLongValue(RedisKey.articleLikeCount(i), random.nextInt(50000));
+            cacheRepo.setLongValue(CacheKey.articleFavorCount(i), random.nextInt(1000));
+            cacheRepo.setLongValue(CacheKey.articleLikeCount(i), random.nextInt(50000));
         }
     }
 

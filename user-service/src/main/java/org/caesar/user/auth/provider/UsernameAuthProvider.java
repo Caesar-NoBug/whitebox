@@ -9,22 +9,22 @@ import org.caesar.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 @Component
 public class UsernameAuthProvider implements AuthenticationProvider {
 
-    @Autowired
+    @Resource
     private UserRepository userRepo;
 
     @Override
     public void authenticate(String username, String password) {
 
-        ThrowUtil.testStr(username, "用户名非法");
-
         User user = userRepo.selectUserByName(username);
 
-        ThrowUtil.ifNull(user,"认证失败：用户名错误，该用户不存在！");
+        ThrowUtil.ifNull(user,"Authenticate failed: invalid username, user does not exist.");
 
-        ThrowUtil.ifTrue(!StrEncoder.match(password, user.getPassword()), "认证失败：密码错误");
+        ThrowUtil.ifTrue(!StrEncoder.match(password, user.getPassword()), "Authenticate failed: wrong password.");
     }
 
     @Override
@@ -36,28 +36,4 @@ public class UsernameAuthProvider implements AuthenticationProvider {
     public AuthMethod getMethod() {
         return AuthMethod.USERNAME;
     }
-
-   /* @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-
-        String username = (String) authentication.getPrincipal();
-        String password = (String) authentication.getCredentials();
-
-        AuthUser authUser = userService.selectAuthUserByUsername(username);
-
-        //认证失败
-        if(Objects.isNull(authUser) || !passwordEncoder.matches(password, authUser.getPassword())){
-            return null;
-        }
-
-        UsernameAuthenticationToken usernameAuthenticationToken = new UsernameAuthenticationToken(authUser);
-
-        return usernameAuthenticationToken;
-    }
-
-    @Override
-    public boolean supports(Class<?> authentication) {
-        return UsernameAuthenticationToken.class.isAssignableFrom(authentication);
-    }*/
-
 }

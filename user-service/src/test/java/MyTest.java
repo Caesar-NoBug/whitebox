@@ -1,6 +1,6 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.caesar.UserServiceApplication;
-import org.caesar.common.repository.CacheRepository;
+import org.caesar.common.cache.RedisCacheRepository;
 import org.caesar.user.controller.AuthController;
 import org.caesar.user.mapper.MenuMapper;
 import org.junit.jupiter.api.Test;
@@ -20,11 +20,11 @@ public class MyTest {
     private MenuMapper menuMapper;
 
     @Resource
-    private CacheRepository cacheRepository;
+    private RedisCacheRepository cacheRepository;
 
     @Test
     public void testRedis() {
-        System.out.println(cacheRepository.getAndExpire("name", String.class, 999));
+        /*System.out.println(cacheRepository.getAndExpire("name", String.class, 999))*/;
     }
 
     @Test
@@ -43,6 +43,26 @@ public class MyTest {
     @Test
     public void testRoles() {
         System.out.println(menuMapper.getUpdatedRole(LocalDateTime.of(2021, 1, 1, 1, 1)));
+    }
+
+    @Test
+    public void testCacheRefresh() throws InterruptedException {
+
+        cacheRepository.deleteObject("name1");
+        cacheRepository.deleteObject("name2");
+
+        cacheRepository.cache("name1", 30, 90, () -> "casear");
+        cacheRepository.cache("name2", 30, 90, () -> "casear2");
+
+        cacheRepository.cache("name1", 30, 90, () -> "casear");
+
+        int i = 0;
+        while (true) {
+            Thread.sleep(5 * 1000);
+            i += 5 * 1000;
+            cacheRepository.refreshCache();
+        }
+
     }
 
 }

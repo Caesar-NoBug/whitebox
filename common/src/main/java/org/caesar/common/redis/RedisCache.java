@@ -23,54 +23,8 @@ public class RedisCache
     @Resource
     private RedisTemplate redisJSONTemplate;
 
-    @Resource
-    private RedissonClient redissonClient;
-
-    private final Map<String, String> lastDate = new ConcurrentHashMap<>();
-
-    //生成指定keyPrefix的id（保证有序且唯一）
-    public long nextId(String keyPrefix) {
-        LocalDateTime now = LocalDateTime.now();
-        //2023-01-01 00:00
-        long BEGIN_TIMESTAMP = 1672531200L;
-        long timestamp = now.toEpochSecond(ZoneOffset.UTC) - BEGIN_TIMESTAMP;
-
-        String curr = now.format(DateTimeFormatter.ofPattern("yyyy:MM:dd"));
-        String last = lastDate.get(keyPrefix);
-
-        RAtomicLong cacheNumber = redissonClient.getAtomicLong(keyPrefix + curr);
-
-        //新的一天添加新的主键并更新lastDate
-        if(Objects.isNull(last) || !last.equals(curr)){
-            lastDate.put(keyPrefix, curr);
-            //设置有效期避免占用过多资源
-            cacheNumber.set(0);
-            cacheNumber.expire(14, TimeUnit.DAYS);
-        }
-
-        long count = cacheNumber.incrementAndGet();
-
-        return timestamp << 32 + count;
-    }
-
-    public RScript getScript() {
-        return redissonClient.getScript(new StringCodec());
-    }
-
     public boolean hasKey(String key) {
         return redisJSONTemplate.hasKey(key);
-    }
-
-    public<T> RQueue<T> getQueue(String key) {
-        return redissonClient.getQueue(key);
-    }
-
-    public RAtomicLong getAtomicLong(String key) {
-        return redissonClient.getAtomicLong(key);
-    }
-
-    public <T> RHyperLogLog<T> getHyperLogLog(String key) {
-        return redissonClient.getHyperLogLog(key);
     }
 
     public <T, V> BoundZSetOperations<T, V> getSortedSet(String key) {
@@ -299,14 +253,6 @@ public class RedisCache
     public Collection<String> keys(final String pattern)
     {
         return redisJSONTemplate.keys(pattern);
-    }
-
-    public RBloomFilter<Long> getBloomFilter(String key) {
-        return redissonClient.getBloomFilter(key);
-    }
-
-    public RBitSet getBitSet(String key) {
-        return redissonClient.getBitSet(key);
     }
 
     public long getExpire(String key) {

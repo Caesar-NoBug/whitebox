@@ -1,5 +1,7 @@
 package org.caesar.common.exception;
 
+import org.caesar.common.log.LogUtil;
+import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.domain.common.vo.Response;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +36,25 @@ public class ExceptionHandler {
         }
 
         return result;
+    }
+
+    public void handleException(Throwable e) {
+        if(e instanceof BusinessException) {
+            ErrorCode code = ((BusinessException) e).getCode();
+            //TODO: 控制日志级别
+            if (!ErrorCode.SYSTEM_ERROR.equals(code)) {
+                LogUtil.warn(code, e.getMessage());
+            } else {
+                LogUtil.error(code, e.getMessage(), e);
+            }
+        } else if(e instanceof ConstraintViolationException) {
+            ErrorCode code = ErrorCode.INVALID_ARGS_ERROR;
+            LogUtil.warn(code, e.getMessage());
+        } else if(e instanceof RuntimeException) {
+            ErrorCode code = ErrorCode.SYSTEM_ERROR;
+            LogUtil.error(code, e.getMessage(), e);
+        }
+
     }
 
 }

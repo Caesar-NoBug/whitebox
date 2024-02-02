@@ -12,7 +12,7 @@ import org.caesar.model.entity.OpenAIChatCompletion;
 import org.caesar.model.vo.*;
 import org.caesar.service.ChatService;
 import org.caesar.common.context.ContextHolder;
-import org.caesar.common.repository.CacheRepository;
+import org.caesar.common.cache.CacheRepository;
 import org.caesar.domain.aigc.request.CompletionRequest;
 import org.caesar.domain.aigc.response.CompletionResponse;
 import org.caesar.model.vo.Message;

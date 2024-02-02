@@ -1,5 +1,5 @@
 import org.caesar.UserServiceApplication;
-import org.caesar.common.captcha.generator.SlideCaptchaGenerator;
+import org.caesar.user.captcha.generator.SlideCaptchaGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

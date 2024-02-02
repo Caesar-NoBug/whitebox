@@ -1,7 +1,7 @@
 package org.caesar.common.util;
 
 import cn.hutool.core.codec.Base64;
-import org.caesar.common.captcha.generator.SlideCaptchaGenerator;
+
 import org.caesar.common.exception.BusinessException;
 import org.caesar.domain.common.enums.ErrorCode;
 import org.springframework.util.FastByteArrayOutputStream;
@@ -104,9 +104,9 @@ public class ImageUtil {
         dest.setPixel(destX, destY, backPixel);
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         new SlideCaptchaGenerator().genCaptcha(300, 200);
-    }
+    }*/
 
     public static BufferedImage getRandImage(int width, int height) {
 

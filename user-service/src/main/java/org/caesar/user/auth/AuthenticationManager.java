@@ -1,8 +1,7 @@
 package org.caesar.user.auth;
 
 import org.caesar.common.exception.BusinessException;
-import org.caesar.common.log.LogUtil;
-import org.caesar.common.repository.CacheRepository;
+import org.caesar.common.cache.CacheRepository;
 import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.domain.user.enums.AuthMethod;
 import org.caesar.user.constant.CacheKey;
@@ -16,6 +15,7 @@ import javax.annotation.Resource;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 认证管理器，统一处理认证逻辑
@@ -28,7 +28,7 @@ public class AuthenticationManager implements ApplicationContextAware {
 
     private final Map<AuthMethod, AuthenticationProvider> providerMap = new ConcurrentHashMap<>();
 
-    private final int MAX_AUTHENTICATION_RETRY = 5;
+    private final int MAX_AUTHENTICATION_RETRY = 3;
 
     /**
      * @param method 认证方式
@@ -75,7 +75,7 @@ public class AuthenticationManager implements ApplicationContextAware {
         try {
             providerMap.get(method).authenticate(identity, credential);
         } catch (Throwable e) {
-            cacheRepo.setObject(cacheKey, retryTime + 1, 5);
+            cacheRepo.setObject(cacheKey, retryTime + 1, 5, TimeUnit.MINUTES);
             throw e;
         }
     }
