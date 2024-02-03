@@ -69,7 +69,7 @@ public class AuthenticationManager implements ApplicationContextAware {
 
         // 尝试次数过多直接抛出异常
         if(retryTime == MAX_AUTHENTICATION_RETRY) {
-            throw new BusinessException(ErrorCode.NOT_AUTHENTICATED_ERROR, "Too many authenticate retries of " + identity + " with " + method);
+            throw new BusinessException(ErrorCode.NOT_AUTHENTICATED_ERROR, "Too many authentication retries for " + identity + " with " + method);
         }
 
         try {

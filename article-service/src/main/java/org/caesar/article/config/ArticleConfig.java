@@ -11,17 +11,31 @@ import org.springframework.context.annotation.Configuration;
 public class ArticleConfig {
 
     // 预计的最大文章数量
-    @Value("${article.bloomFilter.size}")
-    private Integer size;
+    @Value("${data-filter.article.size}")
+    private Integer maxArticleSize;
 
     // 预计的最大文章数量
-    @Value("${article.bloomFilter.falseProbability}")
-    private Double falseProbability;
+    @Value("${data-filter.article.falseProbability}")
+    private Double articleFalseProbability;
+
+    // 预计的最大文章数量
+    @Value("${data-filter.comment.size}")
+    private Integer maxCommentSize;
+
+    // 预计的最大文章数量
+    @Value("${data-filter.comment.falseProbability}")
+    private Double commentFalseProbability;
 
     @Bean
     public DataFilter articleFilter(CacheRepository cacheRepository) {
         return new DataFilter(cacheRepository, CacheKey.ARTICLE_BLOOM_FILTER,
-                CacheKey.ARTICLE_REMOVED_BITSET, size, falseProbability);
+                CacheKey.ARTICLE_REMOVED_BITSET, maxArticleSize, articleFalseProbability);
+    }
+
+    @Bean
+    public DataFilter commentFilter(CacheRepository cacheRepository) {
+        return new DataFilter(cacheRepository, CacheKey.COMMENT_BLOOM_FILTER,
+                CacheKey.COMMENT_REMOVED_BITSET, maxCommentSize, commentFalseProbability);
     }
 
 }

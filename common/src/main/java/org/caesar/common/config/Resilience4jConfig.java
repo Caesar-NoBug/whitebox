@@ -70,18 +70,6 @@ public class Resilience4jConfig {
         return TimeLimiterRegistry.of(timeLimiterConfig);
     }
 
-    /*@Bean
-    public RateLimiterRegistry defaultRateLimiterRegistry() {
-
-        RateLimiterConfig config = RateLimiterConfig.custom()
-                .timeoutDuration(Duration.ofSeconds(2))
-                .limitForPeriod(10)
-                .limitRefreshPeriod(Duration.ofSeconds(2))
-                .build();
-
-        return RateLimiterRegistry.of(config);
-    }*/
-
     private boolean recordResult(Object res) {
         System.out.println("Circuit breaker record result invoked");
         if (res instanceof Response) {

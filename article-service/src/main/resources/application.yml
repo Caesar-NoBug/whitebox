@@ -42,8 +42,11 @@ feign:
         connect-timeout: 3000
         read-timeout: 3000
 
-article:
-  bloomFilter:
-    size: 100000
+data-filter:
+  article:
+    size: 200000
+    falseProbability: 0.01
+  comment:
+    size: 200000
     falseProbability: 0.01
 #    org.springframework.cloud.openfeign: trace

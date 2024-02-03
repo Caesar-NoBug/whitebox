@@ -11,7 +11,7 @@ import java.util.Set;
 public interface ArticleRepository {
 
     // 添加文章
-    boolean addArticle(Article article);
+    void addArticle(Article article);
 
     // 获取文章详情(不包含用户对文章的操作)
     Article getArticle(long articleId);
@@ -54,13 +54,13 @@ public interface ArticleRepository {
     boolean hasOwnership(long userId, long article);
 
     // 修改文章
-    boolean updateArticle(long userId, Article updatedArticle);
+    void updateArticle(long userId, Article updatedArticle);
 
     // 强制修改文章（系统级别）
-    boolean updateArticle(Article updatedArticle);
+    void updateArticle(Article updatedArticle);
 
     // 删除文章
-    boolean deleteArticle(long userId, long articleId);
+    void deleteArticle(long userId, long articleId);
 
     /**
      * 评价文章
@@ -69,8 +69,8 @@ public interface ArticleRepository {
      * @param mark      评价(-1:踩，0:无，1:赞)
      * @return          文章评价是否有更新
      */
-    boolean markArticle(long userId, long articleId, int mark);
+    void markArticle(long userId, long articleId, int mark);
 
     // 文章收藏
-    boolean favorArticle(long userId, long articleId, boolean isFavor);
+    void favorArticle(long userId, long articleId, boolean isFavor);
 }

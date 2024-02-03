@@ -1,5 +1,6 @@
 package org.caesar.article.model.entity;
 
+import cn.hutool.http.HtmlUtil;
 import lombok.Data;
 import org.caesar.domain.article.request.AddCommentRequest;
 
@@ -48,8 +49,13 @@ public class Comment{
         comment.setParentId(request.getParentId());
         comment.setParentType(request.getParentType());
         comment.setId(id);
+        comment.setLikeNum(0L);
         comment.setCreateBy(authorId);
         return comment;
+    }
+
+    public void filterHtml() {
+        content = HtmlUtil.filter(content);
     }
 
 }

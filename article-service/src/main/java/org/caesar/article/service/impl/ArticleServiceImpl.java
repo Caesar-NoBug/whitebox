@@ -63,22 +63,22 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = Article.fromAddRequest(id, userId, request);
 
         // 过滤Html文本，以防止XSS
-        article.setContent(HtmlUtil.filter(article.getContent()));
+        article.filterHtml();
         boolean genContent = request.isGenContent();
 
         // 进行文章审核和智能分析
         Response<AnalyseTextResponse> analyseResp = aigcClient.analyseText(new AnalyseTextRequest(article.getTitle(), article.getContent(), genContent));
 
-        AnalyseTextResponse response = RespUtil.handleWithThrow(analyseResp, "Fail to analyse the article");
+        AnalyseTextResponse response = RespUtil.handleWithThrow(analyseResp, "Fail to analyse the article.");
 
-        ThrowUtil.ifFalse(response.isPass(), "The article did not pass the review");
+        ThrowUtil.ifFalse(response.isPass(), "The article did not pass the review.");
 
         if (genContent) {
             article.setTag(response.getTags());
             article.setDigest(response.getDigest());
         }
 
-        ThrowUtil.ifFalse(articleRepo.addArticle(article), ErrorCode.SYSTEM_ERROR, "fail to add the article");
+        articleRepo.addArticle(article);
     }
 
     @Override
@@ -86,6 +86,8 @@ public class ArticleServiceImpl implements ArticleService {
 
         // 获取文章信息
         ArticleVO articleVO = loadArticleVO(articleId);
+
+        ThrowUtil.ifNull(articleVO, ErrorCode.NOT_FIND_ERROR, "Fail to view article: the article does not exists.");
 
         // 添加浏览记录
         articleRepo.addViewHistory(userId, articleId, LocalDateTime.now());
@@ -131,7 +133,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public List<ArticleMinVO> getArticleMin(Set<Long> articleIds) {
 
-        ThrowUtil.ifEmpty(articleIds, ErrorCode.SYSTEM_ERROR, "id集合为空");
+        ThrowUtil.ifEmpty(articleIds, ErrorCode.INVALID_ARGS_ERROR, "Id list was empty.");
 
         return articleRepo.getArticleMin(articleIds)
                 .stream().map(articleStruct::DOtoMinVO)
@@ -145,10 +147,10 @@ public class ArticleServiceImpl implements ArticleService {
 
         Map<Long, UserMinVO> authorInfo = RespUtil.handleWithThrow(
                 userClient.getUserMin(authorIds),
-                "获取作者信息失败"
+                "Fail to fetch user info from user service."
         );
 
-        ThrowUtil.ifEmpty(authorInfo, ErrorCode.SYSTEM_ERROR, "获取作者信息失败,作者不存在");
+        ThrowUtil.ifEmpty(authorInfo, ErrorCode.SYSTEM_ERROR, "Fail to fetch author info from user service: author does not exists.");
 
         List<ArticleHistoryVO> historyVOs = new ArrayList<>();
         for (ArticleHistory history : histories) {
@@ -162,31 +164,30 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public void updateArticle(long userId, UpdateArticleRequest request) {
-        ThrowUtil.ifFalse(articleRepo.updateArticle(userId, Article.fromUpdateRequest(request)), ErrorCode.NOT_AUTHORIZED_ERROR, "无权限修改文章");
+        articleRepo.updateArticle(userId, Article.fromUpdateRequest(request));
     }
 
     @Override
     public void deleteArticle(long userId, long articleId) {
-        ThrowUtil.ifFalse(articleRepo.deleteArticle(userId, articleId), ErrorCode.NOT_AUTHORIZED_ERROR, "无权限删除文章");
+        articleRepo.deleteArticle(userId, articleId);
     }
 
     @Override
     public void markArticle(long userId, long articleId, int mark) {
         ThrowUtil.ifFalse(articleRepo.existArticle(articleId), ErrorCode.INVALID_ARGS_ERROR, "Article does not exists.");
-        ThrowUtil.ifFalse(articleRepo.markArticle(userId, articleId, mark), ErrorCode.SYSTEM_ERROR, "");
+        articleRepo.markArticle(userId, articleId, mark);
     }
 
     @Override
     public void favorArticle(long userId, long articleId, boolean isFavor) {
         ThrowUtil.ifFalse(articleRepo.existArticle(articleId), ErrorCode.INVALID_ARGS_ERROR, "Article does not exists.");
-        ThrowUtil.ifFalse(articleRepo.favorArticle(userId, articleId, isFavor), ErrorCode.SYSTEM_ERROR, "");
+        articleRepo.favorArticle(userId, articleId, isFavor);
     }
 
     @Override
     public List<Long> getUniqueArticle(long userId, List<Long> articleIds) {
         return articleRepo.getUniqueArticle(userId, articleIds);
     }
-
 
     /**
      * 从缓存中或数据库中获取文章数据，并缓存文章

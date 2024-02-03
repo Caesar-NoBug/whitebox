@@ -45,16 +45,19 @@ public class CommentServiceImpl implements CommentService {
     @Resource
     private MsCommentStruct commentStruct;
 
-    //TODO: XSS检测
     @Override
     public void addComment(long userId, AddCommentRequest request) {
         long id = cacheRepo.nextId(CacheKey.commentIncId());
         Comment comment = Comment.fromAddRequest(id, userId, request);
-        Response<AnalyseTextResponse> response = aigcClient.analyseText(new AnalyseTextRequest("", comment.getContent(), false));
-        AnalyseTextResponse analyseResp = RespUtil.handleWithThrow(response, "审核评论失败");
-        ThrowUtil.ifFalse(analyseResp.isPass(), "评论审核不通过");
 
-        ThrowUtil.ifFalse(commentRepo.addComment(comment), ErrorCode.SYSTEM_ERROR ,"无法添加评论");
+        // 过滤Html文本，以防止XSS
+        comment.filterHtml();
+
+        Response<AnalyseTextResponse> response = aigcClient.analyseText(new AnalyseTextRequest("", comment.getContent(), false));
+        AnalyseTextResponse analyseResp = RespUtil.handleWithThrow(response, "Fail to review the comment.");
+        ThrowUtil.ifFalse(analyseResp.isPass(), "The comment did not pass the review.");
+
+        commentRepo.addComment(comment);
     }
 
     @Override
@@ -71,7 +74,7 @@ public class CommentServiceImpl implements CommentService {
 
         Response<Map<Long, UserMinVO>> userMinResp = userClient.getUserMin(publisherIds);
 
-        Map<Long, UserMinVO> publisherMap = RespUtil.handleWithThrow(userMinResp, "获取发布者信息失败");
+        Map<Long, UserMinVO> publisherMap = RespUtil.handleWithThrow(userMinResp, "Fail to fetch author info from user-service.");
 
         return comments.stream()
                 .map(comment -> loadCommentVO(
@@ -82,12 +85,12 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void markComment(long userId, long commentId, int mark) {
-        ThrowUtil.ifFalse(commentRepo.markComment(userId, commentId, mark), "评价文章失败");
+        commentRepo.markComment(userId, commentId, mark);
     }
 
     @Override
     public void deleteComment(long userId, long commentId) {
-        ThrowUtil.ifFalse(commentRepo.deleteComment(userId, commentId), "删除评论失败");
+        commentRepo.deleteComment(userId, commentId);
     }
 
     private CommentVO loadCommentVO(Comment comment, UserMinVO publisher) {

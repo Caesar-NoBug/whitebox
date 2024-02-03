@@ -1,4 +1,4 @@
-package org.caesar.config;
+package org.caesar.common.config;
 
 import org.caesar.common.exception.ExceptionHandler;
 import org.springframework.context.annotation.Bean;

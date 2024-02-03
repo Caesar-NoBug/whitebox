@@ -1,5 +1,6 @@
 package org.caesar.article.model.entity;
 
+import cn.hutool.http.HtmlUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.caesar.domain.article.request.AddArticleRequest;
@@ -103,6 +104,10 @@ public class Article {
         article.setUpdateAt(LocalDateTime.now());
 
         return article;
+    }
+
+    public void filterHtml() {
+        content = HtmlUtil.filter(content);
     }
 
 }

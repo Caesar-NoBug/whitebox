@@ -11,7 +11,6 @@
         <result property="digest" column="digest" jdbcType="VARCHAR"/>
         <result property="type" column="type" jdbcType="TINYINT"/>
         <result property="tag" column="tag" jdbcType="VARCHAR"/>
-        <result property="tags" column="tags" jdbcType="VARCHAR"/>
         <result property="createBy" column="create_by" jdbcType="BIGINT"/>
         <result property="createAt" column="create_at" jdbcType="TIMESTAMP"/>
         <result property="updateAt" column="update_at" jdbcType="TIMESTAMP"/>

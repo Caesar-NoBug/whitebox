@@ -64,7 +64,7 @@ public class RedisCacheRepository implements CacheRepository {
     @Resource
     private ThreadPoolTaskExecutor taskExecutor;
 
-    public <T> T cache(String key, int avgExpire, int maxExpire, Supplier<T> supplier, Runnable afterExpireTask) {
+    public <T> T cache(String key, int avgExpire, int maxExpire, Supplier<T> supplier, Runnable beforeExpireTask) {
 
         T result = getObject(key);
 
@@ -75,7 +75,7 @@ public class RedisCacheRepository implements CacheRepository {
         }
 
         // 当缓存不存在时，尝试获取锁并让成功获取锁的线程执行获取缓存的逻辑
-        // 当获取锁失败时，尝试直接获取缓存
+        // 当获取锁失败时，轮询尝试直接获取缓存
         if (!tryLock(key, 0, 10, TimeUnit.SECONDS)) {
             long waitTime = 0;
 
@@ -114,7 +114,7 @@ public class RedisCacheRepository implements CacheRepository {
         }
 
         // 获取数据
-        int expire = avgExpire + random.nextInt(avgExpire);
+        int expire = avgExpire / 2 + random.nextInt(avgExpire);
 
         setObject(key, result, expire, TimeUnit.SECONDS);
 
@@ -122,7 +122,7 @@ public class RedisCacheRepository implements CacheRepository {
 
         // 创建缓存自动更新过期时间任务
         RefreshCacheTask task = new RefreshCacheTask(key, now + expire * 1000L - REFRESH_CACHE_START_TIME,
-                now + maxExpire * 1000L, avgExpire, afterExpireTask);
+                now + maxExpire * 1000L, avgExpire, beforeExpireTask);
 
         ListUtil.binaryInsert(refreshCacheTasks, task);
 
@@ -135,8 +135,8 @@ public class RedisCacheRepository implements CacheRepository {
     }
 
     @Override
-    public <T> T cache(String key, Supplier<T> supplier, Runnable afterExpireTask) {
-        return cache(key, DEFAULT_AVG_EXPIRE, DEFAULT_AVG_EXPIRE, supplier, afterExpireTask);
+    public <T> T cache(String key, Supplier<T> supplier, Runnable beforeExpireTask) {
+        return cache(key, DEFAULT_AVG_EXPIRE, DEFAULT_AVG_EXPIRE, supplier, beforeExpireTask);
     }
 
     @Override
@@ -151,9 +151,6 @@ public class RedisCacheRepository implements CacheRepository {
         // 需要执行的任务
         List<RefreshCacheTask> todoRefreshExpireTasks = new ArrayList<>();
 
-        // 执行过期任务
-        List<Runnable> afterExpireTasks = new ArrayList<>();
-
         long now = System.currentTimeMillis();
         for (int i = refreshCacheTasks.size() - 1; i >= 0; i--) {
 
@@ -164,9 +161,13 @@ public class RedisCacheRepository implements CacheRepository {
 
             refreshCacheTasks.remove(i);
 
-            // 如果超过最大缓存时间或缓存未被访问，则删除缓存
+            // 如果超过最大缓存时间或缓存长时间未被访问，则删除缓存
             if (now > task.getEndTime() || !cacheAccessed.contains(task.getKey())) {
-                afterExpireTasks.add(task.getBeforeExpireTask());
+
+                // 执行回调函数
+                Runnable beforeExpireTask = task.getBeforeExpireTask();
+                if(!doNothing.equals(beforeExpireTask)) taskExecutor.execute(beforeExpireTask);
+
                 continue;
             }
 
@@ -191,12 +192,8 @@ public class RedisCacheRepository implements CacheRepository {
             ListUtil.binaryInsert(refreshCacheTasks, task);
         }
 
+        // 批量刷新缓存过期时间
         eval(REFRESH_CACHE_SCRIPT, keys, expires);
-
-        for (Runnable task : afterExpireTasks) {
-            taskExecutor.execute(task);
-        }
-
     }
 
     @Override

@@ -9,6 +9,8 @@ import org.caesar.article.repository.ArticleRepository;
 import org.caesar.article.repository.CommentRepository;
 import org.caesar.article.task.HotArticleTask;
 import org.caesar.article.constant.CacheKey;
+import org.caesar.common.batch.CacheBatchTaskHandler;
+import org.caesar.common.batch.CacheIncTask;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.cache.CacheRepository;
 import org.caesar.common.util.DataFilter;
@@ -46,13 +48,14 @@ public class ArticleRepositoryImpl extends ServiceImpl<ArticleMapper, ArticlePO>
     @Resource
     private CacheRepository cacheRepo;
 
-    @Override
-    public boolean addArticle(Article article) {
+    @Resource
+    private CacheBatchTaskHandler taskHandler;
 
+    @Override
+    public void addArticle(Article article) {
         ThrowUtil.ifFalse(save(articleStruct.DOtoPO(article)), ErrorCode.SYSTEM_ERROR, "Fail to insert article to database. " + article);
         long articleId = article.getId();
         articleFilter.add(articleId);
-        return true;
     }
 
     @Override
@@ -137,24 +140,23 @@ public class ArticleRepositoryImpl extends ServiceImpl<ArticleMapper, ArticlePO>
         ) > 0;
     }
 
-    //TODO: 加一个延迟双删操作
     @Override
-    public boolean updateArticle(long userId, Article article) {
+    public void updateArticle(long userId, Article article) {
         // 删除文章缓存
         cacheRepo.deleteObject(CacheKey.cacheArticle(article.getId()));
 
-        return update(articleStruct.DOtoPO(article),
-                new UpdateWrapper<ArticlePO>().eq(ArticlePO.Fields.id, article.getId()).eq(ArticlePO.Fields.createBy, userId));
+        ThrowUtil.ifFalse(update(articleStruct.DOtoPO(article),
+                new UpdateWrapper<ArticlePO>().eq(ArticlePO.Fields.id, article.getId()).eq(ArticlePO.Fields.createBy, userId)), "The user has no business to update the article or article does not exists.");
     }
 
     @Override
-    public boolean updateArticle(Article updatedArticle) {
-        return updateById(articleStruct.DOtoPO(updatedArticle));
+    public void updateArticle(Article updatedArticle) {
+        ThrowUtil.ifFalse(updateById(articleStruct.DOtoPO(updatedArticle)), "Fail to update article.");
     }
 
     @Transactional
     @Override
-    public boolean deleteArticle(long userId, long articleId) {
+    public void deleteArticle(long userId, long articleId) {
 
         ThrowUtil.ifFalse(
                 remove(
@@ -176,36 +178,30 @@ public class ArticleRepositoryImpl extends ServiceImpl<ArticleMapper, ArticlePO>
 
         // 删除评论
         commentRepo.deleteComment(ElementType.ARTICLE.getValue(), articleId);
-
-        return true;
     }
 
     @Override
-    public boolean markArticle(long userId, long articleId, int mark) {
+    public void markArticle(long userId, long articleId, int mark) {
 
         // 如果没有不同的评价（即评价已经是mark了），无需修改
-        if (!baseMapper.hasDiffArticleMark(userId, articleId, mark)) return false;
+        ThrowUtil.ifFalse(baseMapper.hasDiffArticleMark(userId, articleId, mark), ErrorCode.DUPLICATE_REQUEST, "Article has already been marked.");
 
-        if (mark == -1)
-            cacheRepo.decrLong(CacheKey.articleLikeCount(articleId));
-        else if (mark == 1)
-            cacheRepo.incrLong(CacheKey.articleLikeCount(articleId));
+        CacheIncTask updateMarkTask = new CacheIncTask(mark);
+        taskHandler.addTask(CacheKey.articleLikeCount(articleId), updateMarkTask);
 
-        return baseMapper.markArticle(userId, articleId, mark) > 0;
+        ThrowUtil.ifFalse(baseMapper.markArticle(userId, articleId, mark) > 0, ErrorCode.SYSTEM_ERROR, "Fail to update article mark status in database.");
     }
 
     @Override
-    public boolean favorArticle(long userId, long articleId, boolean isFavor) {
+    public void favorArticle(long userId, long articleId, boolean isFavor) {
 
         // 如果没有不同的收藏状态（即状态已经是isFavor了），无需修改
-        if (!baseMapper.hasDiffArticleFavor(userId, articleId, isFavor)) return false;
+        ThrowUtil.ifFalse(baseMapper.hasDiffArticleFavor(userId, articleId, isFavor), ErrorCode.DUPLICATE_REQUEST, "Article has already been favored.");
 
-        if (isFavor)
-            cacheRepo.decrLong(CacheKey.articleFavorCount(articleId));
-        else
-            cacheRepo.incrLong(CacheKey.articleFavorCount(articleId));
+        CacheIncTask updateFavorTask = new CacheIncTask(isFavor ? 1 : -1);
+        taskHandler.addTask(CacheKey.articleFavorCount(articleId), updateFavorTask);
 
-        return baseMapper.favorArticle(userId, articleId, isFavor) > 0;
+        ThrowUtil.ifFalse(baseMapper.favorArticle(userId, articleId, isFavor) > 0, ErrorCode.SYSTEM_ERROR, "Fail to update article favor status in database.");
     }
 
     private List<Article> loadArticle(List<ArticlePO> articles) {

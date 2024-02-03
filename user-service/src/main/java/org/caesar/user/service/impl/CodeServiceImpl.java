@@ -41,6 +41,7 @@ public class CodeServiceImpl implements CodeService {
     public void sendLoginEmailCode(String email){
 
         User user = userRepo.selectUserByEmail(email);
+
         //查无此人
         ThrowUtil.ifNull(user, "The email does not match any user account!");
 
