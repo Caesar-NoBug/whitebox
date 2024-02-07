@@ -10,6 +10,7 @@ import org.caesar.common.exception.ThrowUtil;
 import org.caesar.domain.question.request.AddQuestionRequest;
 import org.caesar.domain.question.request.SubmitCodeRequest;
 import org.caesar.domain.question.request.UpdateQuestionRequest;
+import org.caesar.question.judge.QuestionJudgeManager;
 import org.caesar.question.model.entity.Question;
 import org.caesar.question.publisher.ExecuteCodePublisher;
 import org.caesar.question.repository.QuestionRepository;
@@ -34,6 +35,9 @@ public class QuestionServiceImpl implements QuestionService {
     @Resource
     private ExecuteCodePublisher publisher;
 
+    @Resource
+    private QuestionJudgeManager judgeManager;
+
     // 缓存中存储的判断结果的过期时间(半小时)
     public static final int CACHE_JUDGE_RESULT_EXPIRE = 30 * 60;
 
@@ -44,7 +48,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        Question question = new Question(id, request.getTitle(), request.getContent(),
+        Question question = new Question(judgeManager, id, request.getTitle(), request.getContent(),
                 request.getInputCase(), request.getOutputCase(), request.getQType(),
                 request.getTag(), request.getDifficulty(), 0, 0,
                 0, request.getTimeLimit(), request.getMemoryLimit(), 0, now, now);
@@ -65,7 +69,7 @@ public class QuestionServiceImpl implements QuestionService {
     public void updateQuestion(UpdateQuestionRequest request) {
         LocalDateTime now = LocalDateTime.now();
 
-        Question question = new Question(request.getId(), request.getTitle(), request.getContent(),
+        Question question = new Question(judgeManager, request.getId(), request.getTitle(), request.getContent(),
                 request.getInputCase(), request.getOutputCase(), request.getQType(),
                 request.getTag(), request.getDifficulty(), null, null,
                 null, request.getTimeLimit(), request.getMemoryLimit(), null, null, now);
@@ -113,7 +117,7 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = getCacheQuestion(qId);
 
         //执行判题逻辑
-        SubmitCodeResult submitCodeResult = question.judge(response);
+        SubmitCodeResult submitCodeResult = question.judge(judgeManager, response);
 
         String submitResultKey = CacheKey.getSubmitResultKey(userId, qId, submitId);
 

@@ -19,24 +19,14 @@ public class RequestPreHandleFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
 
-        String uri = request.getRequestURI();
-        // TODO: 打印接口访问日志
-
         String userId = request.getHeader(Headers.USERID_HEADER);
         if(Objects.nonNull(userId)) ContextHolder.setUserId(Long.parseLong(userId));
 
         String traceId = request.getHeader(Headers.TRACE_ID_HEADER);
         if (Objects.nonNull(traceId)) ContextHolder.setTraceId(traceId);
 
-        /*MDC.put("traceId", traceId);
-        MDC.put("userId", userId);*/
-
         chain.doFilter(request, response);
-
-        /*MDC.clear();*/
-        //TODO: 清空ThreadLocal，避免线程污染
         ContextHolder.clear();
-
     }
 
 }

@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Article {
 
+    // 文章分块大小
+    public static final int ARTICLE_BLOCK_SIZE = 2000;
+
     /**
      * 文章主键
      */
@@ -108,6 +111,27 @@ public class Article {
 
     public void filterHtml() {
         content = HtmlUtil.filter(content);
+    }
+
+    public int getBlockCount() {
+        return content.length() / ARTICLE_BLOCK_SIZE;
+    }
+
+    public String[] getContentBlocks() {
+
+        int count = getBlockCount();
+
+        String[] blocks = new String[count];
+        int start = 0;
+        int end = ARTICLE_BLOCK_SIZE;
+
+        for (int i = 0; i < count; i++) {
+            blocks[i] = content.substring(start, end);
+            start = end;
+            end += ARTICLE_BLOCK_SIZE;
+        }
+
+        return blocks;
     }
 
 }

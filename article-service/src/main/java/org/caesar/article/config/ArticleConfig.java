@@ -1,5 +1,6 @@
 package org.caesar.article.config;
 
+import org.caesar.common.batch.CacheIncBatchTaskHandler;
 import org.caesar.common.cache.CacheRepository;
 import org.caesar.common.util.DataFilter;
 import org.caesar.article.constant.CacheKey;
@@ -25,6 +26,13 @@ public class ArticleConfig {
     // 预计的最大文章数量
     @Value("${data-filter.comment.falseProbability}")
     private Double commentFalseProbability;
+
+    private final long batchUpdateCacheInterval = 1000;
+
+    @Bean
+    public CacheIncBatchTaskHandler cacheBatchTaskHandler(CacheRepository cacheRepository) {
+        return new CacheIncBatchTaskHandler(cacheRepository, batchUpdateCacheInterval);
+    }
 
     @Bean
     public DataFilter articleFilter(CacheRepository cacheRepository) {

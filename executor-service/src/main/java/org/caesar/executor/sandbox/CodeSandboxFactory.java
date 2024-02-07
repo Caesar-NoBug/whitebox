@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class CodeSandboxFactory implements ApplicationContextAware {
 
-    private Map<CodeLanguage, CodeSandbox> sandboxMap = new ConcurrentHashMap<>();
+    private final Map<CodeLanguage, CodeSandbox> sandboxMap = new ConcurrentHashMap<>();
 
     public CodeSandbox getCodeSandbox(CodeLanguage language) {
         return sandboxMap.get(language);

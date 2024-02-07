@@ -6,6 +6,7 @@ import org.caesar.model.vo.ChatResponse;
 import org.caesar.model.vo.OpenAIChatResponse;
 import org.caesar.common.exception.BusinessException;
 import org.caesar.domain.common.enums.ErrorCode;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
@@ -27,12 +28,13 @@ public class OpenAIChatClient implements ChatClient {
     private final HttpMethod method = HttpMethod.POST;
 
     //请求密钥
-    private String apiKey = "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";
+    @Value("${api.key}")
+    private String apiKey;
 
     //模型请求地址
-    private String url = "https://api.openai.com/v1/chat/completions";
+    @Value("${api.url}")
+    private String url;
 
-    //TODO: 参数配置化
     @PostConstruct
     public void init() {
         //配置代理

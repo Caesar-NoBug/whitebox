@@ -13,13 +13,11 @@ public class GlobalExceptionHandler {
 
     public static final String RESP_MSG_FORMAT = "%s: {%s}";
 
-    //TODO: filter获取信息
     @ExceptionHandler(BusinessException.class)
     public<T> Response<T> businessExceptionHandler(BusinessException e) {
 
         ErrorCode code = e.getCode();
 
-        //TODO: 控制日志级别
         if (!ErrorCode.SYSTEM_ERROR.equals(code)) {
             LogUtil.warn(code, e.getMessage());
         } else {

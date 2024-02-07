@@ -1,6 +1,7 @@
 package org.caesar.executor.manager;
 
 import org.caesar.common.exception.ExceptionHandler;
+import org.caesar.common.idempotent.Idempotent;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.executor.request.ExecuteCodeRequest;
 import org.caesar.domain.executor.response.ExecuteCodeResponse;
@@ -22,6 +23,7 @@ public class ExecutorManager {
     @Resource
     private ExecuteCodeRespPublisher executeCodeRespPublisher;
 
+    @Idempotent(value = "executor:execute", reqId = "#request.submitId")
     public void executeCode(ExecuteCodeRequest request) {
 
         Response<ExecuteCodeResponse> response = exceptionHandler.handleException(

@@ -19,6 +19,9 @@ public class RefreshCacheTask implements Comparable<RefreshCacheTask>{
     // 缓存的过期时间(以秒为单位)
     private int expire;
 
+    // 访问次数阈值（超过次阈值才能触发刷新时间的任务）
+    private int visitThreshold;
+
     // 过期前执行的操作
     private Runnable beforeExpireTask;
 

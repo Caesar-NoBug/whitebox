@@ -9,7 +9,7 @@ import org.caesar.article.repository.ArticleRepository;
 import org.caesar.article.repository.CommentRepository;
 import org.caesar.article.task.HotArticleTask;
 import org.caesar.article.constant.CacheKey;
-import org.caesar.common.batch.CacheBatchTaskHandler;
+import org.caesar.common.batch.CacheIncBatchTaskHandler;
 import org.caesar.common.batch.CacheIncTask;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.cache.CacheRepository;
@@ -49,7 +49,7 @@ public class ArticleRepositoryImpl extends ServiceImpl<ArticleMapper, ArticlePO>
     private CacheRepository cacheRepo;
 
     @Resource
-    private CacheBatchTaskHandler taskHandler;
+    private CacheIncBatchTaskHandler taskHandler;
 
     @Override
     public void addArticle(Article article) {

@@ -43,7 +43,6 @@ public interface ArticleRepository {
      */
     List<Article> getUpdatedArticle(LocalDateTime afterTime);
 
-    // TODO: 正确返回浏览时间记录
     // 获取文章历史
     List<ArticleHistory> getArticleHistory(long userId, Integer from, Integer size);
 

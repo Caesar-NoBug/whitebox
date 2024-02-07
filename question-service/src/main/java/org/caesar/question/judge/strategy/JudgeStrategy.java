@@ -1,6 +1,7 @@
 package org.caesar.question.judge.strategy;
 
 import org.caesar.common.vo.StatusMap;
+import org.caesar.question.judge.StrategyType;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface JudgeStrategy {
 
     //生成标准答案
     String generateAnswer(String outputCase);
+
+    StrategyType getType();
 }

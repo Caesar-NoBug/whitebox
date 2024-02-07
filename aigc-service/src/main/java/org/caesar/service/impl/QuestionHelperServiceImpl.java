@@ -24,7 +24,6 @@ public class QuestionHelperServiceImpl implements QuestionHelperService {
         String result = request.getResult();
         String answer = request.getAnswer();
 
-
         return null;
     }
 }

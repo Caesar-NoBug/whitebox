@@ -4,10 +4,12 @@ import cn.hutool.core.lang.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.caesar.client.ChatClient;
 import org.caesar.common.exception.ThrowUtil;
+import org.caesar.common.log.LogUtil;
 import org.caesar.constant.RedisKey;
 
 import org.caesar.domain.aigc.request.QuestionHelperRequest;
 import org.caesar.domain.aigc.response.QuestionHelperResponse;
+import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.model.entity.OpenAIChatCompletion;
 import org.caesar.model.vo.*;
 import org.caesar.service.ChatService;
@@ -40,18 +42,17 @@ public class OpenAIChatService implements ChatService {
         String cacheKey;
 
         Long userId = ContextHolder.get(ContextHolder.USER_ID);
-        ThrowUtil.ifNull(userId, "对话失败：用户未登录");
-        //TODO: 加一个向user-service的异步计费请求
-        //TODO: 分析该文章适合哪类用户读
+        ThrowUtil.ifNull(userId, "Fail to start a completion: unauthenticated.");
+        //TODO: 加一个向user-service的计费请求
+
         //  继续对话
         if (id != null) {
 
             //  从缓存中获取对话信息
             cacheKey = String.format(RedisKey.CHAT_COMPLETION, userId, id);
-            log.info("聊天请求：用户id：" + userId + "，对话id：" + id);
+            LogUtil.bizLog("Continue chat completion, completion id " + id + ".");
             completion = cacheRepo.getObject(cacheKey);
-
-            ThrowUtil.ifNull(completion, "非法对话id，对话信息不存在");
+            ThrowUtil.ifNull(completion, ErrorCode.NOT_FIND_ERROR, "Invalid completion id: chat completion does not exists or expired");
 
             response = continueCompletion(completionRequest, completion);
         }
@@ -61,7 +62,7 @@ public class OpenAIChatService implements ChatService {
             id = UUID.fastUUID().toString();
             completionRequest.setId(id);
             cacheKey = String.format(RedisKey.CHAT_COMPLETION, userId, id);
-            log.info("聊天请求：用户id：" + userId + "，对话id：" + id);
+            LogUtil.bizLog("Start chat completion, completion id " + id + ".");
             completion = new OpenAIChatCompletion(completionRequest);
 
             response = startCompletion(completionRequest, completion);
@@ -74,27 +75,8 @@ public class OpenAIChatService implements ChatService {
         return response;
     }
 
-    @Override
-    public QuestionHelperResponse questionHelper(QuestionHelperRequest request) {
-
-        return null;
-    }
-
-    @Override
-    public CompletionResponse assistant(CompletionRequest request) {
-        return null;
-    }
-
-    @Override
-    public CompletionResponse summary(CompletionRequest request) {
-        return null;
-    }
-
-
-
     //  开始新对话
     private CompletionResponse startCompletion(CompletionRequest completionRequest, OpenAIChatCompletion completion) {
-
         return handleCompletion(completionRequest.getId(), completion);
     }
 

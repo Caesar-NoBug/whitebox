@@ -19,10 +19,13 @@ rocketmq:
   name-server: 8.130.26.7:9876
   consumer:
     topic: execute-code
+
   producer:
     group: executor-service
     topic: execute-code-resp
 
-logging:
-  level:
-    org.apache.rocketmq: DEBUG
+sandbox:
+  java:
+    dir: "javaCode"
+    compile-cmd: "javac -encoding utf-8 %s"
+    run-cmd: "java -Dfile.encoding=UTF-8 -cp %s Main"

@@ -11,16 +11,6 @@ import java.util.List;
 @Component
 public class PythonCodeSandbox extends CodeSandbox {
 
-    private PythonCodeSandbox(){}
-
-    private static class InnerHolder {
-        private static final PythonCodeSandbox SINGLE_TON = new PythonCodeSandbox();
-    }
-
-    public static PythonCodeSandbox getInstance() {
-        return InnerHolder.SINGLE_TON;
-    }
-
     @Override
     public CodeLanguage getLanguage() {
         return CodeLanguage.PYTHON;

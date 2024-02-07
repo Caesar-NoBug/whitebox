@@ -10,6 +10,7 @@ import org.caesar.domain.executor.request.ExecuteCodeRequest;
 import org.caesar.domain.executor.response.ExecuteCodeResponse;
 import org.caesar.executor.sandbox.CodeSandbox;
 import org.caesar.common.util.IOUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
@@ -29,27 +30,26 @@ public class JavaCodeSandbox extends CodeSandbox {
     private static String basicCodePath;
     private static final String GLOBAL_CODE_FILE_NAME = "Main.java";
     private static final String GLOBAL_COMPILED_FILE_NAME = "Main.class";
-    private static final String GLOBAL_CODE_DIR_NAME = "javaCode";
-    private static final String COMPILE_CODE_COMMAND = "javac -encoding utf-8 %s";
-    private static final String EXECUTE_CODE_COMMAND = "java -Dfile.encoding=UTF-8 -cp %s Main";
 
-    private JavaCodeSandbox() {
+    @Value("${sandbox.java.dir}")
+    private static String GLOBAL_CODE_DIR_NAME;
+
+    @Value("${sandbox.java.compile-cmd}")
+    private static String COMPILE_CODE_COMMAND;
+
+    @Value("${sandbox.java.run-cmd}")
+    private static String EXECUTE_CODE_COMMAND;
+
+    //TODO：Docker 代码沙箱
+    public JavaCodeSandbox() {
         basicCodePath = System.getProperty("user.dir") + File.separator + GLOBAL_CODE_DIR_NAME;
         if (!FileUtil.exist(basicCodePath)) {
             FileUtil.mkdir(basicCodePath);
         }
     }
 
-    private static class InnerHolder {
-        private static final JavaCodeSandbox SINGLE_TON = new JavaCodeSandbox();
-    }
-
-    public static JavaCodeSandbox getInstance() {
-        return InnerHolder.SINGLE_TON;
-    }
-
     public static void main(String[] args) {
-        JavaCodeSandbox sandbox = JavaCodeSandbox.getInstance();
+        /*JavaCodeSandbox sandbox = JavaCodeSandbox.getInstance();
 
         ExecuteCodeRequest request = new ExecuteCodeRequest();
 
@@ -58,7 +58,7 @@ public class JavaCodeSandbox extends CodeSandbox {
         String code = ResourceUtil.readStr("testCode/Main.java", StandardCharsets.UTF_8);
         request.setCode(code);
         ExecuteCodeResponse executeCodeResult = sandbox.executeCode(request);
-        System.out.println(executeCodeResult);
+        System.out.println(executeCodeResult);*/
     }
 
     @Override

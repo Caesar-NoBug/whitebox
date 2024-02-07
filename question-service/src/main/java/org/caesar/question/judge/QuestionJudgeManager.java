@@ -3,37 +3,45 @@ package org.caesar.question.judge;
 import org.caesar.common.vo.StatusMap;
 import org.caesar.question.judge.strategy.DefaultStrategy;
 import org.caesar.question.judge.strategy.JudgeStrategy;
-import org.caesar.question.judge.strategy.RoundStrategy;
+import org.caesar.question.judge.strategy.RangeStartegy;
 import org.caesar.question.judge.strategy.UnorderedStrategy;
 import org.caesar.question.model.vo.JudgeParam;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class QuestionJudgeManager {
+@Component
+public class QuestionJudgeManager implements ApplicationContextAware {
 
-    public static StatusMap judge(JudgeParam judgeParam) {
+    private final Map<Integer, JudgeStrategy> judgeStrategyMap = new HashMap();
+
+    public StatusMap judge(JudgeParam judgeParam) {
         JudgeStrategy strategy = getJudgeStrategy(judgeParam.getType());
         return strategy.judge(judgeParam.getCodeResult(), judgeParam.getOutputCase());
     }
 
-    public static Boolean checkOutputCase(int type, List<String> outputCase) {
+    public Boolean checkOutputCase(int type, List<String> outputCase) {
         JudgeStrategy strategy = getJudgeStrategy(type);
         return strategy.testOutputCase(outputCase);
     }
 
-    public static String generateAnswer(int type, String outputCase) {
+    public String generateAnswer(int type, String outputCase) {
         JudgeStrategy strategy = getJudgeStrategy(type);
         return strategy.generateAnswer(outputCase);
     }
 
-    private static JudgeStrategy getJudgeStrategy(int type) {
+    private JudgeStrategy getJudgeStrategy(int type) {
+        return judgeStrategyMap.get(type);
+    }
 
-        switch (type) {
-            case 0 : return DefaultStrategy.getInstance();
-            case 1 : return RoundStrategy.getInstance();
-            case 2 : return UnorderedStrategy.getInstance();
-            default: throw new IllegalArgumentException("非法问题类型：" + type);
-        }
-
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        Map<String, JudgeStrategy> tempMap = applicationContext.getBeansOfType(JudgeStrategy.class);
+        tempMap.values().forEach(strategy -> judgeStrategyMap.put(strategy.getType().getValue(), strategy));
     }
 }

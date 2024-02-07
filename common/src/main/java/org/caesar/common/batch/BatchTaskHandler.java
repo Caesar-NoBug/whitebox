@@ -10,13 +10,7 @@ public abstract class BatchTaskHandler {
     private final Map<String, BatchTask> tasks = new ConcurrentHashMap<>();
 
     public void addTask(String id, BatchTask task) {
-
-        BatchTask prevTask = tasks.get(id);
-
-        if(Objects.isNull(prevTask))
-            tasks.put(id, task);
-        else
-            tasks.put(id, prevTask.merge(task));
+        tasks.merge(id, task, BatchTask::merge);
     }
 
     protected Map<String, BatchTask> getTasks() {

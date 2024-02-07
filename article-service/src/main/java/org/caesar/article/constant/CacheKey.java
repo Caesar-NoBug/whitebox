@@ -21,6 +21,8 @@ public class CacheKey {
     private static final String ARTICLE_FAVOR_COUNT = "article:favorCount:";
     // 文章缓存
     private static final String CACHE_ARTICLE = "article:cache:";
+    // 文章缓存分块
+    private static final String CACHE_ARTICLE_BLOCK = "article:block:%s:%s";
     // 评论缓存
     private static final String CACHE_COMMENT = "comment:cache:";
     // 评论点赞数
@@ -59,7 +61,11 @@ public class CacheKey {
     }
 
     public static String cacheArticle(long articleId) {
-        return CACHE_ARTICLE + articleId;
+        return CACHE_ARTICLE_BLOCK + articleId;
+    }
+
+    public static String cacheArticleBlock(long articleId, int blockId) {
+        return String.format(CACHE_ARTICLE_BLOCK, articleId, blockId);
     }
 
     public static String commentLikeCount(long commentId) {

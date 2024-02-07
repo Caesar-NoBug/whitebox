@@ -11,16 +11,6 @@ import java.util.List;
 @Component
 public class GoCodeSandbox extends CodeSandbox {
 
-    private GoCodeSandbox(){}
-
-    private static class InnerHolder {
-        private static final GoCodeSandbox SINGLE_TON = new GoCodeSandbox();
-    }
-
-    public static GoCodeSandbox getInstance() {
-        return InnerHolder.SINGLE_TON;
-    }
-
     @Override
     public CodeLanguage getLanguage() {
         return CodeLanguage.GO;

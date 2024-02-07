@@ -2,6 +2,7 @@ package org.caesar.exception;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.caesar.common.log.LogUtil;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.common.exception.BusinessException;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-//TODO: 统一异常处理
 @ControllerAdvice
 @Slf4j
 public class GlobalWebExceptionHandler implements ErrorWebExceptionHandler {
@@ -24,15 +24,17 @@ public class GlobalWebExceptionHandler implements ErrorWebExceptionHandler {
 
         String msg = ex.getMessage();
         ErrorCode code;
-        //TODO: 详细打印错误日志
+
         //TODO: 把日志同步到ES中，方便查看
-        log.error(msg);
+
         if(ex instanceof BusinessException) {
             code = ((BusinessException) ex).getCode();
         }
         else {
             code = ErrorCode.SYSTEM_ERROR;
         }
+
+        LogUtil.error(code, msg);
 
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.OK);

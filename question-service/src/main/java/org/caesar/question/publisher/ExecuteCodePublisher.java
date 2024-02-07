@@ -24,6 +24,7 @@ public class ExecuteCodePublisher {
         this.rocketMQTemplate = template;
     }
 
+    // TODO: 保证消息消费可靠性
     public void sendExecuteCodeMessage(ExecuteCodeRequest request) {
         try {
             rocketMQTemplate.convertAndSend(topic, new MessageDTO<>(request));

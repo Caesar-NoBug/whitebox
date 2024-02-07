@@ -28,7 +28,7 @@ public class ArticleVO implements Serializable {
      *  文章内容分块: 当文章内容过多时，这个值会被设置为各个分块的id，否则为 null
      */
     @JsonIgnore
-    private List<String> blockList;
+    private int blockCount;
 
     /**
      *  文章类型

@@ -11,7 +11,6 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-//TODO: 写个计时工具类
 public class StrUtil {
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

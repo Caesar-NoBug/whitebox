@@ -9,7 +9,7 @@ import java.util.List;
 @Component
 public class ChatPrompt {
 
-    // 分析文章并生成标签和摘要
+    /*// 分析文章并生成标签和摘要
     @Value("${chat.analyse-text.preset}")
     public String ANALYSE_TEXT_PRESET;
 
@@ -48,7 +48,7 @@ public class ChatPrompt {
     public String RECOMMEND_ARTICLE_PRESET;
 
     @Value("${chat.question-helper.preset}")
-    public String PRESET_QUESTION_HELPER;
+    public String PRESET_QUESTION_HELPER;*/
 
     public String createUserProfilePrompt(String occupation, String preference, List<ArticleMinVO> articles, List<String> searchHistories) {
 

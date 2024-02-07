@@ -18,27 +18,25 @@ public interface CacheRepository {
     boolean tryLock(String key, long waitTime, long leaseTime, TimeUnit timeUnit) throws InterruptedException;
     void unlock(String key);
 
+    void deleteObject(List<String> keys);
+
     // 原子操作整形数据
     boolean deleteLong(String key);
     long getLongValue(String key);
     void setLongValue(String key, long value);
-    long incrLong(String key);
+    long incrLong(String key, long delta);
     long decrLong(String key);
 
     // 对象相关
-    <T> void setObject(String key, T object);
-    <T> void setObject(String key, T object, int expire, TimeUnit timeUnit);
-    <T> void setObject(String key, T object, int expire);
+    <T> T getObject(String key);
+    <T> void setObject(String key, T value);
+    <T> void setObject(String key, T value, long expire, TimeUnit timeUnit);
+    <T> void setObject(String key, T value, long expire);
+    boolean deleteObject(String key);
 
     // 过期时间相关
     boolean expire(String key, int expire, TimeUnit timeUnit);
     long getExpire(String key);
-
-    // 分布式锁
-
-
-    void deleteObject(String key);
-    <T> T getObject(String key);
 
     /**
      * @param key           缓存key
@@ -51,6 +49,8 @@ public interface CacheRepository {
     <T> T cache(String key, int minExpire, int expireFloat, Supplier<T> supplier);
 
     <T> T cache(String key, Supplier<T> supplier, Runnable beforeExpire);
+
+    <T> T cache(String key, int visitThreshold, Supplier<T> supplier);
 
     <T> T cache(String key, Supplier<T> supplier);
 

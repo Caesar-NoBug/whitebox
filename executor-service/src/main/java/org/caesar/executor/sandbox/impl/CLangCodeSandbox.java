@@ -11,16 +11,6 @@ import java.util.List;
 @Component
 public class CLangCodeSandbox extends CodeSandbox {
 
-    private CLangCodeSandbox(){}
-
-    private static class InnerHolder {
-        private static final CLangCodeSandbox SINGLE_TON = new CLangCodeSandbox();
-    }
-
-    public static CLangCodeSandbox getInstance() {
-        return InnerHolder.SINGLE_TON;
-    }
-
     @Override
     public CodeLanguage getLanguage() {
         return CodeLanguage.C;

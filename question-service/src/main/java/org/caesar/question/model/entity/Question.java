@@ -112,14 +112,14 @@ public class Question implements Serializable {
      */
     private LocalDateTime updateTime;
 
-    public Question(Long id, String title, String content, String inputCase, String outputCase, Integer qType, String tag, Integer difficulty, Integer likeNum, Integer favorNum, Integer submitNum, Long timeLimit, Long memoryLimit, Integer isDelete, LocalDateTime createTime, LocalDateTime updateTime) {
+    public Question(QuestionJudgeManager judgeManager, Long id, String title, String content, String inputCase, String outputCase, Integer qType, String tag, Integer difficulty, Integer likeNum, Integer favorNum, Integer submitNum, Long timeLimit, Long memoryLimit, Integer isDelete, LocalDateTime createTime, LocalDateTime updateTime) {
 
         ThrowUtil.validate(JSONUtil.checkJSONArray(inputCase) & JSONUtil.checkJSONArray(outputCase),
                 "非法输入，输入的输入用例和输出用例必须为JSON字符串数组格式");
 
         List<String> outputArray = JSON.parseArray(getOutputCase(), String.class);
 
-        ThrowUtil.validate(QuestionJudgeManager.checkOutputCase(qType, outputArray), "非法输入，问题校验参数不符合要求");
+        ThrowUtil.validate(judgeManager.checkOutputCase(qType, outputArray), "非法输入，问题校验参数不符合要求");
 
         this.id = id;
         this.title = title;
@@ -148,7 +148,7 @@ public class Question implements Serializable {
     }
 
     @Logger(value = "judge code", visit = false, args = true, result = true, time = true)
-    public SubmitCodeResult judge(ExecuteCodeResponse executeResponse) {
+    public SubmitCodeResult judge(QuestionJudgeManager judgeManager, ExecuteCodeResponse executeResponse) {
         List<CodeResultType> resultTypes = executeResponse.getType();
         List<Long> time = executeResponse.getTime();
         List<Long> memory = executeResponse.getMemory();
@@ -160,7 +160,7 @@ public class Question implements Serializable {
 
         List<String> codeResult = executeResponse.getResult();
 
-        StatusMap map = QuestionJudgeManager.judge(new JudgeParam(codeResult, outputArray, qType));
+        StatusMap map = judgeManager.judge(new JudgeParam(codeResult, outputArray, qType));
 
         boolean success = true;
 
@@ -178,7 +178,7 @@ public class Question implements Serializable {
                     //记录第一个不匹配的错误信息
                     if (success) {
                         String wrongResult = codeResult.get(i);
-                        String correctResult = QuestionJudgeManager.generateAnswer(qType, outputArray.get(i));
+                        String correctResult = judgeManager.generateAnswer(qType, outputArray.get(i));
                         submitCodeResult.setMessage(String.format(WRONG_ANSWER_MESSAGE, wrongResult, correctResult));
                         success = false;
                     }

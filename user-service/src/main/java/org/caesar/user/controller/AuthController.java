@@ -40,8 +40,7 @@ public class AuthController {
     public static final int AUTHENTICATION_RETRY_TIME = 5;
 
     @PostMapping("/login")
-    public Response<UserVO> login(HttpServletRequest httpServletRequest,
-                                  @Validated @RequestBody LoginRequest request) {
+    public Response<UserVO> login(HttpServletRequest httpServletRequest, @RequestBody LoginRequest request) {
 
         ThrowUtil.ifFalse(captchaService.validated(httpServletRequest.getSession()), ErrorCode.NOT_AUTHENTICATED_ERROR,
                 "Captcha failed, please pass the captcha first.");

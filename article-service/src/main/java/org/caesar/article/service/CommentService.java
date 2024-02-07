@@ -20,7 +20,6 @@ public interface CommentService {
     List<CommentVO> getComment(GetCommentRequest request);
 
     // 评价评论（-1：踩，0：取消赞或踩，1：赞）
-    //TODO: 不允许用户短时间多次点赞或点踩，设置一个限流,前端做一下幂等处理，一次对话的requestId固定
     void markComment(long userId, long commentId, int mark);
 
     // 删除评论

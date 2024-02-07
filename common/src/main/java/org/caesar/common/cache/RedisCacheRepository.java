@@ -33,6 +33,9 @@ public class RedisCacheRepository implements CacheRepository {
     // 默认缓存最大过期时间（1小时）
     public final int DEFAULT_MAX_EXPIRE = 60 * 60;
 
+    // 默认缓存最低访问次数（10次）
+    public final int DEFAULT_VISIT_THRESHOLD = 60 * 60;
+
     // 刷新缓存过期时机：过期前10秒
     public static final int REFRESH_CACHE_START_TIME = 10 * 1000;
 
@@ -45,10 +48,10 @@ public class RedisCacheRepository implements CacheRepository {
             "end";
 
     // 缓存是否被访问
-    private final Set<String> cacheAccessed = ConcurrentHashMap.newKeySet();
+    private static final Map<String, Integer> cacheAccessTime = new ConcurrentHashMap<>();
 
     // 缓存过期信息
-    private final List<RefreshCacheTask> refreshCacheTasks = new LinkedList<>();
+    private static final List<RefreshCacheTask> refreshCacheTasks = new LinkedList<>();
 
     private final Random random = new Random();
 
@@ -64,13 +67,13 @@ public class RedisCacheRepository implements CacheRepository {
     @Resource
     private ThreadPoolTaskExecutor taskExecutor;
 
-    public <T> T cache(String key, int avgExpire, int maxExpire, Supplier<T> supplier, Runnable beforeExpireTask) {
+    public <T> T cache(String key, int avgExpire, int maxExpire, int visitThreshold, Supplier<T> supplier, Runnable beforeExpireTask) {
 
         T result = getObject(key);
 
         // 如果缓存存在，直接返回缓存数据并标记缓存被访问过
         if (Objects.nonNull(result)) {
-            cacheAccessed.add(key);
+            cacheAccessTime.merge(key, 1, Integer::sum);
             return result;
         }
 
@@ -91,18 +94,18 @@ public class RedisCacheRepository implements CacheRepository {
 
                     // 获取成功则直接返回
                     if (Objects.nonNull(result)) {
-                        cacheAccessed.add(key);
+                        cacheAccessTime.merge(key, 1, Integer::sum);
                         return result;
                     }
 
-                    final int maxWaitTime = 5 * 1000;
-                    // 当重试超过5秒时，说明添加缓存失败，抛出异常
+                    final int maxWaitTime = 2 * 1000;
+                    // 当重试超过2秒时，说明添加缓存失败，抛出异常
                     if (waitTime > maxWaitTime) {
-                        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Wait too long time for cache timeout.");
+                        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Wait too long time for cache refresh.");
                     }
 
                 } catch (InterruptedException e) {
-                    throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Interrupted when waiting for cache.", e);
+                    throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Interrupted when waiting for cache refresh.", e);
                 }
             }
         }
@@ -122,7 +125,7 @@ public class RedisCacheRepository implements CacheRepository {
 
         // 创建缓存自动更新过期时间任务
         RefreshCacheTask task = new RefreshCacheTask(key, now + expire * 1000L - REFRESH_CACHE_START_TIME,
-                now + maxExpire * 1000L, avgExpire, beforeExpireTask);
+                now + maxExpire * 1000L, avgExpire, visitThreshold,beforeExpireTask);
 
         ListUtil.binaryInsert(refreshCacheTasks, task);
 
@@ -131,17 +134,22 @@ public class RedisCacheRepository implements CacheRepository {
 
     @Override
     public <T> T cache(String key, int avgExpire, int maxExpire, Supplier<T> supplier) {
-        return cache(key, avgExpire, maxExpire, supplier, doNothing);
+        return cache(key, avgExpire, maxExpire, DEFAULT_VISIT_THRESHOLD, supplier, doNothing);
     }
 
     @Override
     public <T> T cache(String key, Supplier<T> supplier, Runnable beforeExpireTask) {
-        return cache(key, DEFAULT_AVG_EXPIRE, DEFAULT_AVG_EXPIRE, supplier, beforeExpireTask);
+        return cache(key, DEFAULT_AVG_EXPIRE, DEFAULT_MAX_EXPIRE, DEFAULT_VISIT_THRESHOLD, supplier, beforeExpireTask);
+    }
+
+    @Override
+    public <T> T cache(String key, int visitThreshold, Supplier<T> supplier) {
+        return cache(key, DEFAULT_AVG_EXPIRE, DEFAULT_VISIT_THRESHOLD, visitThreshold, supplier, doNothing);
     }
 
     @Override
     public <T> T cache(String key, Supplier<T> supplier) {
-        return cache(key, DEFAULT_AVG_EXPIRE, DEFAULT_MAX_EXPIRE, supplier, doNothing);
+        return cache(key, DEFAULT_AVG_EXPIRE, DEFAULT_MAX_EXPIRE, DEFAULT_VISIT_THRESHOLD, supplier, doNothing);
     }
 
     // 每2秒刷新缓存过期时间
@@ -161,8 +169,8 @@ public class RedisCacheRepository implements CacheRepository {
 
             refreshCacheTasks.remove(i);
 
-            // 如果超过最大缓存时间或缓存长时间未被访问，则删除缓存
-            if (now > task.getEndTime() || !cacheAccessed.contains(task.getKey())) {
+            // 如果超过最大缓存时间或缓存访问数未达到阈值，则删除缓存
+            if (now > task.getEndTime() || cacheAccessTime.get(task.getKey()) < task.getVisitThreshold()) {
 
                 // 执行回调函数
                 Runnable beforeExpireTask = task.getBeforeExpireTask();
@@ -187,7 +195,7 @@ public class RedisCacheRepository implements CacheRepository {
             expires[i] = task.getExpire();
 
             // 更新刷新缓存任务并保持集合有序
-            cacheAccessed.remove(task.getKey());
+            cacheAccessTime.remove(task.getKey());
             task.refreshExpire();
             ListUtil.binaryInsert(refreshCacheTasks, task);
         }
@@ -241,6 +249,11 @@ public class RedisCacheRepository implements CacheRepository {
     }
 
     @Override
+    public void deleteObject(List<String> keys) {
+        redisCache.deleteObject(keys);
+    }
+
+    @Override
     public boolean deleteLong(String key) {
         return redissonClient.getAtomicLong(key).delete();
     }
@@ -256,8 +269,8 @@ public class RedisCacheRepository implements CacheRepository {
     }
 
     @Override
-    public long incrLong(String key) {
-        return redissonClient.getAtomicLong(key).incrementAndGet();
+    public long incrLong(String key, long delta) {
+        return redisCache.increLong(key, delta);
     }
 
     @Override
@@ -266,43 +279,44 @@ public class RedisCacheRepository implements CacheRepository {
     }
 
     @Override
-    public <T> void setObject(String key, T value, int timeout, TimeUnit timeUnit) {
-        redisCache.setCacheObject(key, value, timeout, timeUnit);
+    public <T> void setObject(String key, T value, long timeout, TimeUnit timeUnit) {
+        redissonClient.getBucket(key).set(value, timeout, timeUnit);
     }
 
     @Override
-    public <T> void setObject(String key, T object, int expire) {
-        redisCache.setCacheObject(key, object, expire, TimeUnit.SECONDS);
+    public <T> void setObject(String key, T value, long timeout) {
+        redissonClient.getBucket(key).set(value, timeout, TimeUnit.SECONDS);
     }
 
     @Override
-    public boolean expire(String key, int expire, TimeUnit timeUnit) {
-        return redisCache.expire(key, expire, timeUnit);
+    public boolean expire(String key, int timeout, TimeUnit timeUnit) {
+        return redissonClient.getBucket(key).expire(timeout, timeUnit);
     }
 
     @Override
     public long getExpire(String key) {
-        return redisCache.getExpire(key);
+        return redissonClient.getBucket(key).remainTimeToLive();
     }
 
     @Override
-    public void deleteObject(String key) {
-        redisCache.deleteObject(key);
+    public boolean deleteObject(String key) {
+        return redissonClient.getBucket(key).delete();
     }
 
     @Override
-    public void setObject(String key, Object object) {
-        redisCache.setCacheObject(key, object);
+    public void setObject(String key, Object value) {
+        redissonClient.getBucket(key).setAndKeepTTL(value);
     }
 
     @Override
     public <T> T getObject(String key) {
-        return redisCache.getCacheObject(key);
+        RBucket<T> bucket = redissonClient.getBucket(key);
+        return bucket.get();
     }
 
     @Override
     public boolean exist(String key) {
-        return redisCache.hasKey(key);
+        return redissonClient.getBucket(key).isExists();
     }
 
     @Override

@@ -62,6 +62,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentVO> getComment(GetCommentRequest request) {
+
         Integer parentType = request.getParentType();
         Long parentId = request.getParentId();
         Integer from = request.getFrom();
@@ -94,6 +95,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private CommentVO loadCommentVO(Comment comment, UserMinVO publisher) {
+
+        //TODO: 评论的缓存处理
 
         CommentVO commentVO = cacheRepo.getObject(CacheKey.cacheComment(comment.getId()));
 

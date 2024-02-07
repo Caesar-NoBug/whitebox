@@ -41,7 +41,7 @@ public class ExceptionHandler {
     public void handleException(Throwable e) {
         if(e instanceof BusinessException) {
             ErrorCode code = ((BusinessException) e).getCode();
-            //TODO: 控制日志级别
+
             if (!ErrorCode.SYSTEM_ERROR.equals(code)) {
                 LogUtil.warn(code, e.getMessage());
             } else {

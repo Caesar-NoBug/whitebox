@@ -1,6 +1,5 @@
 package org.caesar.article.service.impl;
 
-import cn.hutool.http.HtmlUtil;
 import org.caesar.common.util.DataFilter;
 import org.caesar.domain.article.response.GetPreferArticleResponse;
 import org.caesar.domain.article.vo.ArticleMinVO;
@@ -30,7 +29,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
@@ -55,8 +53,6 @@ public class ArticleServiceImpl implements ArticleService {
     @Resource
     private UserClient userClient;
 
-    //TODO: 把文章的数据定时同步到MySQL
-    //TODO: 定时更新文章浏览数、点赞数、收藏数（通过hyperLogLog）
     @Override
     public void addArticle(long userId, AddArticleRequest request) {
         long id = cacheRepo.nextId(CacheKey.articleIncId());
@@ -196,15 +192,38 @@ public class ArticleServiceImpl implements ArticleService {
      * @return 文章数据
      */
     private ArticleVO loadArticleVO(long articleId) {
-
         // 通过布隆过滤器判断文章是否存在，不存在则直接返回
         if(!articleFilter.contains(articleId)) return null;
 
         String cacheKey = CacheKey.cacheArticle(articleId);
 
+        Article article = articleRepo.getArticle(articleId);
+
+        int blockCount = article.getBlockCount();
+
         // 从缓存中获取文章
-        Article article = cacheRepo.cache(cacheKey, () -> articleRepo.getArticle(articleId),
-                () -> persistArticleOps(articleId));
+        ArticleVO articleVO = cacheRepo.cache(cacheKey, () -> getArticleVO(article),
+                () -> onDeleteArticleCache(articleId, blockCount));
+
+        // 获取分块内容
+        if(blockCount > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < blockCount; i++) {
+                String block = cacheRepo.getObject(CacheKey.cacheArticleBlock(articleId, i));
+                sb.append(block);
+            }
+            articleVO.setContent(sb.toString());
+        }
+
+        return articleVO;
+    }
+
+    /**
+     * 处理从数据库中获取的文章数据（加入作者信息并对文章分块）
+     * @param article  文章
+     * @return         封装好的文章数据
+     */
+    private ArticleVO getArticleVO(Article article) {
 
         ArticleVO articleVO = articleStruct.DOtoVO(article);
 
@@ -219,18 +238,50 @@ public class ArticleServiceImpl implements ArticleService {
 
         articleVO.setAuthor(authorInfo.get(authorId));
 
-        int expire = (int) (5 + (Math.random() * 10));
-        cacheRepo.setObject(cacheKey, articleVO, expire, TimeUnit.MINUTES);
+        int count = article.getBlockCount();
+
+        // 若count = 0，说明无需分块
+        if(count == 0) return articleVO;
+
+        String[] contentBlocks = article.getContentBlocks();
+
+        for (int i = 0; i < count; i++) {
+            // 将文章内容分块放入缓存中
+            cacheRepo.setObject(CacheKey.cacheArticleBlock(articleVO.getId(), i), contentBlocks[i]);
+        }
+
+        articleVO.setContent(null);
+        articleVO.setBlockCount(count);
 
         return articleVO;
+    }
+
+    private List<String> getArticleBlocks(long articleId, int blockCount) {
+
+        List<String> blocks = new ArrayList<>(blockCount);
+
+        for (int i = 0; i < blockCount; i++) {
+            blocks.add(cacheRepo.getObject(CacheKey.cacheArticleBlock(articleId, i)));
+        }
+
+        return blocks;
     }
 
     private List<ArticleMinVO> loadArticleMinVO(List<Article> articles) {
         return articles.stream().map(articleStruct::DOtoMinVO).collect(Collectors.toList());
     }
 
-    private void persistArticleOps(long articleId) {
-        // 回调函数，当文章过期时执行：持久化文章相关数据到数据库中
+    // 回调函数，当文章过期时执行
+    private void onDeleteArticleCache(long articleId, int blockCount) {
+
+        List<String> blockKeys = new ArrayList<>(blockCount);
+        // 删除文章分块缓存
+        for (int i = 0; i < blockCount; i++) {
+            blockKeys.add(CacheKey.cacheArticleBlock(articleId, i));
+        }
+        cacheRepo.deleteObject(blockKeys);
+
+        //持久化文章相关数据到数据库中
         long likeNum = cacheRepo.getLongValue(CacheKey.articleLikeCount(articleId));
         long viewNum = cacheRepo.getLogLogCount(CacheKey.articleViewCount(articleId));
         long favorNum = cacheRepo.getLongValue(CacheKey.articleFavorCount(articleId));

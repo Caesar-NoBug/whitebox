@@ -3,7 +3,7 @@ package org.caesar.article.repository.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.caesar.article.constant.CacheKey;
-import org.caesar.common.batch.CacheBatchTaskHandler;
+import org.caesar.common.batch.CacheIncBatchTaskHandler;
 import org.caesar.common.batch.CacheIncTask;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.cache.CacheRepository;
@@ -36,7 +36,7 @@ public class CommentRepositoryImpl extends ServiceImpl<CommentMapper, CommentPO>
     private CacheRepository cacheRepo;
 
     @Resource
-    private CacheBatchTaskHandler taskHandler;
+    private CacheIncBatchTaskHandler taskHandler;
 
     @Override
     public void addComment(Comment comment) {

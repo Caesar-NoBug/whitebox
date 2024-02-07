@@ -89,7 +89,7 @@ public class RecommendServiceImpl implements RecommendService {
 
         // 去重，删除用户看过的文章
         List<Long> ids = articles.stream().map(ArticleMinVO::getId).collect(Collectors.toList());
-        List<Long> uniqueIds = RespUtil.handleWithThrow(articleClient.getUniqueArticle(ids), "用户文章去重失败");
+        List<Long> uniqueIds = RespUtil.handleWithThrow(articleClient.getUniqueArticle(ids), "Fail to fetch unread article from article service.");
 
         articles.removeIf(article -> !uniqueIds.contains(article.getId()));
 

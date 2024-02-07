@@ -11,16 +11,6 @@ import java.util.List;
 @Component
 public class CPlusPlusCodeSandbox extends CodeSandbox {
 
-    private CPlusPlusCodeSandbox(){}
-
-    private static class InnerHolder {
-        private static final CPlusPlusCodeSandbox SINGLE_TON = new CPlusPlusCodeSandbox();
-    }
-
-    public static CPlusPlusCodeSandbox getInstance() {
-        return InnerHolder.SINGLE_TON;
-    }
-
     @Override
     public CodeLanguage getLanguage() {
         return CodeLanguage.CPP;

@@ -1,8 +1,8 @@
 import org.caesar.SearchServiceApplication;
 import org.caesar.domain.constant.StrConstant;
 import org.caesar.domain.search.enums.QuestionSortField;
-import org.caesar.model.entity.QuestionIndex;
-import org.caesar.service.impl.QuestionSearchService;
+import org.caesar.search.model.entity.QuestionIndex;
+import org.caesar.search.service.impl.QuestionSearchService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -12,7 +12,6 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 import java.util.Random;
 
 @SpringBootTest(classes = SearchServiceApplication.class)

@@ -20,7 +20,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableDiscoveryClient
 @EnableFeignClients
 public class GatewayApplication {
-
+    //TODO: 接口文档聚合
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);
     }
@@ -31,14 +31,7 @@ public class GatewayApplication {
 
     private final String SERVICE_PATH = "%s/**";
 
-    public final String DEFAULT_PATH = "/**";
-
     private final String SERVICE_URI = "lb:/%s";
-
-    /*@Autowired
-    @Qualifier("ipRateLimiterFactory")
-    private RequestRateLimiterGatewayFilterFactory ipRateLimite
-    rFactory;*/
 
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {

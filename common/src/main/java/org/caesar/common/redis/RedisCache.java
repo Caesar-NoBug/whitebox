@@ -1,25 +1,16 @@
 package org.caesar.common.redis;
 
-import org.redisson.api.*;
-import org.redisson.client.codec.StringCodec;
 import org.springframework.data.redis.core.*;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings(value = { "unchecked", "rawtypes" })
 @Component
 public class RedisCache
 {
-    //TODO: 加分布式锁功能
     @Resource
     private RedisTemplate redisJSONTemplate;
 
@@ -92,10 +83,9 @@ public class RedisCache
         return operation.get(key);
     }
 
-   /* public <T> Object getCacheObject(String key) {
-        ValueOperations<String, T> operation = redisJSONTemplate.opsForValue();
-        return operation.get(key);
-    }*/
+   public Long increLong(String key, long delta) {
+        return redisJSONTemplate.opsForValue().increment(key, delta);
+    }
 
     /**
      * 删除单个对象
