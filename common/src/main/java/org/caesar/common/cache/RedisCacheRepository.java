@@ -67,7 +67,8 @@ public class RedisCacheRepository implements CacheRepository {
     @Resource
     private ThreadPoolTaskExecutor taskExecutor;
 
-    public <T> T cache(String key, int avgExpire, int maxExpire, int visitThreshold, Supplier<T> supplier, Runnable beforeExpireTask) {
+    @Override
+    public <T> T cache(String key, int avgExpire, int maxExpire, int visitThreshold, Supplier<T> supplier, Runnable onExpire) {
 
         T result = getObject(key);
 
@@ -125,11 +126,16 @@ public class RedisCacheRepository implements CacheRepository {
 
         // 创建缓存自动更新过期时间任务
         RefreshCacheTask task = new RefreshCacheTask(key, now + expire * 1000L - REFRESH_CACHE_START_TIME,
-                now + maxExpire * 1000L, avgExpire, visitThreshold,beforeExpireTask);
+                now + maxExpire * 1000L, avgExpire, visitThreshold, onExpire);
 
         ListUtil.binaryInsert(refreshCacheTasks, task);
 
         return result;
+    }
+
+    @Override
+    public <T> T cache(String key, int avgExpire, int maxExpire, int visitThreshold, Supplier<T> supplier) {
+        return cache(key, avgExpire, maxExpire, visitThreshold, supplier, doNothing);
     }
 
     @Override
@@ -138,8 +144,8 @@ public class RedisCacheRepository implements CacheRepository {
     }
 
     @Override
-    public <T> T cache(String key, Supplier<T> supplier, Runnable beforeExpireTask) {
-        return cache(key, DEFAULT_AVG_EXPIRE, DEFAULT_MAX_EXPIRE, DEFAULT_VISIT_THRESHOLD, supplier, beforeExpireTask);
+    public <T> T cache(String key, Supplier<T> supplier, Runnable onExpire) {
+        return cache(key, DEFAULT_AVG_EXPIRE, DEFAULT_MAX_EXPIRE, DEFAULT_VISIT_THRESHOLD, supplier, onExpire);
     }
 
     @Override
