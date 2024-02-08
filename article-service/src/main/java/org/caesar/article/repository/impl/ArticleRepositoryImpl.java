@@ -1,5 +1,6 @@
 package org.caesar.article.repository.impl;
 
+import com.alibaba.nacos.shaded.com.google.common.collect.Lists;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 
@@ -9,8 +10,8 @@ import org.caesar.article.repository.ArticleRepository;
 import org.caesar.article.repository.CommentRepository;
 import org.caesar.article.task.HotArticleTask;
 import org.caesar.article.constant.CacheKey;
-import org.caesar.common.batch.CacheIncBatchTaskHandler;
-import org.caesar.common.batch.CacheIncTask;
+import org.caesar.common.batch.cache.CacheIncTask;
+import org.caesar.common.batch.cache.CacheIncTaskHandler;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.cache.CacheRepository;
 import org.caesar.common.util.DataFilter;
@@ -29,6 +30,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -49,12 +51,17 @@ public class ArticleRepositoryImpl extends ServiceImpl<ArticleMapper, ArticlePO>
     private CacheRepository cacheRepo;
 
     @Resource
-    private CacheIncBatchTaskHandler taskHandler;
+    private CacheIncTaskHandler cacheIncTaskHandler;
 
     @Override
     public void addArticle(Article article) {
         ThrowUtil.ifFalse(save(articleStruct.DOtoPO(article)), ErrorCode.SYSTEM_ERROR, "Fail to insert article to database. " + article);
+
+        // 初始化redis中对应的点赞数和收藏数
         long articleId = article.getId();
+        cacheRepo.setLongValue(CacheKey.articleLikeCount(articleId), 0);
+        cacheRepo.setLongValue(CacheKey.articleFavorCount(articleId), 0);
+
         articleFilter.add(articleId);
     }
 
@@ -165,16 +172,14 @@ public class ArticleRepositoryImpl extends ServiceImpl<ArticleMapper, ArticlePO>
                                 .eq(ArticlePO.Fields.createBy, userId))
                 , "Article does not exists or does not belong to the user.");
 
-        // 删除文章操作记录
+        // 删除数据库中文章操作记录
         baseMapper.deleteArticleOps(articleId);
 
-        // 删除浏览、点赞、收藏记录
-        boolean flag = true;
-        flag &= cacheRepo.deleteLogLog(CacheKey.articleViewCount(articleId));
-        flag &= cacheRepo.deleteLong(CacheKey.articleFavorCount(articleId));
-        flag &= cacheRepo.deleteLong(CacheKey.articleLikeCount(articleId));
+        // 删除缓存中浏览、点赞、收藏数
+        List<String> articleStatisticKeys = Lists.newArrayList(CacheKey.articleViewCount(articleId),
+                CacheKey.articleFavorCount(articleId), CacheKey.articleLikeCount(articleId));
 
-        ThrowUtil.ifFalse(flag, ErrorCode.SYSTEM_ERROR, "Fail to delete article relate info in redis.");
+        cacheRepo.deleteObject(articleStatisticKeys);
 
         // 删除评论
         commentRepo.deleteComment(ElementType.ARTICLE.getValue(), articleId);
@@ -183,28 +188,36 @@ public class ArticleRepositoryImpl extends ServiceImpl<ArticleMapper, ArticlePO>
     @Override
     public void markArticle(long userId, long articleId, int mark) {
 
+        ArticleOps ops = baseMapper.getArticleOps(userId, articleId);
+        int prevMark = Objects.isNull(ops) ? 0 : ops.getMark();
+
         // 如果没有不同的评价（即评价已经是mark了），无需修改
-        ThrowUtil.ifFalse(baseMapper.hasDiffArticleMark(userId, articleId, mark), ErrorCode.DUPLICATE_REQUEST, "Article has already been marked.");
+        ThrowUtil.ifTrue(mark == prevMark, ErrorCode.ALREADY_EXIST_ERROR, "Article has already been marked.");
 
-        CacheIncTask updateMarkTask = new CacheIncTask(mark);
-        taskHandler.addTask(CacheKey.articleLikeCount(articleId), updateMarkTask);
+        CacheIncTask updateMarkTask = new CacheIncTask(mark - prevMark);
 
-        ThrowUtil.ifFalse(baseMapper.markArticle(userId, articleId, mark) > 0, ErrorCode.SYSTEM_ERROR, "Fail to update article mark status in database.");
+        cacheIncTaskHandler.addTask(CacheKey.articleLikeCount(articleId), updateMarkTask);
+
+        ThrowUtil.ifFalse(baseMapper.markArticle(userId, articleId, mark, LocalDateTime.now()), ErrorCode.SYSTEM_ERROR, "Fail to update article mark status in database.");
     }
 
     @Override
     public void favorArticle(long userId, long articleId, boolean isFavor) {
 
-        // 如果没有不同的收藏状态（即状态已经是isFavor了），无需修改
-        ThrowUtil.ifFalse(baseMapper.hasDiffArticleFavor(userId, articleId, isFavor), ErrorCode.DUPLICATE_REQUEST, "Article has already been favored.");
+        ArticleOps ops = baseMapper.getArticleOps(userId, articleId);
+        boolean prevFavor = Objects.isNull(ops) ? false : ops.isFavored();
+
+        // 如果没有不同的评价（即评价已经是mark了），无需修改
+        ThrowUtil.ifTrue(isFavor == prevFavor, ErrorCode.ALREADY_EXIST_ERROR, "Article has already been favored.");
 
         CacheIncTask updateFavorTask = new CacheIncTask(isFavor ? 1 : -1);
-        taskHandler.addTask(CacheKey.articleFavorCount(articleId), updateFavorTask);
+        cacheIncTaskHandler.addTask(CacheKey.articleFavorCount(articleId), updateFavorTask);
 
-        ThrowUtil.ifFalse(baseMapper.favorArticle(userId, articleId, isFavor) > 0, ErrorCode.SYSTEM_ERROR, "Fail to update article favor status in database.");
+        ThrowUtil.ifFalse(baseMapper.favorArticle(userId, articleId, isFavor, LocalDateTime.now()), ErrorCode.SYSTEM_ERROR, "Fail to update article favor status in database.");
     }
 
     private List<Article> loadArticle(List<ArticlePO> articles) {
         return articles.stream().map(articleStruct::POtoDO).collect(Collectors.toList());
     }
+
 }

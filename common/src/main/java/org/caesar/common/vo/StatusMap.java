@@ -21,12 +21,12 @@ public class StatusMap {
     public void setFail(int index) {
         if(index > size) return;
 
-        map += 1L << index;
+        map |= 1L << index;
     }
 
     //第{index}个数据中是否为失败数据
     public boolean isFail(int index) {
-        return (map << index & 1) == 1;
+        return (map >> index & 1) == 1;
     }
 
     //所有数据中是否包含失败数据

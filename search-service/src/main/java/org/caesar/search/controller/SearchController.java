@@ -28,9 +28,6 @@ public class SearchController {
     @Resource
     private SearchHistoryService searchHistoryService;
 
-    //TODO: 加个聚合搜索接口
-    //TODO: 搜索历史接口
-
     @GetMapping("/search/{dataSource}")
     public Response<PageVO<? extends IndexVO>> search(@RequestParam String text, @RequestParam int from, @RequestParam int size,
                                                       @RequestParam SortField field, @PathVariable DataSource dataSource) {
@@ -65,14 +62,14 @@ public class SearchController {
 
     @PostMapping("/sync/article-index")
     public Response<Void> syncArticleIndex(@RequestBody List<ArticleIndexVO> indices) {
-        boolean success = searchManager.insertIndex(DataSource.ARTICLE, indices);
-        return success ? Response.ok() : Response.error(ErrorCode.SYSTEM_ERROR, "更新索引失败");
+        searchManager.insertIndex(DataSource.ARTICLE, indices);
+        return Response.ok();
     }
 
     @DeleteMapping("/sync/{dataSource}")
     public Response<Void> deleteIndex(@RequestBody List<Long> ids, @PathVariable DataSource dataSource) {
-        boolean success = searchManager.deleteIndex(dataSource, ids);
-        return success ? Response.ok() : Response.error(ErrorCode.SYSTEM_ERROR, "删除索引失败");
+        searchManager.deleteIndex(dataSource, ids);
+        return Response.ok();
     }
 
     @GetMapping("/history")

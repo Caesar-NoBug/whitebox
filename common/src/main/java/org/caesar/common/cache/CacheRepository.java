@@ -29,6 +29,11 @@ public interface CacheRepository {
 
     // 对象相关
     <T> T getObject(String key);
+
+    // 更新对象，保留原来的ttl
+    <T> void updateObject(String key, T value);
+
+    // 设置对象，若为设置ttl则永久保留
     <T> void setObject(String key, T value);
     <T> void setObject(String key, T value, long expire, TimeUnit timeUnit);
     <T> void setObject(String key, T value, long expire);

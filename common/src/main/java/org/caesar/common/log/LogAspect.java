@@ -25,7 +25,6 @@ public class LogAspect {
 
         ContextHolder.setBusinessName(logger.value());
 
-        if (logger.visit()) logVisit();
         if (logger.args()) logParam(method, joinPoint.getArgs());
 
         Object result = null;
@@ -45,10 +44,6 @@ public class LogAspect {
         }
 
         return result;
-    }
-
-    private void logVisit() {
-        LogUtil.info(LogType.VISIT_LOG, "");
     }
 
     private void logParam(Method method, Object[] args) {

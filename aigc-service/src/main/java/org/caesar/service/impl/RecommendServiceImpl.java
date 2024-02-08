@@ -58,11 +58,11 @@ public class RecommendServiceImpl implements RecommendService {
 
     public static final int SEARCH_HISTORY_SIZE = 5;
 
-    private ChatConfig userProfileConfig;
+    private final ChatConfig userProfileConfig;
 
-    private ChatConfig candidateArticleConfig;
+    private final ChatConfig candidateArticleConfig;
 
-    private ChatConfig selectArticleConfig;
+    private final ChatConfig selectArticleConfig;
 
     public RecommendServiceImpl(ChatProperties chatProperties) {
         userProfileConfig = chatProperties.getChatConfig(ChatProperties.RECOMMEND_USER_PROFILE);
@@ -89,7 +89,7 @@ public class RecommendServiceImpl implements RecommendService {
 
         // 去重，删除用户看过的文章
         List<Long> ids = articles.stream().map(ArticleMinVO::getId).collect(Collectors.toList());
-        List<Long> uniqueIds = RespUtil.handleWithThrow(articleClient.getUniqueArticle(ids), "Fail to fetch unread article from article service.");
+        List<Long> uniqueIds = RespUtil.handleWithThrow(articleClient.getUnreadArticle(ids), "Fail to fetch unread article from article service.");
 
         articles.removeIf(article -> !uniqueIds.contains(article.getId()));
 
@@ -183,8 +183,7 @@ public class RecommendServiceImpl implements RecommendService {
 
         List<Long> ids = Arrays
                 .stream(
-                        chatService.completion(request).getReply().split(",")
-                )
+                        chatService.completion(request).getReply().split(selectArticleConfig.getSeparator()))
                 .map(Long::parseLong).collect(Collectors.toList());
 
         List<ArticleMinVO> recommendArticles = new ArrayList<>();

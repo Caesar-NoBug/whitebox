@@ -14,13 +14,12 @@ import java.util.Map;
 @Component
 public class BatchTaskManager implements ApplicationContextAware {
 
-    private final List<BatchTaskHandler> batchTaskHandlers = new ArrayList<>();
-
     @Resource
     private TaskScheduler taskScheduler;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        // 将所有的BatchTaskHandler注册为定时任务
         Map<String, BatchTaskHandler> tempMap = applicationContext.getBeansOfType(BatchTaskHandler.class);
         tempMap.values().forEach(handler -> taskScheduler.scheduleAtFixedRate(handler::batchExecute, handler.getExecuteInterval()));
     }

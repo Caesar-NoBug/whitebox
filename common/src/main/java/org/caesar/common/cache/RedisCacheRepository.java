@@ -1,6 +1,7 @@
 package org.caesar.common.cache;
 
 import org.caesar.common.exception.BusinessException;
+import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.redis.RedisCache;
 import org.caesar.common.util.ListUtil;
 import org.caesar.common.vo.RefreshCacheTask;
@@ -79,40 +80,15 @@ public class RedisCacheRepository implements CacheRepository {
         }
 
         // 当缓存不存在时，尝试获取锁并让成功获取锁的线程执行获取缓存的逻辑
-        // 当获取锁失败时，轮询尝试直接获取缓存
-        if (!tryLock(key, 0, 10, TimeUnit.SECONDS)) {
-            long waitTime = 0;
 
-            final long sleepTime = 500L;
+        // 当获取锁失败时，直接抛异常让用户等待
+        ThrowUtil.ifFalse(tryLock(key, 0, 10, TimeUnit.SECONDS),
+            ErrorCode.TOO_MUCH_REQUEST_ERROR, "We are preparing data, please wait a moment.");
 
-            while (true) {
-                try {
-                    Thread.sleep(sleepTime);
-
-                    waitTime += sleepTime;
-
-                    result = getObject(key);
-
-                    // 获取成功则直接返回
-                    if (Objects.nonNull(result)) {
-                        cacheAccessTime.merge(key, 1, Integer::sum);
-                        return result;
-                    }
-
-                    final int maxWaitTime = 2 * 1000;
-                    // 当重试超过2秒时，说明添加缓存失败，抛出异常
-                    if (waitTime > maxWaitTime) {
-                        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Wait too long time for cache refresh.");
-                    }
-
-                } catch (InterruptedException e) {
-                    throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Interrupted when waiting for cache refresh.", e);
-                }
-            }
-        }
         // 处理获取数据的逻辑
         result = supplier.get();
 
+        // 不缓存空数据
         if (Objects.isNull(result)) {
             return null;
         }
@@ -311,13 +287,18 @@ public class RedisCacheRepository implements CacheRepository {
 
     @Override
     public void setObject(String key, Object value) {
-        redissonClient.getBucket(key).setAndKeepTTL(value);
+        redissonClient.getBucket(key).set(value);
     }
 
     @Override
     public <T> T getObject(String key) {
         RBucket<T> bucket = redissonClient.getBucket(key);
         return bucket.get();
+    }
+
+    @Override
+    public <T> void updateObject(String key, T value) {
+        redissonClient.getBucket(key).setAndKeepTTL(value);
     }
 
     @Override

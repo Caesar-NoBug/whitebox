@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -41,10 +42,9 @@ public class OpenAIChatService implements ChatService {
         CompletionResponse response;
         String cacheKey;
 
-        Long userId = ContextHolder.get(ContextHolder.USER_ID);
-        ThrowUtil.ifNull(userId, "Fail to start a completion: unauthenticated.");
-        //TODO: 加一个向user-service的计费请求
+        long userId = ContextHolder.getUserIdNecessarily();
 
+        //TODO: 加一个向user-service的计费请求
         //  继续对话
         if (id != null) {
 
@@ -70,7 +70,7 @@ public class OpenAIChatService implements ChatService {
 
         //  保存对话信息
         if(completionRequest.getMemory() > 0)
-            cacheRepo.setObject(cacheKey, completion);
+            cacheRepo.setObject(cacheKey, completion, 1, TimeUnit.DAYS);
 
         return response;
     }

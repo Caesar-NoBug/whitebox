@@ -8,6 +8,8 @@ import org.caesar.domain.executor.enums.CodeResultType;
 import java.util.List;
 
 /**
+ * code:        用户代码
+ * result:      用户代码运行结果(仅保留出错的那一个用例对应的运行结果)
  * complete:    是否判题结束完成
  * success:     代码是否正确
  * type:        代码运行结果类型
@@ -20,16 +22,12 @@ import java.util.List;
 @AllArgsConstructor
 public class SubmitCodeResult {
 
-    public static final SubmitCodeResult JUDGING = new SubmitCodeResult(false, false, null, null, null, null);
-
+    private String code;
+    private String result;
     private boolean complete;
-    private boolean success;
+    private boolean passed;
     private List<CodeResultType> type;
     private String message;
     private List<Long> time;
     private List<Long> memory;
-
-    public static SubmitCodeResult judging() {
-        return JUDGING;
-    }
 }

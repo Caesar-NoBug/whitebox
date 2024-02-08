@@ -22,9 +22,7 @@ import javax.annotation.Resource;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-//处理基本的限流操作
-//TODO： 熔断处理器, 用nacos加sentinel进行限流
-//TODO: 限制验证码访问频率
+//处理基本限流操作
 @Component
 public class IdRateLimiterFilter implements GlobalFilter, Ordered {
 

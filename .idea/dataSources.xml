@@ -13,7 +13,7 @@
       <synchronize>true</synchronize>
       <remarks>阿里云服务器redis</remarks>
       <jdbc-driver>jdbc.RedisDriver</jdbc-driver>
-      <jdbc-url>jdbc:redis://8.130.19.151:16379/0</jdbc-url>
+      <jdbc-url>jdbc:redis://8.130.19.151:16379/</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

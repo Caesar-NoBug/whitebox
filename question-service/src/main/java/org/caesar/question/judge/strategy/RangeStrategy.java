@@ -9,7 +9,7 @@ import java.util.List;
 //范围匹配，只要结果在一定范围内即可，适用于结果为浮点数的题目
 //TODO: 新增题目时校验特殊题目类型的输出用例
 @Component
-public class RangeStartegy implements JudgeStrategy {
+public class RangeStrategy implements JudgeStrategy {
 
     @Override
     public StatusMap judge(List<String> codeResult, List<String> outputCase) {

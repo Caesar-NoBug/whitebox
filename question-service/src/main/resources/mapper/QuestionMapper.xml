@@ -8,6 +8,7 @@
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="title" column="title" jdbcType="VARCHAR"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="correctCode" column="correctCode" jdbcType="VARCHAR"/>
             <result property="inputCase" column="input_case" jdbcType="VARCHAR"/>
             <result property="outputCase" column="output_case" jdbcType="VARCHAR"/>
             <result property="qType" column="q_type" jdbcType="INTEGER"/>
@@ -16,22 +17,44 @@
             <result property="likeNum" column="like_num" jdbcType="INTEGER"/>
             <result property="favorNum" column="favor_num" jdbcType="INTEGER"/>
             <result property="submitNum" column="submit_num" jdbcType="INTEGER"/>
+            <result property="acceptNum" column="accept_num" jdbcType="INTEGER"/>
             <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,titile,content,
+        id,titile,content,correctCode,
         input_case,output_case,q_type,
         tag,difficulty,like_num,favor_num,submit_num,
-        isDelete,createTime,updateTime
+        accept_num,isDelete,createTime,updateTime
     </sql>
+
+    <update id="markQuestion">
+        INSERT INTO question_ops
+            (user_id, question_id, mark, update_at)
+        VALUES (#{userId}, #{questionId}, #{mark}, #{updateTime})
+        ON DUPLICATE KEY UPDATE mark = #{mark}, update_at = #{updateTime};
+    </update>
+
+    <update id="favorQuestion">
+        INSERT INTO question_ops
+            (user_id, question_id, favored, update_at)
+        VALUES (#{userId}, #{questionId}, #{isFavor}, #{updateTime})
+        ON DUPLICATE KEY UPDATE favored = #{isFavor}, update_at = #{updateTime};
+    </update>
 
     <select id="selectQuestionByUpdateTime" resultType="org.caesar.question.model.po.QuestionPO">
         SELECT *
         FROM question
         WHERE update_time > #{afterTime}
+    </select>
+
+    <select id="getQuestionOps" resultType="org.caesar.question.model.entity.QuestionOps">
+        SELECT mark, favored
+        FROM question_ops
+        WHERE question_id = #{questionId}
+          AND user_id = #{userId}
     </select>
 
 </mapper>

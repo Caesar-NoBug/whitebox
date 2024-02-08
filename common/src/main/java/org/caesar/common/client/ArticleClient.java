@@ -22,8 +22,7 @@ public interface ArticleClient {
             @RequestParam Integer preferredSize,
             @RequestParam Integer randPreferredSize);
 
-    @Logger("[RPC] /getUniqueArticle")
-    @PostMapping("/article/unique")
-    Response<List<Long>> getUniqueArticle(@RequestBody List<Long> articleIds);
-
+    @Logger("[RPC] /getUnreadArticle")
+    @PostMapping("/article/unread")
+    Response<List<Long>> getUnreadArticle(@RequestBody List<Long> articleIds);
 }

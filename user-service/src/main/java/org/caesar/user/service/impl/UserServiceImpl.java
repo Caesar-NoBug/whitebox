@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
 
         long expireTime = cacheRepo.getExpire(cacheKey);
 
-        if(expireTime < REFRESH_TOKEN_EXPIRE / 2) {
+        if (expireTime < REFRESH_TOKEN_EXPIRE / 2) {
             cacheRepo.expire(cacheKey, REFRESH_TOKEN_EXPIRE, TimeUnit.SECONDS);
         }
 
@@ -136,18 +136,19 @@ public class UserServiceImpl implements UserService {
         Map<Long, UserMinVO> userMinMap = new HashMap<>();
 
         for (Long userId : userIds) {
-            UserMinVO userMinVO = cacheRepo.getObject(CacheKey.AUTH_TIME + userId);
-            if(userMinVO != null) userMinMap.put(userId, userMinVO);
+            UserMinVO userMin = cacheRepo.cache(CacheKey.CACHE_USER_MIN + userId,
+                    () -> null);
+
+            if (Objects.nonNull(userMin)) userMinMap.put(userId, userMin);
             else nonCachedIds.add(userId);
         }
 
-        if(!nonCachedIds.isEmpty()) {
-            userRepo.selectUserByIds(nonCachedIds).forEach(user -> {
+        if (!nonCachedIds.isEmpty()) {
+            userRepo.selectUserMinByIds(nonCachedIds).forEach(user -> {
                 Long id = user.getId();
                 UserMinVO userMinVO = userStruct.DOtoMinVO(user);
                 userMinMap.put(id, userMinVO);
-                cacheRepo.setObject(CacheKey.AUTH_TIME + id, userMinVO,
-                        5, TimeUnit.MINUTES);
+                cacheRepo.cache(CacheKey.CACHE_USER_MIN + id, () -> userMinVO);
             });
         }
 

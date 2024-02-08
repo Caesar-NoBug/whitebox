@@ -14,7 +14,7 @@ public enum ErrorCode {
     // 请求参数错误
     INVALID_ARGS_ERROR(400, "Invalid Argument"),
     // 未认证
-    NOT_AUTHENTICATED_ERROR(401, "Unauthenticated"),
+    NOT_AUTHENTICATED_ERROR(401, "Unauthenticated User"),
     // 未授权
     NOT_AUTHORIZED_ERROR(402, "Unauthorized"),
     // 请求过多

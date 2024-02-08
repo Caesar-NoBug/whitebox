@@ -41,7 +41,7 @@ public class UserRepositoryImpl extends ServiceImpl<BaseUserMapper, UserPO> impl
     }
 
     @Override
-    public List<User> selectUserByIds(List<Long> ids) {
+    public List<User> selectUserMinByIds(List<Long> ids) {
         return userMapper.selectBatchIds(ids).stream()
                 .map(userStruct::POtoDO).collect(Collectors.toList());
     }
@@ -69,7 +69,6 @@ public class UserRepositoryImpl extends ServiceImpl<BaseUserMapper, UserPO> impl
     @Transactional
     @Override
     public boolean insertUser(User user) {
-        //TODO: 插入时同时插入角色信息
         return userMapper.insertUser(userStruct.DOtoPO(user)) > 0
                 && menuMapper.insertUserRole(user.getId(), user.getRoles());
     }

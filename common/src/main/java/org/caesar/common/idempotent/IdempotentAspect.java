@@ -92,7 +92,7 @@ public class IdempotentAspect {
 
     // 设置锁为完成状态
     private void setLockComplete(String key) {
-        cacheRepo.setObject(key, 3);
+        cacheRepo.updateObject(key, 3);
     }
 
     private void removeLock(String key) {

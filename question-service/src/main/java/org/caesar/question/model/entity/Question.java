@@ -47,6 +47,11 @@ public class Question implements Serializable {
     private String content;
 
     /**
+     *  答案(正确代码)
+     */
+    private String correctCode;
+
+    /**
      * 输入用例(JSON数组)
      */
     private String inputCase;
@@ -87,6 +92,11 @@ public class Question implements Serializable {
     private Integer submitNum;
 
     /**
+     * 通过数
+     */
+    private Integer acceptNum;
+
+    /**
      * 执行时间限制(ms)
      */
     private Long timeLimit;
@@ -104,7 +114,6 @@ public class Question implements Serializable {
     /**
      * 创建问题时间
      */
-    @JsonIgnore
     private LocalDateTime createTime;
 
     /**
@@ -147,15 +156,15 @@ public class Question implements Serializable {
         return JSON.parseArray(getOutputCase(), String.class);
     }
 
-    @Logger(value = "judge code", visit = false, args = true, result = true, time = true)
     public SubmitCodeResult judge(QuestionJudgeManager judgeManager, ExecuteCodeResponse executeResponse) {
         List<CodeResultType> resultTypes = executeResponse.getType();
         List<Long> time = executeResponse.getTime();
         List<Long> memory = executeResponse.getMemory();
         List<String> outputArray = getOutputArray();
-        //执行出现异常则直接返回
+
+        //代码执行时出现异常则直接返回
         if (!executeResponse.isSuccess()) {
-            return new SubmitCodeResult(true, false, executeResponse.getType(),  executeResponse.getMessage(), time, memory);
+            return new SubmitCodeResult(null, "", true, false, executeResponse.getType(),  executeResponse.getMessage(), time, memory);
         }
 
         List<String> codeResult = executeResponse.getResult();
@@ -179,6 +188,7 @@ public class Question implements Serializable {
                     if (success) {
                         String wrongResult = codeResult.get(i);
                         String correctResult = judgeManager.generateAnswer(qType, outputArray.get(i));
+                        submitCodeResult.setResult(wrongResult);
                         submitCodeResult.setMessage(String.format(WRONG_ANSWER_MESSAGE, wrongResult, correctResult));
                         success = false;
                     }
@@ -195,7 +205,7 @@ public class Question implements Serializable {
         }
 
         submitCodeResult.setComplete(true);
-        submitCodeResult.setSuccess(success);
+        submitCodeResult.setPassed(success);
 
         if(!success) submitCodeResult.setType(resultTypes);
 

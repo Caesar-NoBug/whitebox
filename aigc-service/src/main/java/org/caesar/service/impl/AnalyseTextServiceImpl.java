@@ -4,32 +4,30 @@ import lombok.extern.slf4j.Slf4j;
 import org.caesar.common.exception.BusinessException;
 import org.caesar.config.ChatConfig;
 import org.caesar.config.ChatProperties;
-import org.caesar.constant.ChatPrompt;
 import org.caesar.constant.Patterns;
 import org.caesar.domain.aigc.request.AnalyseTextRequest;
 import org.caesar.domain.aigc.request.CompletionRequest;
 import org.caesar.domain.aigc.response.AnalyseTextResponse;
 import org.caesar.domain.common.enums.ErrorCode;
-import org.caesar.service.AnalyseService;
+import org.caesar.service.AnalyseTextService;
 import org.caesar.service.ChatService;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.regex.Matcher;
 
 @Service
 @Slf4j
-public class AnalyseServiceImpl implements AnalyseService {
+public class AnalyseTextServiceImpl implements AnalyseTextService {
 
     @Resource
     private ChatService chatService;
 
-    private ChatConfig detectTextConfig;
+    private final ChatConfig detectTextConfig;
 
-    private ChatConfig analyseTextConfig;
+    private final ChatConfig analyseTextConfig;
 
-    AnalyseServiceImpl(ChatProperties chatProperties) {
+    AnalyseTextServiceImpl(ChatProperties chatProperties) {
         analyseTextConfig = chatProperties.getChatConfig(ChatProperties.ANALYSE_TEXT);
         detectTextConfig = chatProperties.getChatConfig(ChatProperties.DETECT_TEXT);
     }

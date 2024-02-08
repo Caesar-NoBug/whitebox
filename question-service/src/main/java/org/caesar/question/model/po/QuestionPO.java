@@ -36,6 +36,11 @@ public class QuestionPO implements Serializable {
     private String content;
 
     /**
+     *  答案(正确代码)
+     */
+    private String correctCode;
+
+    /**
      * 输入用例(JSON数组)
      */
     private String inputCase;
@@ -74,6 +79,11 @@ public class QuestionPO implements Serializable {
      * 提交数
      */
     private Integer submitNum;
+
+    /**
+     * 通过数
+     */
+    private Integer acceptNum;
 
     /**
      * 执行时间限制(ms)

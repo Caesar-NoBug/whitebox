@@ -18,9 +18,9 @@ public abstract class BatchTaskHandler {
     }
 
     // 执行任务
-    abstract void batchExecute();
+    public abstract void batchExecute();
 
     // 执行间隔（ms）
-    abstract long getExecuteInterval();
+    public abstract long getExecuteInterval();
 }
 

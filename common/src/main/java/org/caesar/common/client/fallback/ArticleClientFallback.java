@@ -17,7 +17,7 @@ public class ArticleClientFallback implements ArticleClient {
     }
 
     @Override
-    public Response<List<Long>> getUniqueArticle(List<Long> articleIds) {
+    public Response<List<Long>> getUnreadArticle(List<Long> articleIds) {
         return Response.error(ErrorCode.SERVICE_UNAVAILABLE_ERROR, "[Article Service] 'getUniqueArticle' service unavailable");
     }
 }

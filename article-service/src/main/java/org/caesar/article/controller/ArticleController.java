@@ -92,8 +92,8 @@ public class ArticleController {
         return Response.ok();
     }
 
-    @PostMapping("/unique")
-    Response<List<Long>> getUniqueArticle(@RequestBody List<Long> articleIds) {
+    @PostMapping("/unread")
+    Response<List<Long>> getUnreadArticle(@RequestBody List<Long> articleIds) {
         long userId = ContextHolder.getUserIdNecessarily();
         return Response.ok(articleService.getUniqueArticle(userId, articleIds));
     }

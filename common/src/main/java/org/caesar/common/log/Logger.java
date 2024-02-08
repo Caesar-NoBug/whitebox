@@ -12,9 +12,6 @@ public @interface Logger {
     // 接口名称
     String value() default "";
 
-    // 是否打印基本访问日志
-    boolean visit() default true;
-
     // 是否打印参数
     boolean args() default false;
 

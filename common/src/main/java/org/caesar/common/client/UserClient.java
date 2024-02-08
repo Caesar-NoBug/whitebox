@@ -25,10 +25,7 @@ public interface UserClient {
     @GetMapping("/user/prefer")
     Response<UserPreferVO> getUserPrefer();
 
-    @Logger(value = "[RPC] /get-updated-role")
+    @Logger(value = "[RPC] /getUpdatedRole")
     @GetMapping("/user/updated-role")
     Response<List<RoleVO>> getUpdatedRole(@RequestParam LocalDateTime updateTime);
-
-    @GetMapping("/user/test-circuit-breaker")
-    Response<String> testCircuitBreaker();
 }

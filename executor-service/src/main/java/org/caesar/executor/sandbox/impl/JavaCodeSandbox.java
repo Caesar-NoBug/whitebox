@@ -32,13 +32,13 @@ public class JavaCodeSandbox extends CodeSandbox {
     private static final String GLOBAL_COMPILED_FILE_NAME = "Main.class";
 
     @Value("${sandbox.java.dir}")
-    private static String GLOBAL_CODE_DIR_NAME;
+    private String GLOBAL_CODE_DIR_NAME;
 
     @Value("${sandbox.java.compile-cmd}")
-    private static String COMPILE_CODE_COMMAND;
+    private String COMPILE_CODE_COMMAND;
 
     @Value("${sandbox.java.run-cmd}")
-    private static String EXECUTE_CODE_COMMAND;
+    private String EXECUTE_CODE_COMMAND;
 
     //TODO：Docker 代码沙箱
     public JavaCodeSandbox() {

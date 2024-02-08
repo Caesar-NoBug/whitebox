@@ -55,7 +55,6 @@ public class ArticleIndex implements Index {
     /**
      * 文章标签
      */
-    //  TODO: 想办法增加tag在索引中时的权重
     @Field(type = FieldType.Keyword, store = true, copyTo = "all")
     private String[] tag;
 

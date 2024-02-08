@@ -17,7 +17,7 @@ import java.nio.file.StandardCopyOption;
 @RequestMapping("/image")
 public class ImageController {
 
-    @Autowired
+    @javax.annotation.Resource
     private ResourceLoader resourceLoader;
     //TODO: 改成 fastDFS
     //todo: 这个路径要改一下

@@ -28,9 +28,6 @@ rate-limiter:
       total: 1000
 
 
-
-
-
 #logging:
 #  level:
 #    org.springframework.cloud.openfeign: trace

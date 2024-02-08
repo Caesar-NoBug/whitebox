@@ -1,5 +1,6 @@
 import org.caesar.QuestionApplication;
 import org.caesar.common.context.ContextHolder;
+import org.caesar.common.util.DataFilter;
 import org.caesar.domain.executor.enums.CodeLanguage;
 import org.caesar.domain.executor.request.ExecuteCodeRequest;
 import org.caesar.domain.question.request.SubmitCodeRequest;
@@ -82,6 +83,14 @@ public class MyTest {
         request.setQuestionId(0L);
         System.out.println(controller.submitCode(request));
     }
+
+   /* @Resource
+    private DataFilter questionFilter;
+
+    @Test
+    public void testBloomFilter() {
+        questionFilter.add(0);
+    }*/
 
     @Test
     public void testMq() {

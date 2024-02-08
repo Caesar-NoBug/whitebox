@@ -1,10 +1,7 @@
 package org.caesar.question.judge;
 
 import org.caesar.common.vo.StatusMap;
-import org.caesar.question.judge.strategy.DefaultStrategy;
 import org.caesar.question.judge.strategy.JudgeStrategy;
-import org.caesar.question.judge.strategy.RangeStartegy;
-import org.caesar.question.judge.strategy.UnorderedStrategy;
 import org.caesar.question.model.vo.JudgeParam;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -14,11 +11,12 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class QuestionJudgeManager implements ApplicationContextAware {
 
-    private final Map<Integer, JudgeStrategy> judgeStrategyMap = new HashMap();
+    private final Map<Integer, JudgeStrategy> judgeStrategyMap = new ConcurrentHashMap<>();
 
     public StatusMap judge(JudgeParam judgeParam) {
         JudgeStrategy strategy = getJudgeStrategy(judgeParam.getType());

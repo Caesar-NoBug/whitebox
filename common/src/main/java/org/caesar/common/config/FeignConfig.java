@@ -39,6 +39,8 @@ public class FeignConfig {
     @Bean
     public RequestInterceptor requestInterceptor() {
         return template -> {
+
+            System.out.println("feign thread:" + Thread.currentThread().getId());
             //TODO: 设置允许通信的服务的ip白名单，只接收来自白名单的请求，并使用https进行服务间通信
             template.header("Content-Type", "application/json");
             template.header(Headers.SOURCE_HEADER, "gateway");

@@ -34,14 +34,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-//TODO: 统一的异常处理机制
 //对请求进行认证和鉴权，并在请求上加上用户id
 @Component
 public class AuthorizeFilter implements GlobalFilter, Ordered {
 
-    // TODO: 加上游客查看文章的接口
-
-    public static String[] AUTHORIZE_WHITE_LIST = {"/user-service/auth/login", "/user-service/auth/sendCode/**",
+    public static String[] AUTHORIZE_WHITE_LIST = {
+            "/user-service/auth/login", "/user-service/auth/sendCode/**",
             "/user-service/auth/refreshToken", "/user-service/auth/register/**", "/user-service/user/reset"};
 
     private static final PrefixMatcher prefixMatcher = new PrefixMatcher(AUTHORIZE_WHITE_LIST);

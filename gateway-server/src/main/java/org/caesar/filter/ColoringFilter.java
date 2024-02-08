@@ -12,9 +12,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
-
-//TODO: 接口访问日志
-//TODO: 禁止同一用户短时间内多次访问判题接口
 @Slf4j
 @Component
 public class ColoringFilter implements GlobalFilter, Ordered {

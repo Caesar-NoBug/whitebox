@@ -39,3 +39,18 @@ rocketmq:
     group: question-service
     topic: execute-code
 #    group: question-service
+
+data-filter:
+  question:
+    size: 100000
+    falseProbability: 0.01
+
+feign:
+  client:
+    config:
+      aigc-service:
+        connect-timeout: 10000
+        read-timeout: 10000
+      default:
+        connect-timeout: 3000
+        read-timeout: 3000

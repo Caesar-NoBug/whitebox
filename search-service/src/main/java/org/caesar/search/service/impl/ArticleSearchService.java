@@ -71,8 +71,7 @@ public class ArticleSearchService implements SearchService<ArticleIndexVO> {
         scriptParams.put("viewFactor", VIEW_FACTOR);
     }
 
-    //TODO: 添加update字段并在增删改时修改该字段的值
-    //TODO: es改成防腐层设计
+
     @Override
     public PageVO<ArticleIndexVO> search(String text, int from, int size) {
 

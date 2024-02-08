@@ -79,35 +79,18 @@ public interface ArticleMapper extends BaseMapper<ArticlePO> {
     void deleteViewHistory(List<Long> userIds, int historyCount);
 
     /**
-     * @param userId    用户id
-     * @param articleId 文章id
-     * @param mark      评价
-     * @return          是否有评价不同的文章【没有评价也视为不同评价】(有则返回1，没有则返回0)
-     */
-    boolean hasDiffArticleMark(long userId, long articleId, int mark);
-
-    /**
      * @param userId 用户id
      * @param articleId 文章id
      * @param mark 是否喜欢，-1：不喜欢，0：中等，1：喜欢
      */
-    int markArticle(long userId, long articleId, Integer mark);
-
-    /**
-     * @param userId    用户id
-     * @param articleId 文章id
-     * @param favor      评价
-     * @return          是否有评价不同的文章【没有评价也视为不同评价】(有则返回1，没有则返回0)
-     */
-    boolean hasDiffArticleFavor(long userId, long articleId, boolean favor);
+    boolean markArticle(long userId, long articleId, Integer mark, LocalDateTime updateTime);
 
     /**
      * @param userId 用户id
      * @param articleId 文章id
-     * @param favored 是否收藏
+     * @param isFavor 是否收藏
      */
-    int favorArticle(long userId, long articleId, Boolean favored);
-
+    boolean favorArticle(long userId, long articleId, Boolean isFavor, LocalDateTime updateTime);
 
     /**
      * @param articleId 文章id

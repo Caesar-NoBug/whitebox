@@ -1,8 +1,14 @@
 package org.caesar.common.config;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.caesar.common.redis.RedisJsonSerializer;
+import org.caesar.common.util.JavaTimeModule;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.Codec;
 import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
@@ -56,7 +62,12 @@ public class RedisConfig {
         singleServerConfig.setPassword(password);
         singleServerConfig.setDatabase(database);
         JsonJacksonCodec codec = new JsonJacksonCodec();
-        config.setCodec(codec);
+        ObjectMapper om = new ObjectMapper();
+        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        // 解决jackson2无法反序列化LocalDateTime的问题
+        om.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        om.registerModule(new JavaTimeModule());
+        config.setCodec(new JsonJacksonCodec(om));
         return Redisson.create(config);
     }
 

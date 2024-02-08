@@ -28,7 +28,7 @@ public interface ArticleService {
     // 获取近期修改了的文章
     List<Article> getUpdatedArticle(LocalDateTime afterTime);
 
-    // 获取近期文章
+    // 获取近期喜欢的文章
     GetPreferArticleResponse getPreferArticle(long userId, int viewedSize, int preferredSize, int randPreferredSize);
 
     // 获取热门文章

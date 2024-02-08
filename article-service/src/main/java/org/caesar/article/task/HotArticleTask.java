@@ -65,7 +65,7 @@ public class HotArticleTask {
         System.out.println("hotArticleIds:" + hotArticleIds);
         List<ArticleMinVO> hotArticles = articleService.getArticleMin(hotArticleIds);
 
-        cacheRepo.setObject(CacheKey.hotArticleSet(), hotArticles);
+        cacheRepo.updateObject(CacheKey.hotArticleSet(), hotArticles);
     }
 
 }

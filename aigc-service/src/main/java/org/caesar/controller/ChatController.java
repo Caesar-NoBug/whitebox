@@ -7,7 +7,8 @@ import org.caesar.domain.aigc.request.RecommendArticleRequest;
 import org.caesar.domain.aigc.response.AnalyseTextResponse;
 import org.caesar.domain.aigc.response.QuestionHelperResponse;
 import org.caesar.domain.article.vo.ArticleMinVO;
-import org.caesar.service.AnalyseService;
+import org.caesar.service.AnalyseTextService;
+import org.caesar.service.QuestionHelperService;
 import org.caesar.service.RecommendService;
 import org.caesar.service.impl.OpenAIChatService;
 import org.caesar.domain.common.vo.Response;
@@ -30,26 +31,24 @@ public class ChatController {
     private RecommendService recommendService;
 
     @Resource
-    private AnalyseService analyseService;
+    private AnalyseTextService analyseTextService;
+
+    @Resource
+    private QuestionHelperService questionHelperService;
 
     @PostMapping("/completion")
     public Response<CompletionResponse> completion(@RequestBody CompletionRequest request) {
         return Response.ok(chatService.completion(request));
     }
 
-    @PostMapping("/problem-helper")
-    public Response<QuestionHelperResponse> solveProblem(@RequestBody QuestionHelperRequest request) {
-        return Response.ok(chatService.questionHelper(request));
+    @PostMapping("/question-helper")
+    public Response<QuestionHelperResponse> questionHelper(@RequestBody QuestionHelperRequest request) {
+        return Response.ok(questionHelperService.questionHelper(request));
     }
 
     @PostMapping("/analyse-text")
     public Response<AnalyseTextResponse> analyseContent(@RequestBody AnalyseTextRequest request) {
-        return Response.ok(analyseService.analyseText(request));
-    }
-
-    @PostMapping("/assistant")
-    public Response<CompletionResponse> summary(@RequestBody CompletionRequest request) {
-        return Response.ok(chatService.assistant(request));
+        return Response.ok(analyseTextService.analyseText(request));
     }
 
     @PostMapping("/recommend-article")

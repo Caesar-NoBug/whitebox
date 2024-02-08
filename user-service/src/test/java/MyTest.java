@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @SpringBootTest(classes = UserServiceApplication.class)
 public class MyTest {
 
-    @Autowired
+    @Resource
     private AuthController authController;
 
     @Resource

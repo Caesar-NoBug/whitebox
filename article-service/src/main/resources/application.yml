@@ -31,8 +31,6 @@ server:
 #  level:
 
 feign:
-  circuitbreaker:
-    enabled: true
   client:
     config:
       aigc-service:
@@ -44,9 +42,8 @@ feign:
 
 data-filter:
   article:
-    size: 200000
+    size: 300000
     falseProbability: 0.01
   comment:
-    size: 200000
+    size: 500000
     falseProbability: 0.01
-#    org.springframework.cloud.openfeign: trace

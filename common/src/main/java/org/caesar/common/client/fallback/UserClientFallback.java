@@ -29,10 +29,4 @@ public class UserClientFallback implements UserClient {
     public Response<List<RoleVO>> getUpdatedRole(LocalDateTime updateTime) {
         return Response.error(ErrorCode.SERVICE_UNAVAILABLE_ERROR, "[User Service] 'getUpdatedRole' service unavailable");
     }
-
-    @Override
-    public Response<String> testCircuitBreaker() {
-        return Response.error(ErrorCode.SERVICE_UNAVAILABLE_ERROR, "[User Service] 'testCircuitBreaker' service unavailable");
-    }
-
 }

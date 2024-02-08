@@ -1,6 +1,7 @@
 package org.caesar.question.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.caesar.question.model.entity.QuestionOps;
 import org.caesar.question.model.po.QuestionPO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -14,11 +15,15 @@ import java.util.List;
 * @Entity org.caesar.model.entity.Question
 */
 @Mapper
-//TODO: 添加提交数和通过数的字段
 public interface QuestionMapper extends BaseMapper<QuestionPO> {
 
     List<QuestionPO> selectQuestionByUpdateTime(LocalDateTime afterTime);
 
+    QuestionOps getQuestionOps(long userId, long questionId);
+
+    boolean markQuestion(long userId, long questionId, int mark, LocalDateTime updateTime);
+
+    boolean favorQuestion(long userId, long questionId, boolean isFavor, LocalDateTime updateTime);
 }
 
 

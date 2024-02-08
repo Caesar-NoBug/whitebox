@@ -10,7 +10,7 @@ public interface UserRepository {
 
     User selectUserById(Long id);
 
-    List<User> selectUserByIds(List<Long> ids);
+    List<User> selectUserMinByIds(List<Long> ids);
 
     User selectUserByName(String username);
 

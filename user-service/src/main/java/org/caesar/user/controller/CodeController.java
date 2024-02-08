@@ -7,14 +7,14 @@ import org.caesar.common.str.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/user/sendCode")
 public class CodeController {
 
-    //TODO: 登录验证码相关加一个人机验证，把这个服务移动到authController中
-    @Autowired
+    @Resource
     private CodeService codeService;
 
     @PostMapping("/login/email/{email}")

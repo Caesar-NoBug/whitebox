@@ -75,7 +75,12 @@ public class AuthenticationManager implements ApplicationContextAware {
         try {
             providerMap.get(method).authenticate(identity, credential);
         } catch (Throwable e) {
-            cacheRepo.setObject(cacheKey, retryTime + 1, 5, TimeUnit.MINUTES);
+
+            if(retryTime == 0)
+                cacheRepo.setObject(cacheKey, 1, 5, TimeUnit.MINUTES);
+            else
+                cacheRepo.updateObject(cacheKey, retryTime + 1);
+
             throw e;
         }
     }

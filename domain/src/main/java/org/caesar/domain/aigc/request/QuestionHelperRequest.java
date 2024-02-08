@@ -18,6 +18,12 @@ public class QuestionHelperRequest {
     private String code;
 
     /**
+     * 正确代码
+     */
+    @Length(max = 2048)
+    private String correctCode;
+
+    /**
      * 错误信息
      */
     private String message;
@@ -26,9 +32,4 @@ public class QuestionHelperRequest {
      * 用户代码执行的结果
      */
     private String result;
-
-    /**
-     * 正确答案
-     */
-    private String answer;
 }

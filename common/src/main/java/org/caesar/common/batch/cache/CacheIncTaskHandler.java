@@ -1,13 +1,15 @@
-package org.caesar.common.batch;
+package org.caesar.common.batch.cache;
 
+import org.caesar.common.batch.BatchTask;
+import org.caesar.common.batch.BatchTaskHandler;
 import org.caesar.common.cache.CacheRepository;
 
 import javax.annotation.Resource;
 import java.util.Map;
 
-public class CacheIncBatchTaskHandler extends BatchTaskHandler {
+public class CacheIncTaskHandler extends BatchTaskHandler {
 
-    public CacheIncBatchTaskHandler(CacheRepository cacheRepository, long executeInterval) {
+    public CacheIncTaskHandler(CacheRepository cacheRepository, long executeInterval) {
         this.cacheRepo = cacheRepository;
         this.executeInterval = executeInterval;
     }

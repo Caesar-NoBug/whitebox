@@ -1,6 +1,7 @@
 package org.caesar.common.context;
 
 import org.caesar.common.exception.ThrowUtil;
+import org.caesar.domain.common.enums.ErrorCode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class ContextHolder {
     // 获取用户ID, 如果为空抛出异常
     public static Long getUserIdNecessarily() {
         Long userId = get(USER_ID);
-        ThrowUtil.ifNull(userId, "Unauthenticated User!");
+        ThrowUtil.ifNull(userId, ErrorCode.NOT_AUTHENTICATED_ERROR, "Please login.");
         return userId;
     }
 

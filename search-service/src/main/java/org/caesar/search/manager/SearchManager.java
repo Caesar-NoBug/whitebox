@@ -29,31 +29,21 @@ public class SearchManager implements ApplicationContextAware {
     @Resource
     private CacheRepository cacheRepo;
 
-    // TODO: 用模板方法模式重构，统一处理缓存
+    //TODO: 可以用多线程优化
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         Map<String, SearchService> tempMap = applicationContext.getBeansOfType(SearchService.class);
         tempMap.values().forEach(service -> serviceMap.put(service.getDataSource(), service));
     }
 
-    // 统一处理搜索结果的缓存
+    // 统一缓存搜索结果
     public PageVO<? extends IndexVO> search(DataSource dataSource, String text, int from, int size) {
 
         PageVO<? extends IndexVO> result;
         String cacheKey = String.format(RedisPrefix.CACHE_SEARCH_RESULT, dataSource, text);
-        result = cacheRepo.getObject(cacheKey);
 
-        if (Objects.nonNull(result)) {
-            cacheRepo.expire(cacheKey, 15, TimeUnit.MINUTES);
-            return result;
-        }
-
-        result = getService(dataSource).search(text, from, size);
-
-        int expire = (int) (5 + (Math.random() * 10));
-        cacheRepo.setObject(cacheKey, result, expire, TimeUnit.MINUTES);
-
-        return result;
+        return cacheRepo.cache(cacheKey,
+                () -> getService(dataSource).search(text, from, size));
     }
 
     public PageVO<? extends IndexVO> sortSearch(DataSource dataSource, String text, SortField field, int from, int size) {

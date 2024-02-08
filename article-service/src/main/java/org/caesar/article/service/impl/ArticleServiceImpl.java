@@ -24,6 +24,7 @@ import org.caesar.article.model.entity.Article;
 import org.caesar.article.model.entity.ArticleOps;
 import org.caesar.article.repository.ArticleRepository;
 import org.caesar.article.service.ArticleService;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -46,6 +47,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private MsArticleStruct articleStruct;
+
+    @Resource
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     @Resource
     private AIGCClient aigcClient;
@@ -85,13 +89,15 @@ public class ArticleServiceImpl implements ArticleService {
 
         ThrowUtil.ifNull(articleVO, ErrorCode.NOT_FIND_ERROR, "Fail to view article: the article does not exists.");
 
-        // 添加浏览记录
-        articleRepo.addViewHistory(userId, articleId, LocalDateTime.now());
-
         // 获取用户对文章的点赞、收藏状态
         ArticleOps ops = articleRepo.getArticleOps(userId, articleId);
         articleVO.setFavored(ops.isFavored());
         articleVO.setMark(ops.getMark());
+
+        // 异步添加浏览记录
+        threadPoolTaskExecutor.execute(() -> {
+            articleRepo.addViewHistory(userId, articleId, LocalDateTime.now());
+        });
 
         return articleVO;
     }
@@ -197,13 +203,11 @@ public class ArticleServiceImpl implements ArticleService {
 
         String cacheKey = CacheKey.cacheArticle(articleId);
 
-        Article article = articleRepo.getArticle(articleId);
-
-        int blockCount = article.getBlockCount();
-
         // 从缓存中获取文章
-        ArticleVO articleVO = cacheRepo.cache(cacheKey, () -> getArticleVO(article),
-                () -> onDeleteArticleCache(articleId, blockCount));
+        ArticleVO articleVO = cacheRepo.cache(cacheKey, () -> getArticleVO(articleId),
+                () -> onDeleteArticleCache(articleId));
+
+        int blockCount = articleVO.getBlockCount();
 
         // 获取分块内容
         if(blockCount > 0) {
@@ -220,10 +224,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     /**
      * 处理从数据库中获取的文章数据（加入作者信息并对文章分块）
-     * @param article  文章
+     * @param articleId  文章id
      * @return         封装好的文章数据
      */
-    private ArticleVO getArticleVO(Article article) {
+    private ArticleVO getArticleVO(long articleId) {
+
+        Article article = articleRepo.getArticle(articleId);
 
         ArticleVO articleVO = articleStruct.DOtoVO(article);
 
@@ -256,23 +262,15 @@ public class ArticleServiceImpl implements ArticleService {
         return articleVO;
     }
 
-    private List<String> getArticleBlocks(long articleId, int blockCount) {
-
-        List<String> blocks = new ArrayList<>(blockCount);
-
-        for (int i = 0; i < blockCount; i++) {
-            blocks.add(cacheRepo.getObject(CacheKey.cacheArticleBlock(articleId, i)));
-        }
-
-        return blocks;
-    }
-
     private List<ArticleMinVO> loadArticleMinVO(List<Article> articles) {
         return articles.stream().map(articleStruct::DOtoMinVO).collect(Collectors.toList());
     }
 
     // 回调函数，当文章过期时执行
-    private void onDeleteArticleCache(long articleId, int blockCount) {
+    private void onDeleteArticleCache(long articleId) {
+
+        ArticleVO articleVO = cacheRepo.getObject(CacheKey.cacheArticle(articleId));
+        int blockCount = articleVO.getBlockCount();
 
         List<String> blockKeys = new ArrayList<>(blockCount);
         // 删除文章分块缓存
@@ -285,10 +283,12 @@ public class ArticleServiceImpl implements ArticleService {
         long likeNum = cacheRepo.getLongValue(CacheKey.articleLikeCount(articleId));
         long viewNum = cacheRepo.getLogLogCount(CacheKey.articleViewCount(articleId));
         long favorNum = cacheRepo.getLongValue(CacheKey.articleFavorCount(articleId));
+
         Article updatedArticle = new Article();
         updatedArticle.setLikeNum(likeNum);
         updatedArticle.setViewNum(viewNum);
         updatedArticle.setFavorNum(favorNum);
         articleRepo.updateArticle(updatedArticle);
     }
+
 }
