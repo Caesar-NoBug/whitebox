@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 //负责提供用户相关服务及认证鉴权服务
 @EnableDiscoveryClient
 @SpringBootApplication
-//@EnableCircuitBreaker
 @EnableAsync
 //TODO: 把mybatis里in的写法优化成join on的写法
 public class UserServiceApplication {

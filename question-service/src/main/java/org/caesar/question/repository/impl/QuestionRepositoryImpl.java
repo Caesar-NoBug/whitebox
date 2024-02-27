@@ -1,16 +1,14 @@
 package org.caesar.question.repository.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.caesar.common.batch.cache.CacheIncTask;
 import org.caesar.common.batch.cache.CacheIncTaskHandler;
 import org.caesar.common.cache.CacheRepository;
-import org.caesar.common.exception.BusinessException;
 import org.caesar.common.exception.ThrowUtil;
-import org.caesar.common.util.DataFilter;
 import org.caesar.domain.common.enums.ErrorCode;
-import org.caesar.domain.question.response.SubmitCodeResult;
 import org.caesar.question.constant.CacheKey;
 import org.caesar.question.mapper.QuestionMapper;
 import org.caesar.question.mapper.QuestionSubmitResultMapper;
@@ -18,7 +16,7 @@ import org.caesar.question.model.MsQuestionStruct;
 import org.caesar.question.model.entity.QuestionOps;
 import org.caesar.question.model.po.QuestionPO;
 import org.caesar.question.model.entity.Question;
-import org.caesar.question.model.po.QuestionSubmitResult;
+import org.caesar.question.model.entity.SubmitCodeResult;
 import org.caesar.question.repository.QuestionRepository;
 import org.springframework.stereotype.Repository;
 
@@ -58,7 +56,7 @@ public class QuestionRepositoryImpl extends ServiceImpl<QuestionMapper, Question
         cacheRepo.setLongValue(CacheKey.questionLikeCount(questionId), 0);
         cacheRepo.setLongValue(CacheKey.questionFavorCount(questionId), 0);
         cacheRepo.setLongValue(CacheKey.questionSubmitCount(questionId), 0);
-        cacheRepo.setLongValue(CacheKey.questionAcceptCount(questionId), 0);
+        cacheRepo.setLongValue(CacheKey.questionPassCount(questionId), 0);
     }
 
     @Override
@@ -69,7 +67,7 @@ public class QuestionRepositoryImpl extends ServiceImpl<QuestionMapper, Question
     @Override
     public void updateQuestion(Question question) {
         ThrowUtil.ifFalse(updateById(questionStruct.DOtoPO(question)), ErrorCode.NOT_FIND_ERROR,
-                "The question does not exists.");
+                "The question does not exists. question id:" + question.getId());
     }
 
     @Override
@@ -117,37 +115,59 @@ public class QuestionRepositoryImpl extends ServiceImpl<QuestionMapper, Question
     }
 
     @Override
-    public SubmitCodeResult getSubmitResult(long userId, long qId, int submitId) {
-        QueryWrapper<QuestionSubmitResult> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", userId).eq("question_id", qId).eq("submit_id", submitId);
-        QuestionSubmitResult submitResult = resultMapper.selectOne(queryWrapper);
+    public SubmitCodeResult getSubmitResult(long userId, long questionId, int submitId) {
 
-        if(Objects.isNull(submitResult)) return null;
+        QueryWrapper<SubmitCodeResult> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userId)
+                .eq("question_id", questionId)
+                .eq("submit_id", submitId);
 
-        SubmitCodeResult result;
-
-        try {
-            result = JSON.parseObject(submitResult.getResult(), SubmitCodeResult.class);
-        } catch (Exception e) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Fail to parse submit result in json: ", e);
-        }
-
-        return result;
+        return resultMapper.selectOne(queryWrapper);
     }
 
     @Override
-    public void addSubmitResult(long userId, long qId, int submitId, SubmitCodeResult submitCodeResult) {
+    public Page<SubmitCodeResult> listSubmitResult(long userId, long questionId, int from, int size) {
+        QueryWrapper<SubmitCodeResult> queryWrapper = new QueryWrapper<>();
+        queryWrapper
+                .select(SubmitCodeResult.MIN_FIELDS)
+                .eq("user_id", userId)
+                .eq("question_id", questionId)
+                .orderByDesc("create_at");
 
-        QuestionSubmitResult submitResult = new QuestionSubmitResult();
-        submitResult.setUserId(userId);
-        submitResult.setQuestionId(qId);
-        submitResult.setSubmitId(submitId);
-        submitResult.setResult(JSON.toJSONString(submitCodeResult));
-        submitResult.setCreateAt(LocalDateTime.now());
+        Page<SubmitCodeResult> page = new Page<>(from, size);
 
-        boolean insertFlag = resultMapper.insert(submitResult) > 0;
+        return resultMapper.selectPage(page, queryWrapper);
+    }
+
+    @Override
+    public void addSubmitResult(SubmitCodeResult submitCodeResult) {
+
+        submitCodeResult.setCreateAt(LocalDateTime.now());
+
+        boolean insertFlag = resultMapper.insert(submitCodeResult) > 0;
 
         ThrowUtil.ifFalse(insertFlag, ErrorCode.SYSTEM_ERROR, "Fail to insert the submit result to database.");
+    }
+
+    @Override
+    public void updateSubmitResult(SubmitCodeResult submitCodeResult) {
+
+        UpdateWrapper<SubmitCodeResult> updateWrapper = new UpdateWrapper<>();
+        updateWrapper
+                .eq("user_id", submitCodeResult.getUserId())
+                .eq("question_id", submitCodeResult.getQuestionId())
+                .eq("submit_id", submitCodeResult.getSubmitId());
+
+        updateWrapper.set("result", submitCodeResult.getResult())
+                .set("status", submitCodeResult.getStatus())
+                .set("type", submitCodeResult.getType())
+                .set("message", submitCodeResult.getMessage())
+                .set("time", submitCodeResult.getTime())
+                .set("memory", submitCodeResult.getMemory());
+
+        boolean updateFlag = resultMapper.update(submitCodeResult, updateWrapper) > 0;
+
+        ThrowUtil.ifFalse(updateFlag, ErrorCode.SYSTEM_ERROR, "Fail to update the submit result to database.");
     }
 
 }

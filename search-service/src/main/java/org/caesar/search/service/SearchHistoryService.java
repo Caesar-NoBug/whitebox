@@ -1,5 +1,6 @@
 package org.caesar.search.service;
 
+import org.caesar.domain.search.enums.DataSource;
 import org.caesar.domain.search.vo.SearchHistoryVO;
 import org.caesar.search.model.po.SearchHistoryPO;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -14,9 +15,10 @@ import java.util.List;
 public interface SearchHistoryService extends IService<SearchHistoryPO> {
 
     /**
-     * @param userId 用户id
-     * @param size  记录数量
-     * @return      最新搜索记录
+     * @param userId     用户id
+     * @param size       记录数量
+     * @param dataSource
+     * @return 最新搜索记录
      */
-    List<SearchHistoryVO> getSearchHistory(long userId, int size);
+    List<SearchHistoryVO> getSearchHistory(long userId, int size, DataSource dataSource);
 }

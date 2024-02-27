@@ -19,8 +19,6 @@ public class RequestPreHandleFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
 
-        System.out.println("filter thread:" + Thread.currentThread().getId());
-
         String userId = request.getHeader(Headers.USERID_HEADER);
         if(Objects.nonNull(userId)) ContextHolder.setUserId(Long.parseLong(userId));
 

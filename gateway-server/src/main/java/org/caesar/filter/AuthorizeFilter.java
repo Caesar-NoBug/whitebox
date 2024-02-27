@@ -1,6 +1,7 @@
 package org.caesar.filter;
 
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.lang.StringUtils;
 import org.caesar.common.client.UserClient;
 import org.caesar.common.context.ContextHolder;
 import org.caesar.common.log.LogUtil;
@@ -15,6 +16,7 @@ import org.caesar.common.str.PrefixMatcher;
 import org.caesar.domain.user.vo.AuthorizationVO;
 import org.caesar.domain.user.vo.RoleVO;
 import org.caesar.util.ExchangeUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -22,12 +24,10 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.CoreSubscriber;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.naming.Context;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +37,20 @@ import java.util.concurrent.ConcurrentHashMap;
 //对请求进行认证和鉴权，并在请求上加上用户id
 @Component
 public class AuthorizeFilter implements GlobalFilter, Ordered {
-
+    //TODO: 参数化配置白名单
     public static String[] AUTHORIZE_WHITE_LIST = {
-            "/user-service/auth/login", "/user-service/auth/sendCode/**",
-            "/user-service/auth/refreshToken", "/user-service/auth/register/**", "/user-service/user/reset"};
+            "/user-service/auth/login", "/user-service/user/sendCode/*",
+            "/user-service/auth/refreshToken", "/user-service/auth/register", "/user-service/auth/captcha",
+            "/user-service/auth/gen-captcha", "/user-service/auth/login-user", "/user-service/user/reset"};
 
-    private static final PrefixMatcher prefixMatcher = new PrefixMatcher(AUTHORIZE_WHITE_LIST);
+    public static String[] TEST_WHITE_LIST = {
+            "/user-service/auth/login", "/user-service/user/sendCode/*",
+            "/user-service/auth/refreshToken", "/user-service/auth/register", "/user-service/user/reset",
+            "/user-service/auth/captcha", "/user-service/auth/gen-captcha", "/user-service/auth/login-user",
+            "/v2*", "/user-service/v2*", "/question-service/v2*", "/search-service/v2*", "/article-service/v2*"
+    };
+
+    private static PrefixMatcher whiteListMatcher = new PrefixMatcher(AUTHORIZE_WHITE_LIST);
 
     private static final Map<Integer, PrefixMatcher> authorizeMap = new ConcurrentHashMap<>();
 
@@ -52,8 +60,15 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
     @Resource
     private UserClient userClient;
 
+    @Value("${application.env:prod}")
+    private String env;
+
     @PostConstruct
     private void initAuthorizeMap() {
+
+        String[] whiteList = "test".equals(env) ? TEST_WHITE_LIST : AUTHORIZE_WHITE_LIST;
+        whiteListMatcher = new PrefixMatcher(whiteList);
+
         List<RoleVO> roles = RespUtil.handleWithThrow(userClient.getUpdatedRole(LocalDateTime.MIN),
                 "[System Init] Fail to create userClient");
         for (RoleVO role : roles) {
@@ -87,7 +102,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         System.out.println("visit uri:" + uri);
 
         //若在白名单中，则无需认证
-        if (prefixMatcher.match(uri))
+        if (whiteListMatcher.match(uri))
             return chain.filter(
                     exchange.mutate()
                             .request(
@@ -138,7 +153,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         String jsonAuthorization = JwtUtil.getJwtSubject(token);
 
         //jwt不合法
-        if(StrUtil.isBlank(jsonAuthorization)) {
+        if (StrUtil.isBlank(jsonAuthorization)) {
             LogUtil.warn(ErrorCode.NOT_AUTHENTICATED_ERROR, "Token is illegal or expired, please login again.");
             return new Response<>(ErrorCode.NOT_AUTHENTICATED_ERROR, null, "token is illegal or expired, please login again");
         }

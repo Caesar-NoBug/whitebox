@@ -2,6 +2,7 @@ package org.caesar.util;
 
 
 import com.alibaba.fastjson.JSON;
+import org.caesar.common.log.LogUtil;
 import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.domain.common.vo.Response;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class ExchangeUtil {
         response.setStatusCode(HttpStatus.OK);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         Response<Object> resp = new Response<>(res.getCode(), null, res.getMsg());
-
+        LogUtil.warn(ErrorCode.of(resp.getCode()), resp.getMsg());
         return response
                 .writeWith(Mono.just(response.bufferFactory().wrap(JSON.toJSONString(resp).getBytes())))
                 .then(Mono.fromRunnable(response::setComplete));

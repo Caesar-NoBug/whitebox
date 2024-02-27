@@ -8,9 +8,19 @@ import org.caesar.domain.search.vo.QuestionIndexVO;
 @AllArgsConstructor
 public enum QuestionSortField implements SortField{
 
-    LIKE_NUM(QuestionIndexVO.Fields.likeNum),
-    FAVOR_NUM(QuestionIndexVO.Fields.favorNum),
-    SUBMIT_NUM(QuestionIndexVO.Fields.submitNum);
+    DIFFICULTY("DIFFICULTY"),
+    LIKE_NUM("LIKE_NUM"),
+    FAVOR_NUM("FAVOR_NUM"),
+    SUBMIT_NUM("SUBMIT_NUM");
 
     private final String value;
+
+    public static QuestionSortField of(String value) {
+        for (QuestionSortField sortField : QuestionSortField.values()) {
+            if (sortField.getValue().equals(value)) {
+                return sortField;
+            }
+        }
+        return null;
+    }
 }

@@ -3,9 +3,11 @@ package org.caesar.question.config;
 import org.caesar.common.batch.cache.CacheIncTaskHandler;
 import org.caesar.common.cache.CacheRepository;
 import org.caesar.common.util.DataFilter;
+import org.caesar.common.util.SwaggerCore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
 public class QuestionConfig {
@@ -25,9 +27,14 @@ public class QuestionConfig {
     }
 
     @Bean
-    public DataFilter questionFilter(CacheRepository cacheRepository) {
+    public DataFilter<Long> questionFilter(CacheRepository cacheRepository) {
         final String QUESTION_PREFIX = "question";
-        return new DataFilter(cacheRepository, QUESTION_PREFIX, maxArticleSize, articleFalseProbability);
+        return new DataFilter<>(cacheRepository, QUESTION_PREFIX, maxArticleSize, articleFalseProbability);
+    }
+
+    @Bean
+    Docket systemIndexApi(){
+        return SwaggerCore.defaultDocketBuilder("接口领域模型定义","org.caesar","default");
     }
 
 }

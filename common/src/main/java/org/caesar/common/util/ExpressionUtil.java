@@ -33,15 +33,16 @@ public class ExpressionUtil {
 
         for (int i = 0; i < numCount - 1; i++) {
 
+            int next = nums[i + 1];
             //有50%的概率选择乘除
             if(op > 0.5) {
                 //只有可以整除时才选择除法,否则选择乘法
-                if(res % nums[i + 1] == 0) {
-                    res = res / nums[i + 1];
+                if(next != 0 && res % next == 0) {
+                    res = res / next;
                     exp.append('/');
                 }
                 else {
-                    res = res * nums[i + 1];
+                    res = res * next;
                     exp.append('*');
                 }
                 //重新生成运算符，只有当前为乘除时下一个运算符才能是乘除，否则无法保证直接从左往右计算时结果是正确的
@@ -49,18 +50,18 @@ public class ExpressionUtil {
             }
             else {
                 if(op < 0.25) {
-                    res = res + nums[i + 1];
+                    res = res + next;
                     exp.append('+');
                 }
                 else {
-                    res = res - nums[i + 1];
+                    res = res - next;
                     exp.append('-');
                 }
                 //重新生成运算符，且只能生成加减运算符
                 op = random.nextDouble() / 2;
             }
 
-            exp.append(nums[i + 1]);
+            exp.append(next);
         }
 
         exp.append("=?");

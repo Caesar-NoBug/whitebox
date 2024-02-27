@@ -1,5 +1,6 @@
 package org.caesar.article.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import org.caesar.common.util.DataFilter;
 import org.caesar.domain.article.response.GetPreferArticleResponse;
 import org.caesar.domain.article.vo.ArticleMinVO;
@@ -137,7 +138,11 @@ public class ArticleServiceImpl implements ArticleService {
 
         ThrowUtil.ifEmpty(articleIds, ErrorCode.INVALID_ARGS_ERROR, "Id list was empty.");
 
-        return articleRepo.getArticleMin(articleIds)
+        List<Article> articleMins = articleRepo.getArticleMin(articleIds);
+
+        if(CollectionUtil.isEmpty(articleMins)) return null;
+
+        return articleMins
                 .stream().map(articleStruct::DOtoMinVO)
                 .collect(Collectors.toList());
     }
@@ -165,8 +170,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public void updateArticle(long userId, UpdateArticleRequest request) {
-        articleRepo.updateArticle(userId, Article.fromUpdateRequest(request));
+    public void updateArticle(long userId, long articleId, UpdateArticleRequest request) {
+        articleRepo.updateArticle(userId, Article.fromUpdateRequest(articleId, request));
     }
 
     @Override
@@ -189,6 +194,12 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public List<Long> getUniqueArticle(long userId, List<Long> articleIds) {
         return articleRepo.getUniqueArticle(userId, articleIds);
+    }
+
+    @Override
+    public List<ArticleMinVO> recommendArticle(String userPrompt) {
+        return RespUtil.handleWithWarn(aigcClient.recommendArticle(userPrompt),
+                "Fetch recommend article from aigc client");
     }
 
     /**

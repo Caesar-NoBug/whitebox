@@ -1,8 +1,9 @@
 package org.caesar.question.repository;
 
-import org.caesar.domain.question.response.SubmitCodeResult;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.caesar.question.model.entity.Question;
 import org.caesar.question.model.entity.QuestionOps;
+import org.caesar.question.model.entity.SubmitCodeResult;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,5 +33,10 @@ public interface QuestionRepository {
 
     SubmitCodeResult getSubmitResult(long userId, long qId, int submitId);
 
-    void addSubmitResult(long userId, long qId, int submitId, SubmitCodeResult submitCodeResult);
+    // 获取提交结果（不包含详细信息）
+    Page<SubmitCodeResult> listSubmitResult(long userId, long questionId, int from, int size);
+
+    void addSubmitResult(SubmitCodeResult submitCodeResult);
+
+    void updateSubmitResult(SubmitCodeResult submitCodeResult);
 }

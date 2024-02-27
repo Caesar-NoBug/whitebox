@@ -11,7 +11,7 @@ package org.caesar.domain.executor.enums;
  * SYSTEM_ERROR:        系统内部错误
  * TEMPORARY_ACCEPTED:  暂时接受代码（运行无误，但尚未校验结果是否正确的中间状态）
  */
-public enum CodeResultType {
+public enum SubmitCodeResultType {
     JUDGING,
     ACCEPTED,
     WRONG_ANSWER,

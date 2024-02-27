@@ -1,25 +1,29 @@
 package org.caesar.user.config;
 
+import org.caesar.common.util.SwaggerCore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+import springfox.documentation.spring.web.plugins.Docket;
 
-@EnableRedisHttpSession
 @Configuration
 public class UserConfig {
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public ResourceLoader resourceLoader(){
+    public ResourceLoader resourceLoader() {
         return new DefaultResourceLoader();
     }
 
+    @Bean
+    Docket systemIndexApi(){
+        return SwaggerCore.defaultDocketBuilder("接口领域模型定义","org.caesar","default");
+    }
 }

@@ -1,7 +1,7 @@
 package org.caesar.question.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.caesar.question.model.po.QuestionSubmitResult;
+import org.caesar.question.model.entity.SubmitCodeResult;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity org.caesar.model.po.QuestionSubmitResult
 */
 @Mapper
-public interface QuestionSubmitResultMapper extends BaseMapper<QuestionSubmitResult> {
+public interface QuestionSubmitResultMapper extends BaseMapper<SubmitCodeResult> {
 
 }
 

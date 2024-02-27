@@ -1,5 +1,7 @@
 package org.caesar.user.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.user.captcha.vo.Captcha;
 import org.caesar.user.service.CodeService;
@@ -12,11 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/user/sendCode")
+@Api("验证码服务")
 public class CodeController {
 
     @Resource
     private CodeService codeService;
 
+    @ApiOperation("发送邮箱登录验证码")
     @PostMapping("/login/email/{email}")
     public Response<Void> sendLoginEmailCode(HttpServletRequest httpServletRequest, @PathVariable String email){
 
@@ -30,6 +34,7 @@ public class CodeController {
         return Response.ok(null, "验证码已成功发送至邮箱，请查看");
     }
 
+    @ApiOperation("发送邮箱注册验证码")
     @PostMapping("/register/email/{email}")
     public Response<Void> sendRegisterEmailCode(HttpServletRequest httpServletRequest, @PathVariable String email){
 

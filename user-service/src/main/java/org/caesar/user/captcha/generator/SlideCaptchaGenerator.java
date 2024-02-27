@@ -81,7 +81,7 @@ public class SlideCaptchaGenerator implements CaptchaGenerator {
         }
 
         SlideCaptcha slideCaptcha = new SlideCaptcha();
-        slideCaptcha.setBackground(ImageUtil.imageToBase64(background));
+        slideCaptcha.setImage(ImageUtil.imageToBase64(background));
         slideCaptcha.setSlider(ImageUtil.imageToBase64(slider));
         slideCaptcha.setY(y);
         slideCaptcha.setId(UUID.fastUUID().toString());

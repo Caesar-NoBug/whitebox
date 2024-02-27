@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 @AllArgsConstructor
 public enum StrFormat {
     DEFAULT(Pattern.compile(".*")),
-    EMAIL(Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")),
+    EMAIL(Pattern.compile("^[A-Za-z0-9_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")),
     PHONE(Pattern.compile("^1\\d{10}$")),
     NUM_CODE(Pattern.compile("^\\d+$")),
     STR_CODE(Pattern.compile("^[a-zA-Z0-9]+$"));

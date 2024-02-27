@@ -1,6 +1,7 @@
 package org.caesar.common.context;
 
 import org.caesar.common.exception.ThrowUtil;
+import org.caesar.common.str.StrUtil;
 import org.caesar.domain.common.enums.ErrorCode;
 
 import java.util.HashMap;
@@ -60,7 +61,8 @@ public class ContextHolder {
     }
 
     public static String getBusinessName() {
-        return get(BUSINESS_NAME);
+        String businessName = get(BUSINESS_NAME);
+        return StrUtil.isBlank(businessName) ? "System" : businessName;
     }
 
     public static void clear() {

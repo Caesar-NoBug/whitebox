@@ -1,5 +1,6 @@
 package org.caesar.user.captcha;
 
+import org.caesar.common.cache.CacheRepository;
 import org.caesar.user.captcha.generator.CaptchaGenerator;
 import org.caesar.user.captcha.vo.Captcha;
 import org.caesar.user.captcha.vo.CaptchaChecker;
@@ -9,6 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -22,7 +24,9 @@ public class CaptchaManager implements ApplicationContextAware {
     // 随机生成验证码
     public Captcha genRandCaptcha(int width, int height) {
         Random random = new Random();
-        CaptchaType type = CaptchaType.values()[random.nextInt(CaptchaType.values().length)];
+        CaptchaType type = CaptchaType.values()[random.nextInt(2)];
+        // 目前前端只支持CHAR和MATH，所以只生成CHAR和MATH
+        //CaptchaType type = CaptchaType.values()[random.nextInt(CaptchaType.values().length)];
         return genCaptcha(type, width, height);
     }
 

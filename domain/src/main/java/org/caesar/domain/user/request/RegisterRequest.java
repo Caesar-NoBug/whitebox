@@ -40,10 +40,8 @@ public class RegisterRequest {
     @NotNull(message = DEFAULT_MESSAGE)
     private String credential;
 
-    @NotNull(message = DEFAULT_MESSAGE)
+    /**
+     *   人机校验id
+     */
     private String captchaId;
-
-    @NotNull(message = DEFAULT_MESSAGE)
-    private String captchaAnswer;
-
 }

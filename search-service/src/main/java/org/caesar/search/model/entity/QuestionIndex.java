@@ -58,6 +58,11 @@ public class QuestionIndex implements Index{
     private String[] tag;
 
     /**
+     * 问题难度
+     */
+    private Integer difficulty;
+
+    /**
      * 点赞数
      */
     @Field(type = FieldType.Integer, store = true)
@@ -70,11 +75,16 @@ public class QuestionIndex implements Index{
     private Integer favorNum;
 
     /**
+     * 通过数
+     */
+    @Field(type = FieldType.Integer, store = true)
+    private Integer passNum;
+
+    /**
      * 提交数
      */
     @Field(type = FieldType.Integer, store = true)
     private Integer submitNum;
-
 
     public QuestionIndex(QuestionIndexVO indexVO) {
         this.id = indexVO.getId();
@@ -83,6 +93,8 @@ public class QuestionIndex implements Index{
         this.content = indexVO.getContent();
         this.tag = indexVO.getTag().split("/");
         this.favorNum = indexVO.getFavorNum();
+        this.difficulty = indexVO.getDifficulty();
+        this.passNum = indexVO.getPassNum();
         this.submitNum = indexVO.getSubmitNum();
         this.likeNum = indexVO.getLikeNum();
 
@@ -95,10 +107,12 @@ public class QuestionIndex implements Index{
     public QuestionIndexVO toQuestionIndexVO() {
         QuestionIndexVO questionIndexVO = new QuestionIndexVO();
         questionIndexVO.setId(id);
-        questionIndexVO.setTitle(title);
         questionIndexVO.setContent(content);
+        questionIndexVO.setTitle(title);
         questionIndexVO.setTag(String.join("/", tag));
+        questionIndexVO.setDifficulty(difficulty);
         questionIndexVO.setFavorNum(favorNum);
+        questionIndexVO.setPassNum(passNum);
         questionIndexVO.setSubmitNum(submitNum);
         questionIndexVO.setLikeNum(likeNum);
         return questionIndexVO;

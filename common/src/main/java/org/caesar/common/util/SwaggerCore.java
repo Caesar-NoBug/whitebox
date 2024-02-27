@@ -1,5 +1,6 @@
 package org.caesar.common.util;
 
+import org.caesar.domain.constant.Headers;
 import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -26,7 +27,7 @@ public class SwaggerCore {
      */
     public static Docket defaultDocketBuilder(String projectName, String apiBasePackage, String groupName) {
 
-        List<ResponseMessage> responseMessages = new ArrayList<>();
+        /*List<ResponseMessage> responseMessages = new ArrayList<>();
         responseMessages.add(new ResponseMessageBuilder().code(200).message("请求成功").responseModel(new ModelRef("ApiError")).build());
         responseMessages.add(new ResponseMessageBuilder().code(400).message("请求失败：非法参数").responseModel(new ModelRef("ApiError")).build());
         responseMessages.add(new ResponseMessageBuilder().code(401).message("请求失败：未登录").responseModel(new ModelRef("ApiError")).build());
@@ -35,13 +36,13 @@ public class SwaggerCore {
         responseMessages.add(new ResponseMessageBuilder().code(404).message("请求失败：找不到该资源").responseModel(new ModelRef("ApiError")).build());
         responseMessages.add(new ResponseMessageBuilder().code(405).message("请求失败：数据已存在").responseModel(new ModelRef("ApiError")).build());
         responseMessages.add(new ResponseMessageBuilder().code(406).message("请求失败：请勿重复请求").responseModel(new ModelRef("ApiError")).build());
-        responseMessages.add(new ResponseMessageBuilder().code(500).message("请求失败：系统内部错误").responseModel(new ModelRef("ApiError")).build());
+        responseMessages.add(new ResponseMessageBuilder().code(500).message("请求失败：系统内部错误").responseModel(new ModelRef("ApiError")).build());*/
 
         return new Docket(DocumentationType.SWAGGER_2)
-                .globalResponseMessage(RequestMethod.GET, responseMessages)
+                /*.globalResponseMessage(RequestMethod.GET, responseMessages)
                 .globalResponseMessage(RequestMethod.POST, responseMessages)
                 .globalResponseMessage(RequestMethod.PUT, responseMessages)
-                .globalResponseMessage(RequestMethod.DELETE, responseMessages)
+                .globalResponseMessage(RequestMethod.DELETE, responseMessages)*/
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(apiBasePackage))
                 .paths(PathSelectors.any())
@@ -77,7 +78,7 @@ public class SwaggerCore {
      */
     private static List<SecurityScheme> securitySchemes() {
         return Collections.singletonList(
-                new ApiKey("Authorization", "token", "header"));
+                new ApiKey("Authorization", Headers.TOKEN_HEADER, "header"));
     }
 
     /**

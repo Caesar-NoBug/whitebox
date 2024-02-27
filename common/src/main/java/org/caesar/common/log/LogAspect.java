@@ -23,37 +23,46 @@ public class LogAspect {
 
         Logger logger = method.getAnnotation(Logger.class);
 
+        String prevName = ContextHolder.getBusinessName();
+
         ContextHolder.setBusinessName(logger.value());
 
-        if (logger.args()) logParam(method, joinPoint.getArgs());
+        boolean logArgs = logger.args();
+
+        if (logArgs) logArguments(method, joinPoint.getArgs());
 
         Object result = null;
 
-        String prevName = ContextHolder.getBusinessName();
-
         try {
             if (logger.time()) {
-                result = joinPoint.proceed();
-            } else {
                 result = proceedAndLogTime(joinPoint);
+            } else {
+                result = joinPoint.proceed();
             }
-        } finally {
+        } catch (Throwable e) {
+            // 出现异常时打印导致错误的方法参数
+            if(!logArgs) logArguments(method, joinPoint.getArgs());
+            throw e;
+        }
+        finally {
+
+            if (logger.result()) logResult(result);
+
             // 恢复接口名称
             ContextHolder.setBusinessName(prevName);
-            if (logger.result()) logResult(result);
         }
 
         return result;
     }
 
-    private void logParam(Method method, Object[] args) {
+    private void logArguments(Method method, Object[] args) {
 
         try {
             int i = 0;
             StringBuilder sb = new StringBuilder();
 
             for (String name : MethodUtil.getParamNames(method)) {
-                sb.append(name).append(':').append(args[i++]);
+                sb.append(name).append(": ").append(args[i++]).append(", ");
             }
 
             LogUtil.info(LogType.METHOD_ARGS, sb.toString());

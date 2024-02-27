@@ -14,9 +14,7 @@ import org.caesar.service.impl.OpenAIChatService;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.aigc.request.CompletionRequest;
 import org.caesar.domain.aigc.response.CompletionResponse;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -51,10 +49,10 @@ public class ChatController {
         return Response.ok(analyseTextService.analyseText(request));
     }
 
-    @PostMapping("/recommend-article")
-    public Response<List<ArticleMinVO>> recommendArticle(@RequestBody RecommendArticleRequest request) {
+    @GetMapping("/recommend-article")
+    public Response<List<ArticleMinVO>> recommendArticle(@RequestParam String userPrompt) {
         long userId = ContextHolder.getUserIdNecessarily();
-        return Response.ok(recommendService.recommendArticle(userId, request));
+        return Response.ok(recommendService.recommendArticle(userId, userPrompt));
     }
 
 }

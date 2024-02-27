@@ -41,7 +41,7 @@ public interface ArticleService {
     List<ArticleHistoryVO> getArticleHistory(long userId, Integer from, Integer size);
 
     // 修改文章
-    void updateArticle(long userId, UpdateArticleRequest request);
+    void updateArticle(long userId, long articleId, UpdateArticleRequest request);
 
     // 删除文章
     void deleteArticle(long userId, long articleId);
@@ -54,4 +54,7 @@ public interface ArticleService {
 
     // 文章去重（出除用户已经看过的文章）
     List<Long> getUniqueArticle(long userId, List<Long> articleIds);
+
+    List<ArticleMinVO> recommendArticle(String userPrompt);
+
 }

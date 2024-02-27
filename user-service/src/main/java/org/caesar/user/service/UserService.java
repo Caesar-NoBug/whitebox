@@ -22,11 +22,13 @@ public interface UserService {
 
     UserVO register(RegisterRequest request);
 
-    String refreshToken(long userId, String refreshToken);
+    /*String refreshToken(long userId, String refreshToken);*/
 
     Map<Long, UserMinVO> getUserMin(List<Long> userId);
 
     // 获取更新的权限角色信息
     List<RoleVO> getUpdatedRole(LocalDateTime updateTime);
+
+    UserVO getLoginUser(long userId, String refreshToken);
     //TODO: update User 时同步删除userMin缓存
 }

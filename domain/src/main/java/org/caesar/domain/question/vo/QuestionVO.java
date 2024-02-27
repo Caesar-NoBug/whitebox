@@ -48,7 +48,7 @@ public class QuestionVO {
     /**
      * 通过数
      */
-    private Integer acceptNum;
+    private Integer passNum;
 
     /**
      * 执行时间限制(ms)

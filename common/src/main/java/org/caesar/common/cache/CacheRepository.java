@@ -78,12 +78,12 @@ public interface CacheRepository {
     <T> RQueue<T> getQueue(String key);
 
     // 布隆过滤器
-    RBloomFilter<Long> getBloomFilter(String key);
+    <T> RBloomFilter<T> getBloomFilter(String key);
 
     // bitset
     RBitSet getBitSet(String key);
 
     // set相关
-    <T> Set<T> getSet(String key);
+    <T> RSet<T> getSet(String key);
     <T, V> BoundZSetOperations<T, V> getSortedSet(String key);
 }

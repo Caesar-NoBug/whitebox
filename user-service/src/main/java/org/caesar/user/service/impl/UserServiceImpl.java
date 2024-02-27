@@ -15,6 +15,7 @@ import org.caesar.domain.user.enums.AuthMethod;
 import org.caesar.user.auth.AuthenticationManager;
 import org.caesar.user.model.MsMenuStruct;
 import org.caesar.user.model.MsUserStruct;
+import org.caesar.user.model.entity.Role;
 import org.caesar.user.model.entity.User;
 import org.caesar.domain.user.request.RegisterRequest;
 import org.caesar.domain.user.request.LoginRequest;
@@ -36,7 +37,6 @@ import java.util.stream.Collectors;
  * @createDate 2023-05-01 09:36:22
  */
 @Service
-@Slf4j
 public class UserServiceImpl implements UserService {
 
     public static final int DEFAULT_REFRESH_TOKEN_LENGTH = 32;
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserVO login(LoginRequest request) {
-
+        //TODO: 优化：使用布隆过滤器缓存不存在的邮箱和手机号
         String identity = request.getIdentity();
         String credential = request.getCredential();
         AuthMethod method = request.getMethod();
@@ -81,27 +81,6 @@ public class UserServiceImpl implements UserService {
         LogUtil.info(LogType.LOGIN, "User login success: " + userId);
 
         return userVO;
-    }
-
-    @Override
-    public String refreshToken(long userId, String refreshToken) {
-
-        String cacheKey = CacheKey.AUTH_REFRESH_TOKEN + userId;
-
-        String realRefreshToken = cacheRepo.getObject(cacheKey);
-
-        ThrowUtil.ifTrue(Objects.isNull(realRefreshToken) || !realRefreshToken.equals(refreshToken),
-                "refresh token expired or invalid refresh token");
-
-        String newJwt = JwtUtil.createJWT(String.valueOf(userId));
-
-        long expireTime = cacheRepo.getExpire(cacheKey);
-
-        if (expireTime < REFRESH_TOKEN_EXPIRE / 2) {
-            cacheRepo.expire(cacheKey, REFRESH_TOKEN_EXPIRE, TimeUnit.SECONDS);
-        }
-
-        return newJwt;
     }
 
     @Override
@@ -157,10 +136,35 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<RoleVO> getUpdatedRole(LocalDateTime updateTime) {
-        return userRepo.getUpdatedRoles(updateTime)
+
+        List<Role> updatedRoles = userRepo.getUpdatedRoles(updateTime);
+
+        if(Objects.isNull(updatedRoles)) return null;
+
+        return updatedRoles
                 .stream()
                 .map(menuStruct::roleDOtoVO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public UserVO getLoginUser(long userId, String refreshToken) {
+
+        String realToken = cacheRepo.getObject(CacheKey.AUTH_REFRESH_TOKEN + userId);
+
+        ThrowUtil.ifFalse(refreshToken.equals(realToken), "Invalid refresh token or expired, please login again.");
+
+        User user = userRepo.selectUserById(userId);
+
+        UserVO userVO = userStruct.DOtoVO(user);
+
+        String authorization = JSON.toJSONString(user.getAuthorization());
+
+        String token = JwtUtil.createJWT(authorization);
+        userVO.setToken(token);
+        userVO.setRefreshToken(refreshToken);
+
+        return userVO;
     }
 
     private UserVO loadUserWithToken(User user) {

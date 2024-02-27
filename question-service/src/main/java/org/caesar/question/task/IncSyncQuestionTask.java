@@ -1,6 +1,7 @@
 package org.caesar.question.task;
 import lombok.extern.slf4j.Slf4j;
 import org.caesar.common.client.SearchClient;
+import org.caesar.common.util.DataFilter;
 import org.caesar.domain.search.vo.QuestionIndexVO;
 import org.caesar.question.model.MsQuestionStruct;
 import org.caesar.question.model.entity.Question;
@@ -26,7 +27,8 @@ public class IncSyncQuestionTask {
 
     @Resource
     private MsQuestionStruct poMapper;
-    //TODO: 把 log.info 改成 LogUtil.info
+    //TODO: 把 log.info 改成 LogUtil.info, 设置系统日志自己的格式
+
     /**
      * 每分钟执行一次
      */
@@ -34,7 +36,17 @@ public class IncSyncQuestionTask {
     public void run() {
         // 查询近 5 分钟内的数据
         LocalDateTime fiveMinutesAgo = LocalDateTime.now().minusMinutes(5);
-        List<Question> changedQuestion = questionRepository.getUpdatedQuestion(fiveMinutesAgo);
+
+        //syncQuestion(fiveMinutesAgo);
+        syncQuestion(LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0));
+    }
+
+    @Resource
+    private DataFilter<Long> questionFilter;
+
+    public void syncQuestion(LocalDateTime startTime) {
+
+        List<Question> changedQuestion = questionRepository.getUpdatedQuestion(startTime);
 
         if (CollectionUtils.isEmpty(changedQuestion)) {
             log.info("no sync question");
@@ -70,10 +82,9 @@ public class IncSyncQuestionTask {
         log.info("RemoveQuestionToEs start, total {}", removedSize);
         for (int i = 0; i < removedSize; i += pageSize) {
             int end = Math.min(i + pageSize, removedSize);
-                log.info("remove from {} to {}", i, end);
+            log.info("remove from {} to {}", i, end);
             searchClient.syncQuestionIndex(removedQuestion.subList(i, end));
         }
         log.info("RemoveQuestionToEs end, total {}", removedSize);
     }
-
 }

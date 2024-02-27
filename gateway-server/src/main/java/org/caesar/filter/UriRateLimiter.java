@@ -1,14 +1,12 @@
 package org.caesar.filter;
 
 import org.caesar.common.context.ContextHolder;
-import org.caesar.common.log.LogUtil;
 import org.caesar.config.RateLimiterConfig;
 import org.caesar.config.RateLimiterProperties;
 import org.caesar.domain.common.enums.ErrorCode;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.util.ExchangeUtil;
 import org.redisson.api.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -36,7 +34,7 @@ public class UriRateLimiter implements GlobalFilter, Ordered {
     private RateLimiterProperties rateLimiterProperties;
 
     @Resource
-    private RedissonReactiveClient redissonClient;
+    private RedissonReactiveClient redissonReactiveClient;
 
     private final Response<Void> FREQUENT_ACCESS_RESPONSE = Response.error(ErrorCode.SERVICE_UNAVAILABLE_ERROR,
             "Access Restricted: Service unavailable due to frequent access. Please wait a seconds.");
@@ -57,7 +55,7 @@ public class UriRateLimiter implements GlobalFilter, Ordered {
 
     private Mono<RRateLimiterReactive> getUriRateLimiter(String uri) {
 
-        RRateLimiterReactive rateLimiter = redissonClient.getRateLimiter(URI_RATE_LIMITER + uri);
+        RRateLimiterReactive rateLimiter = redissonReactiveClient.getRateLimiter(URI_RATE_LIMITER + uri);
 
         return rateLimiter.isExists().flatMap(isExists -> {
             if (isExists) return Mono.just(rateLimiter);

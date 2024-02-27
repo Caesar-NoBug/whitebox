@@ -15,9 +15,4 @@ public class SearchHistoryVO {
      * 搜索时间
      */
     private LocalDateTime searchTime;
-
-    /**
-     * 查询数据类型
-     */
-    private Integer dataSource;
 }

@@ -1,7 +1,7 @@
 package org.caesar.domain.executor.response;
 
 import lombok.Data;
-import org.caesar.domain.executor.enums.CodeResultType;
+import org.caesar.domain.executor.enums.SubmitCodeResultType;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class ExecuteCodeResponse {
     private long questionId;
     private int submitId;
     private boolean success;
-    private List<CodeResultType> type;
+    private List<SubmitCodeResultType> type;
     private String message;
     private List<String> result;
     private List<Long> time;

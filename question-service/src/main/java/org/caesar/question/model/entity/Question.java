@@ -1,15 +1,13 @@
 package org.caesar.question.model.entity;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.caesar.common.log.Logger;
-import org.caesar.domain.executor.enums.CodeResultType;
+import org.caesar.domain.executor.enums.SubmitCodeResultType;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.domain.executor.response.ExecuteCodeResponse;
-import org.caesar.domain.question.response.SubmitCodeResult;
 import org.caesar.common.str.JSONUtil;
 import org.caesar.common.vo.StatusMap;
+import org.caesar.question.model.enums.JudgeStatus;
 import org.caesar.question.model.vo.JudgeParam;
 import org.caesar.question.judge.QuestionJudgeManager;
 import java.io.Serializable;
@@ -94,7 +92,7 @@ public class Question implements Serializable {
     /**
      * 通过数
      */
-    private Integer acceptNum;
+    private Integer passNum;
 
     /**
      * 执行时间限制(ms)
@@ -156,15 +154,19 @@ public class Question implements Serializable {
         return JSON.parseArray(getOutputCase(), String.class);
     }
 
-    public SubmitCodeResult judge(QuestionJudgeManager judgeManager, ExecuteCodeResponse executeResponse) {
-        List<CodeResultType> resultTypes = executeResponse.getType();
-        List<Long> time = executeResponse.getTime();
-        List<Long> memory = executeResponse.getMemory();
+    public SubmitCodeResult judge(QuestionJudgeManager judgeManager, ExecuteCodeResponse executeResponse, SubmitCodeResult submitCodeResult) {
+        List<SubmitCodeResultType> resultTypes = executeResponse.getType();
         List<String> outputArray = getOutputArray();
+
+        submitCodeResult.setExecTime(executeResponse.getTime());
+        submitCodeResult.setExecMemory(executeResponse.getMemory());
 
         //代码执行时出现异常则直接返回
         if (!executeResponse.isSuccess()) {
-            return new SubmitCodeResult(null, "", true, false, executeResponse.getType(),  executeResponse.getMessage(), time, memory);
+            submitCodeResult.setJudgeStatus(JudgeStatus.FAILED);
+            submitCodeResult.setResultType(executeResponse.getType());
+            submitCodeResult.setMessage(executeResponse.getMessage());
+            return submitCodeResult;
         }
 
         List<String> codeResult = executeResponse.getResult();
@@ -173,16 +175,12 @@ public class Question implements Serializable {
 
         boolean success = true;
 
-        SubmitCodeResult submitCodeResult = new SubmitCodeResult();
-        submitCodeResult.setTime(time);
-        submitCodeResult.setMemory(memory);
-
         for (int i = 0; i < codeResult.size(); i++) {
 
             //无异常则判断结果是否正确
-            if (CodeResultType.TEMPORARY_ACCEPTED.equals(resultTypes.get(i))) {
+            if (SubmitCodeResultType.TEMPORARY_ACCEPTED.equals(resultTypes.get(i))) {
                 if (map.isFail(i)) {
-                    resultTypes.set(i, CodeResultType.WRONG_ANSWER);
+                    resultTypes.set(i, SubmitCodeResultType.WRONG_ANSWER);
 
                     //记录第一个不匹配的错误信息
                     if (success) {
@@ -194,7 +192,7 @@ public class Question implements Serializable {
                     }
 
                 } else
-                    resultTypes.set(i, CodeResultType.ACCEPTED);
+                    resultTypes.set(i, SubmitCodeResultType.ACCEPTED);
             }
             //有异常则直接返回
             else if (success) {
@@ -204,10 +202,9 @@ public class Question implements Serializable {
 
         }
 
-        submitCodeResult.setComplete(true);
-        submitCodeResult.setPassed(success);
+        submitCodeResult.setJudgeStatus(success ? JudgeStatus.ACCEPTED : JudgeStatus.FAILED);
 
-        if(!success) submitCodeResult.setType(resultTypes);
+        submitCodeResult.setResultType(resultTypes);
 
         return submitCodeResult;
     }

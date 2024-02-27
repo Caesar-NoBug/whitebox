@@ -1,6 +1,7 @@
 package org.caesar.search.util;
 
 import org.caesar.common.exception.ThrowUtil;
+import org.caesar.common.util.ListUtil;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.suggest.Suggest;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -19,9 +20,7 @@ public class EsUtil {
      * @return           解析结果
      */
     public static <T> List<T> handleSearchHits(SearchHits<T> searchHits) {
-        return searchHits.getSearchHits().stream()
-                .map(SearchHit::getContent)
-                .collect(Collectors.toList());
+        return ListUtil.convert(searchHits.getSearchHits(), SearchHit::getContent);
     }
 
     public static List<String> handleSuggestion(SearchResponse response) {

@@ -2,7 +2,6 @@ package org.caesar.domain.search.vo;
 
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
-import org.springframework.data.elasticsearch.core.completion.Completion;
 
 @Data
 @FieldNameConstants
@@ -12,16 +11,6 @@ public class QuestionIndexVO implements IndexVO {
      * 问题主键
      */
     private Long id;
-
-    /**
-     * 检索凭据
-     */
-    private String all;
-
-    /**
-     * 补全字段
-     */
-    /*private Completion suggestion;*/
 
     /**
      * 问题标题
@@ -39,6 +28,11 @@ public class QuestionIndexVO implements IndexVO {
     private String tag;
 
     /**
+     * 问题难度
+     */
+    private Integer difficulty;
+
+    /**
      * 点赞数
      */
     private Integer likeNum;
@@ -47,6 +41,11 @@ public class QuestionIndexVO implements IndexVO {
      * 收藏数
      */
     private Integer favorNum;
+
+    /**
+     * 通过数
+     */
+    private Integer passNum;
 
     /**
      * 提交数

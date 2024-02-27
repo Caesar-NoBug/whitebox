@@ -17,17 +17,17 @@ public class PythonCodeSandbox extends CodeSandbox {
     }
 
     @Override
-    protected TaskResult<String> saveCode(String code) {
+    protected TaskResult<String> saveCode(String code, long memoryLimit) {
         return null;
     }
 
     @Override
-    protected TaskResult<Void> compileCode(String userCodeDir) {
+    protected TaskResult<Void> compileCode(String codeDir) {
         return null;
     }
 
     @Override
-    protected TaskResult<ExecuteCodeResponse> runCode(String compiledFile, List<String> inputCase, long timeLimit, long memoryLimit) {
+    protected TaskResult<ExecuteCodeResponse> runCode(String codeDir, List<String> inputCase, long timeLimit, long memoryLimit) {
         return null;
     }
 }

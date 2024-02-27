@@ -4,11 +4,11 @@ import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.caesar.common.vo.TaskResult;
 import org.caesar.domain.executor.enums.CodeLanguage;
-import org.caesar.domain.executor.enums.CodeResultType;
+import org.caesar.domain.executor.enums.SubmitCodeResultType;
 import org.caesar.domain.executor.request.ExecuteCodeRequest;
 import org.caesar.domain.executor.response.ExecuteCodeResponse;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -21,35 +21,38 @@ public abstract class CodeSandbox {
 
     /**
      * 保存用户代码文件
+     *
      * @param code 用户代码
-     * @return 代码文件目录
+     * @return 容器id
      */
-    protected abstract TaskResult<String> saveCode(String code);
+    protected abstract TaskResult<String> saveCode(String code, long memoryLimit);
 
     /**
      * 编译用户代码文件
-     * @param userCodeDir 代码文件目录
+     * @param codeDir 代码文件夹
      * @return 空
      */
-    protected abstract TaskResult<Void> compileCode(String userCodeDir);
+    protected abstract TaskResult<Void> compileCode(String codeDir);
 
     /**
      * 执行用户代码
-     * @param userCodeDir 代码文件目录
-     * @param inputCase 输入用例
-     * @param timeLimit 代码执行时间限制
+     *
+     * @param codeDir     代码文件夹
+     * @param inputCase   输入用例
+     * @param timeLimit   代码执行时间限制
      * @param memoryLimit 代码执行空间限制
      * @return 代码执行结果
      */
-    protected abstract TaskResult<ExecuteCodeResponse> runCode(String userCodeDir, List<String> inputCase, long timeLimit, long memoryLimit);
+    protected abstract TaskResult<ExecuteCodeResponse> runCode(String codeDir, List<String> inputCase, long timeLimit, long memoryLimit);
 
     public ExecuteCodeResponse executeCode(ExecuteCodeRequest request) {
+
         String code = request.getCode();
         List<String> inputCase = request.getInputCase();
         Long timeLimit = request.getTimeLimit();
         Long memoryLimit = request.getMemoryLimit();
 
-        TaskResult<String> saveCodeResult = saveCode(code);
+        TaskResult<String> saveCodeResult = saveCode(code, memoryLimit);
         //保存文件失败
         if (!saveCodeResult.isSuccess()) {
             return handleSaveCodeError(saveCodeResult);
@@ -67,6 +70,7 @@ public abstract class CodeSandbox {
 
         TaskResult<ExecuteCodeResponse> runCodeResult = runCode(userCodeDir, inputCase, timeLimit, memoryLimit);
 
+        // TODO: 删除镜像改成方法
         cleanDir(userCodeDir);
         //执行文件失败
         if (!runCodeResult.isSuccess()) {
@@ -78,29 +82,29 @@ public abstract class CodeSandbox {
 
     private static void cleanDir(String dir) {
         boolean flag = FileUtil.del(dir);
-        if (!flag) log.error("清空文件目录失败: " + dir);
+        if (!flag) log.error("Fail to clear code file directory: " + dir);
     }
 
     private static ExecuteCodeResponse handleSaveCodeError(TaskResult<String> saveCodeResult) {
         ExecuteCodeResponse result = new ExecuteCodeResponse();
         result.setSuccess(false);
-        result.setType(Arrays.asList(CodeResultType.SYSTEM_ERROR));
-        result.setMessage("系统内部错误，保存文件失败: " + saveCodeResult.getMessage());
+        result.setType(Collections.singletonList(SubmitCodeResultType.SYSTEM_ERROR));
+        result.setMessage("Error occurred when saving code file: " + saveCodeResult.getMessage());
         return result;
     }
 
     private static ExecuteCodeResponse handleCompileCodeError(TaskResult<String> saveCodeResult) {
         ExecuteCodeResponse result = new ExecuteCodeResponse();
         result.setSuccess(false);
-        result.setType(Arrays.asList(CodeResultType.COMPILE_ERROR));
-        result.setMessage("代码编译错误: " + saveCodeResult.getMessage());
+        result.setType(Collections.singletonList(SubmitCodeResultType.COMPILE_ERROR));
+        result.setMessage("Error occurred when compiling code: " + saveCodeResult.getMessage());
         return result;
     }
 
     private static ExecuteCodeResponse handleRunCodeError(TaskResult<ExecuteCodeResponse> runCodeResult) {
         ExecuteCodeResponse result = new ExecuteCodeResponse();
         result.setSuccess(false);
-        result.setMessage("代码运行错误: " + runCodeResult.getMessage());
+        result.setMessage("Error occurred when executing code: " + runCodeResult.getMessage());
         return result;
     }
 

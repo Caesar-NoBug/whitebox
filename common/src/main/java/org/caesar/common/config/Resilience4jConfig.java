@@ -63,9 +63,9 @@ public class Resilience4jConfig {
 
     @Bean
     public TimeLimiterRegistry timeLimiterRegistry() {
-        // 设置超时时间为2秒
+        // 设置超时时间为5秒
         TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
-                .timeoutDuration(Duration.ofSeconds(2)).build();
+                .timeoutDuration(Duration.ofSeconds(5)).build();
 
         return TimeLimiterRegistry.of(timeLimiterConfig);
     }

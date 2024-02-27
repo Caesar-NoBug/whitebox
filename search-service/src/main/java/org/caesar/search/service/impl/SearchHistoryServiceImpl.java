@@ -1,6 +1,9 @@
 package org.caesar.search.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.caesar.common.util.ListUtil;
+import org.caesar.domain.search.enums.DataSource;
 import org.caesar.domain.search.vo.SearchHistoryVO;
 import org.caesar.search.model.MsHistoryStruct;
 import org.caesar.search.model.entity.SearchHistory;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -30,13 +34,11 @@ public class SearchHistoryServiceImpl extends ServiceImpl<SearchHistoryMapper, S
     private SearchHistoryRepository searchHistoryRepo;
 
     @Override
-    public List<SearchHistoryVO> getSearchHistory(long userId, int size) {
-        return loadSearchHistoryVO(searchHistoryRepo.getSearchHistory(userId, size));
+    public List<SearchHistoryVO> getSearchHistory(long userId, int size, DataSource dataSource) {
+        return ListUtil.convert
+                (searchHistoryRepo.getSearchHistory(userId, size, dataSource), historyStruct::DOtoVO);
     }
 
-    private List<SearchHistoryVO> loadSearchHistoryVO(List<SearchHistory> searchHistoryPOList) {
-        return searchHistoryPOList.stream().map(historyStruct::DOtoVO).collect(Collectors.toList());
-    }
 }
 
 

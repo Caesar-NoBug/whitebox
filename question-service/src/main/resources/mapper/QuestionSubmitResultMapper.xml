@@ -4,16 +4,26 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.caesar.question.mapper.QuestionSubmitResultMapper">
 
-    <resultMap id="BaseResultMap" type="org.caesar.question.model.po.QuestionSubmitResult">
-            <id property="userId" column="user_id" jdbcType="BIGINT"/>
-            <id property="questionId" column="question_id" jdbcType="BIGINT"/>
-            <id property="submitId" column="submit_id" jdbcType="INTEGER"/>
-            <result property="result" column="result" jdbcType="VARCHAR"/>
-            <result property="createAt" column="create_at" jdbcType="TIMESTAMP"/>
+    <resultMap id="BaseResultMap" type="org.caesar.question.model.entity.SubmitCodeResult">
+        <id property="userId" column="user_id" jdbcType="BIGINT"/>
+        <id property="questionId" column="question_id" jdbcType="BIGINT"/>
+        <id property="submitId" column="submit_id" jdbcType="INTEGER"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="language" column="language" jdbcType="VARCHAR"/>
+        <result property="result" column="result" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="message" column="message" jdbcType="VARCHAR"/>
+        <result property="time" column="time" jdbcType="VARCHAR"/>
+        <result property="memory" column="memory" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="result" column="result" jdbcType="VARCHAR"/>
+        <result property="createAt" column="create_at" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        user_id,question_id,submit_id,result,
+        `user_id`,question_id,submit_id,
+        `code`,`language`,result,`status`,
+        `message`,`time`,`memory`,`type`
         create_at
     </sql>
 

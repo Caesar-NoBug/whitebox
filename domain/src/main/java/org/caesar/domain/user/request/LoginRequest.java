@@ -22,6 +22,11 @@ public class LoginRequest {
     private String credential;
 
     /**
+     *   人机校验id
+     */
+    private String captchaId;
+
+    /**
      * 登录方式
      */
     @NotNull(message = "登录失败，非法参数：未指定登录方式")

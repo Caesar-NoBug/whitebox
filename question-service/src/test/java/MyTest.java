@@ -9,6 +9,7 @@ import org.caesar.domain.question.request.AddQuestionRequest;
 import org.caesar.question.model.entity.Question;
 import org.caesar.question.publisher.ExecuteCodePublisher;
 import org.caesar.question.repository.QuestionRepository;
+import org.caesar.question.task.IncSyncQuestionTask;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,14 +21,17 @@ import java.util.List;
 @SpringBootTest(classes = QuestionApplication.class)
 public class MyTest {
 
-    @Autowired
+    @Resource
     private QuestionController controller;
 
-    @Autowired
-    private QuestionRepository repository;
+    @Resource
+    private QuestionRepository questionRepo;
 
     @Resource
     private ExecuteCodePublisher publisher;
+
+    @Resource
+    private IncSyncQuestionTask incSyncQuestionTask;
 
     @Test
     public void test() {
@@ -57,7 +61,7 @@ public class MyTest {
 
     @Test
     public void testQuestionRepository() {
-        List<Question> question = repository.getUpdatedQuestion(LocalDateTime.of(2023, 1, 1, 0, 0, 0));
+        List<Question> question = questionRepo.getUpdatedQuestion(LocalDateTime.of(2023, 1, 1, 0, 0, 0));
         question.forEach(System.out::println);
     }
 
@@ -84,13 +88,16 @@ public class MyTest {
         System.out.println(controller.submitCode(request));
     }
 
-   /* @Resource
-    private DataFilter questionFilter;
+    @Resource
+    private DataFilter<Long> questionFilter;
 
     @Test
-    public void testBloomFilter() {
-        questionFilter.add(0);
-    }*/
+    public void initFilter() {
+        List<Question> allQuestion = questionRepo.getUpdatedQuestion(LocalDateTime.of(1970, 1, 1, 0, 0, 0));
+        for (Question question : allQuestion) {
+            questionFilter.add(question.getId());
+        }
+    }
 
     @Test
     public void testMq() {
@@ -100,6 +107,12 @@ public class MyTest {
         request.setLanguage(CodeLanguage.PYTHON);
 
         publisher.sendExecuteCodeMessage(request);
+    }
+
+    // 同步所有问题到ES
+    @Test
+    public void syncAllDataToEs() {
+        incSyncQuestionTask.syncQuestion(LocalDateTime.MIN);
     }
 
 }

@@ -31,11 +31,14 @@ public class RedisCacheRepository implements CacheRepository {
     // 默认缓存过期时间（10分钟）
     public final int DEFAULT_AVG_EXPIRE = 10 * 60;
 
-    // 默认缓存最大过期时间（1小时）
+    // 缓存过期时间浮动范围（上下一分钟）
+    public final int EXPIRE_FLOAT = 2 * 60;
+
+    // 默认缓存最大过期时间（12小时）
     public final int DEFAULT_MAX_EXPIRE = 60 * 60;
 
     // 默认缓存最低访问次数（10次）
-    public final int DEFAULT_VISIT_THRESHOLD = 60 * 60;
+    public final int DEFAULT_VISIT_THRESHOLD = 10;
 
     // 刷新缓存过期时机：过期前10秒
     public static final int REFRESH_CACHE_START_TIME = 10 * 1000;
@@ -53,6 +56,9 @@ public class RedisCacheRepository implements CacheRepository {
 
     // 缓存过期信息
     private static final List<RefreshCacheTask> refreshCacheTasks = new LinkedList<>();
+
+    // 锁统一前缀
+    private static final String LOCK_PREFIX = "lock:";
 
     private final Random random = new Random();
 
@@ -82,7 +88,8 @@ public class RedisCacheRepository implements CacheRepository {
         // 当缓存不存在时，尝试获取锁并让成功获取锁的线程执行获取缓存的逻辑
 
         // 当获取锁失败时，直接抛异常让用户等待
-        ThrowUtil.ifFalse(tryLock(key, 0, 10, TimeUnit.SECONDS),
+        ThrowUtil.ifFalse(
+                tryLock(key, 0, 10, TimeUnit.SECONDS),
             ErrorCode.TOO_MUCH_REQUEST_ERROR, "We are preparing data, please wait a moment.");
 
         // 处理获取数据的逻辑
@@ -93,16 +100,19 @@ public class RedisCacheRepository implements CacheRepository {
             return null;
         }
 
-        // 获取数据
-        int expire = avgExpire / 2 + random.nextInt(avgExpire);
+        // 设置过期时间
+        int expire = avgExpire - EXPIRE_FLOAT / 2 + random.nextInt(EXPIRE_FLOAT);
 
         setObject(key, result, expire, TimeUnit.SECONDS);
 
         long now = System.currentTimeMillis();
 
+        long startTime = now + expire * 1000L - REFRESH_CACHE_START_TIME;
+        long endTime = now + maxExpire * 1000L;
+
         // 创建缓存自动更新过期时间任务
-        RefreshCacheTask task = new RefreshCacheTask(key, now + expire * 1000L - REFRESH_CACHE_START_TIME,
-                now + maxExpire * 1000L, avgExpire, visitThreshold, onExpire);
+        RefreshCacheTask task = new RefreshCacheTask(key, startTime, endTime,
+                avgExpire, visitThreshold, onExpire);
 
         ListUtil.binaryInsert(refreshCacheTasks, task);
 
@@ -177,7 +187,7 @@ public class RedisCacheRepository implements CacheRepository {
             expires[i] = task.getExpire();
 
             // 更新刷新缓存任务并保持集合有序
-            cacheAccessTime.remove(task.getKey());
+            cacheAccessTime.replace(task.getKey(), 0);
             task.refreshExpire();
             ListUtil.binaryInsert(refreshCacheTasks, task);
         }
@@ -213,13 +223,13 @@ public class RedisCacheRepository implements CacheRepository {
 
     @Override
     public RLock getLock(String key) {
-        return redissonClient.getLock("lock:" + key);
+        return redissonClient.getLock(LOCK_PREFIX + key);
     }
 
     @Override
     public boolean tryLock(String key, long waitTime, long leaseTime, TimeUnit timeUnit) {
         try {
-            return redissonClient.getLock("lock:" + key).tryLock(waitTime, leaseTime, timeUnit);
+            return redissonClient.getLock(LOCK_PREFIX + key).tryLock(waitTime, leaseTime, timeUnit);
         } catch (InterruptedException e) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Redis try lock was interrupted.", e);
         }
@@ -232,6 +242,11 @@ public class RedisCacheRepository implements CacheRepository {
 
     @Override
     public void deleteObject(List<String> keys) {
+
+        for (String key : keys) {
+            cacheAccessTime.remove(key);
+        }
+
         redisCache.deleteObject(keys);
     }
 
@@ -282,6 +297,7 @@ public class RedisCacheRepository implements CacheRepository {
 
     @Override
     public boolean deleteObject(String key) {
+        cacheAccessTime.remove(key);
         return redissonClient.getBucket(key).delete();
     }
 
@@ -327,12 +343,12 @@ public class RedisCacheRepository implements CacheRepository {
     }
 
     @Override
-    public <T> RQueue<T> getQueue(String key) {
+    public<T> RQueue<T> getQueue(String key) {
         return redissonClient.getQueue(key);
     }
 
     @Override
-    public RBloomFilter<Long> getBloomFilter(String key) {
+    public<T> RBloomFilter<T> getBloomFilter(String key) {
         return redissonClient.getBloomFilter(key);
     }
 
@@ -342,7 +358,7 @@ public class RedisCacheRepository implements CacheRepository {
     }
 
     @Override
-    public <T> Set<T> getSet(String key) {
+    public <T> RSet<T> getSet(String key) {
         return redissonClient.getSet(key);
     }
 

@@ -61,12 +61,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentVO> getComment(GetCommentRequest request) {
-
-        Integer parentType = request.getParentType();
-        Long parentId = request.getParentId();
-        Integer from = request.getFrom();
-        Integer size = request.getSize();
+    public List<CommentVO> getComment(Integer parentType, Long parentId, Integer from, Integer size) {
 
         List<Comment> comments = commentRepo.getCommentList(parentType, parentId, from, size);
 

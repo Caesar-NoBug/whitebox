@@ -3,7 +3,7 @@ package org.caesar.search.service;
 import org.caesar.domain.search.enums.DataSource;
 import org.caesar.domain.search.enums.SortField;
 import org.caesar.domain.search.vo.IndexVO;
-import org.caesar.domain.common.vo.PageVO;
+import org.caesar.domain.search.vo.PageVO;
 
 import java.util.List;
 

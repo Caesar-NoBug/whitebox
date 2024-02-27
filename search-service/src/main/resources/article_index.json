@@ -1,0 +1,81 @@
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "text_analyzer": {
+          "tokenizer": "ik_max_word",
+          "filter": "py"
+        },
+        "completion_analyzer": {
+          "tokenizer": "keyword",
+          "filter": "py"
+        }
+      },
+      "filter": {
+        "py": {
+          "type": "pinyin",
+          "keep_full_pinyin": false,
+          "keep_joined_full_pinyin": true,
+          "keep_original": true,
+          "limit_first_letter_length": 16,
+          "remove_duplicated_term": true,
+          "none_chinese_pinyin_tokenize": false
+        }
+      }
+    }
+  },
+  "mappings": {
+    "_source": {
+      "enabled": false
+    },
+    "properties": {
+      "id": {
+        "type": "long"
+      },
+      "all": {
+        "type": "text",
+        "analyzer": "text_analyzer",
+        "search_analyzer": "ik_smart"
+      },
+      "suggestion": {
+        "type": "completion",
+        "analyzer": "completion_analyzer"
+      },
+      "title": {
+        "type": "text",
+        "store": true,
+        "copy_to": ["all", "suggestion"]
+      },
+      "digest": {
+        "type": "text",
+        "copy_to": "all"
+      },
+      "content": {
+        "type": "text",
+        "copy_to": "all"
+      },
+      "tag": {
+        "type": "keyword",
+        "store": true,
+        "copy_to": ["all", "suggestion"]
+      },
+      "likeNum": {
+        "type": "integer",
+        "store": true
+      },
+      "favorNum": {
+        "type": "integer",
+        "store": true
+      },
+      "viewNum": {
+        "type": "integer",
+        "store": true
+      },
+      "updateAt": {
+        "type": "date",
+        "format": "yyyy-MM-dd HH:mm:ss",
+        "store": true
+      }
+    }
+  }
+}

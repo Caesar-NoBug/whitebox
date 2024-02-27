@@ -1,10 +1,12 @@
 package org.caesar.article.controller;
 
+import io.swagger.annotations.Api;
 import org.caesar.common.context.ContextHolder;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.idempotent.Idempotent;
 import org.caesar.common.log.Logger;
 import org.caesar.domain.article.request.ArticleActionRequest;
+import org.caesar.domain.article.vo.ArticleMinVO;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.article.request.AddArticleRequest;
 import org.caesar.domain.article.request.UpdateArticleRequest;
@@ -23,6 +25,7 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/article")
 @Validated
+@Api("文章服务")
 public class ArticleController {
 
     @Resource
@@ -30,7 +33,7 @@ public class ArticleController {
 
     // 添加文章
     @Logger(value = "/addArticle", args = true, result = true)
-    @PostMapping
+    @PostMapping("/ops")
     Response<Void> addArticle(@RequestBody AddArticleRequest request) {
         articleService.addArticle(ContextHolder.getUserIdNecessarily(), request);
         return Response.ok();
@@ -61,14 +64,15 @@ public class ArticleController {
     }
 
     // 修改文章
-    @PutMapping
-    Response<Void> updateArticle(@RequestBody UpdateArticleRequest request) {
-        articleService.updateArticle(ContextHolder.getUserIdNecessarily(), request);
+    @PutMapping("/ops/{articleId}")
+    Response<Void> updateArticle(@Min(0) @PathVariable Long articleId,
+                                 @RequestBody UpdateArticleRequest request) {
+        articleService.updateArticle(ContextHolder.getUserIdNecessarily(), articleId ,request);
         return Response.ok();
     }
 
     // 删除文章
-    @DeleteMapping("/{articleId}")
+    @DeleteMapping("/ops/{articleId}")
     Response<Void> deleteArticle(@Min(0) @PathVariable Long articleId) {
         articleService.deleteArticle(ContextHolder.getUserIdNecessarily(), articleId);
         return Response.ok();
@@ -98,4 +102,8 @@ public class ArticleController {
         return Response.ok(articleService.getUniqueArticle(userId, articleIds));
     }
 
+    @GetMapping("/recommend")
+    Response<List<ArticleMinVO>> recommendArticle(@RequestParam String userPrompt) {
+        return Response.ok(articleService.recommendArticle(userPrompt));
+    }
 }

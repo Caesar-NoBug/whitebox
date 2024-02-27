@@ -9,6 +9,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
 public class ExecutorConfig {
+    // TODO: 实现多线程链路追踪
 
     @Value("${executor.coreSize:5}")
     private int coreSize;

@@ -1,9 +1,12 @@
 package org.caesar.common.util;
 
+import cn.hutool.core.collection.CollectionUtil;
 import org.caesar.common.vo.RefreshCacheTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ListUtil {
 
@@ -35,6 +38,20 @@ public class ListUtil {
         }
 
         list.add(l + 1, value);
+    }
+
+    /**
+     * @param list      待转换数组
+     * @param function  转换方法
+     * @param <S>       原始数据类型（Source）
+     * @param <D>       目标数据类型（Destination）
+     * @return          转换后的数组
+     */
+    public static <S, D> List<D> convert(List<S> list, Function<S, D> function) {
+
+        if(CollectionUtil.isEmpty(list)) return null;
+
+        return list.stream().map(function).collect(Collectors.toList());
     }
 
 }

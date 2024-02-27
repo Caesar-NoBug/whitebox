@@ -9,12 +9,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 //人机校验验证码，用于前端显示验证码
-public abstract class Captcha {
+public class Captcha {
 
     /**
      * 验证id
      */
     private String id;
+
+    /**
+     * 验证码图片
+     */
+    private String image;
 
     /**
      * 验证码类型

@@ -25,6 +25,9 @@
     }
   },
   "mappings": {
+    "_source": {
+      "enabled": false
+    },
     "properties": {
       "id": {
         "type": "long"
@@ -41,16 +44,20 @@
       "title": {
         "type": "text",
         "store": true,
-        "copy_to": "all"
+        "copy_to": ["all", "suggestion"]
       },
       "content": {
         "type": "text",
         "copy_to": "all"
       },
+      "difficulty": {
+        "type": "integer",
+        "store": true
+      },
       "tag": {
         "type": "keyword",
         "store": true,
-        "copy_to": "all"
+        "copy_to": ["all", "suggestion"]
       },
       "likeNum": {
         "type": "integer",

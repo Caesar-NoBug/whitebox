@@ -3,9 +3,11 @@ package org.caesar.article.config;
 import org.caesar.common.batch.cache.CacheIncTaskHandler;
 import org.caesar.common.cache.CacheRepository;
 import org.caesar.common.util.DataFilter;
+import org.caesar.common.util.SwaggerCore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
 public class ArticleConfig {
@@ -42,6 +44,11 @@ public class ArticleConfig {
     public DataFilter commentFilter(CacheRepository cacheRepository) {
         String COMMENT_PREFIX = "comment";
         return new DataFilter(cacheRepository, COMMENT_PREFIX, maxCommentSize, commentFalseProbability);
+    }
+
+    @Bean
+    Docket systemIndexApi(){
+        return SwaggerCore.defaultDocketBuilder("接口领域模型定义","org.caesar","default");
     }
 
 }

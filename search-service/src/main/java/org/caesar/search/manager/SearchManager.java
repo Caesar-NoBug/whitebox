@@ -1,6 +1,7 @@
 package org.caesar.search.manager;
 
-import org.caesar.domain.common.vo.PageVO;
+import org.caesar.domain.search.vo.AggregationPageVO;
+import org.caesar.domain.search.vo.PageVO;
 import org.caesar.common.cache.CacheRepository;
 import org.caesar.search.constant.RedisPrefix;
 import org.caesar.domain.search.enums.DataSource;
@@ -105,12 +106,12 @@ public class SearchManager implements ApplicationContextAware {
         return result;
     }
 
-    public Map<DataSource, PageVO<? extends IndexVO>> searchAggregation(String text, int from, int size) {
+    public List<AggregationPageVO<?>> searchAggregation(String text, int from, int size) {
 
-        Map<DataSource, PageVO<? extends IndexVO>> result = new HashMap<>();
+        List<AggregationPageVO<?>> result = new ArrayList<>();
 
         serviceMap.forEach((source, service) -> {
-            result.put(source, service.search(text, from, size));
+            result.add(new AggregationPageVO<>(source, service.search(text, from, size)));
         });
 
         return result;

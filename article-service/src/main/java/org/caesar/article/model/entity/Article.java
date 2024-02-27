@@ -96,10 +96,10 @@ public class Article {
         return article;
     }
 
-    public static Article fromUpdateRequest(UpdateArticleRequest request) {
+    public static Article fromUpdateRequest(long articleId, UpdateArticleRequest request) {
 
         Article article = new Article();
-        article.setId(request.getId());
+        article.setId(articleId);
         article.setTitle(request.getTitle());
         article.setContent(request.getContent());
         article.setDigest(request.getDigest());

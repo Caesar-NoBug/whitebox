@@ -1,17 +1,23 @@
 package org.caesar.user.model.entity;
 
 import lombok.Data;
+import org.caesar.common.util.ListUtil;
 import org.caesar.domain.constant.StrConstant;
+import org.caesar.domain.user.enums.UserRole;
 import org.caesar.domain.user.vo.AuthorizationVO;
 import org.caesar.domain.user.request.RegisterRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Data
 public class User {
+
+    public static final int NORMAL_USER = 1;
 
     /**
      * 主键，用户唯一标识
@@ -102,10 +108,12 @@ public class User {
         }
 
         String password = passwordEncoder.encode(request.getPassword());
+        user.setUsername(request.getUsername());
         user.setPassword(password);
         //TODO: 随机设置默认头像
         user.setAvatarUrl(StrConstant.DEFAULT_AVATAR_URL);
         LocalDateTime now = LocalDateTime.now();
+        user.setRoles(Collections.singletonList(NORMAL_USER));
         user.setCreateTime(now);
         user.setUpdateTime(now);
         user.setState(0);
@@ -119,5 +127,4 @@ public class User {
         authorizationVO.setRoles(this.getRoles());
         return authorizationVO;
     }
-
 }

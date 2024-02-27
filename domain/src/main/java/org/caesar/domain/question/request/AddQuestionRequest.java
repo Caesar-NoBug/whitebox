@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class AddQuestionRequest {
 
+    //TODO: 入参添加校验条件
+
     /**
      * 问题标题
      */

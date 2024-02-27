@@ -33,8 +33,8 @@ public class CacheKey {
         return prefix + questionId;
     }
 
-    public static String questionAcceptCount(long questionId) {
-        final String prefix = "question:acceptCount:";
+    public static String questionPassCount(long questionId) {
+        final String prefix = "question:passCount:";
         return prefix + questionId;
     }
 

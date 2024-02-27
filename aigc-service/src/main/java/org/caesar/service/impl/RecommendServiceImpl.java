@@ -71,7 +71,7 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     @Override
-    public List<ArticleMinVO> recommendArticle(long userId, RecommendArticleRequest request) {
+    public List<ArticleMinVO> recommendArticle(long userId, String userPrompt) {
 
         String cacheKey = RedisKey.CACHE_USER_PROFILE + userId;
 
@@ -82,7 +82,7 @@ public class RecommendServiceImpl implements RecommendService {
         }
 
         // 处理用户提示（处理“你是，you are等可能影响gpt的词“）
-        String userPrompt = preHandlePrompt(request.getUserPrompt());
+        userPrompt = preHandlePrompt(userPrompt);
 
         // 筛选候选文章(通过gpt生成的搜索关键词搜出候选文章)
         List<ArticleMinVO> articles = getCandidateArticle(userProfile, userPrompt);

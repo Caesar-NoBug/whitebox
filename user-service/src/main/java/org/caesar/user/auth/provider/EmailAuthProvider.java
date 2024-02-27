@@ -25,12 +25,12 @@ public class EmailAuthProvider implements AuthenticationProvider {
     @Override
     public void authenticate(String email, String code) {
 
-        ThrowUtil.ifTrue(StrUtil.checkFormat(email, StrFormat.EMAIL) || email.contains("+"), "Authenticate failed: invalid email format");
+        ThrowUtil.ifFalse(StrUtil.checkFormat(email, StrFormat.EMAIL), "Authenticate failed: invalid email format: " + email);
 
-        String cacheKey = CacheKey.AUTH_CODE_EMAIL + email;
+        String cacheKey = CacheKey.AUTH_EMAIL_CODE + email;
 
         String realCode = cacheRepo.getObject(cacheKey);
-
+        System.out.println(realCode);
         ThrowUtil.ifTrue(!code.equals(realCode), "Authenticate failed: invalid validation code or validation code expired.");
 
         // 认证成功则删除验证码

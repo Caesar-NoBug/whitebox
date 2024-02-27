@@ -3,7 +3,6 @@ package org.caesar.user.captcha.generator;
 import cn.hutool.core.lang.UUID;
 import org.caesar.user.captcha.vo.Captcha;
 import org.caesar.user.captcha.vo.CaptchaType;
-import org.caesar.user.captcha.vo.MathCaptcha;
 import org.caesar.common.util.ExpressionUtil;
 import org.caesar.common.vo.Expression;
 import org.springframework.stereotype.Component;
@@ -22,7 +21,7 @@ public class MathCaptchaGenerator extends SimpleCaptchaGenerator {
         //验证码展示的内容
         String show = exp.getExpression();
 
-        MathCaptcha captcha = new MathCaptcha();
+        Captcha captcha = new Captcha();
         captcha.setId(UUID.fastUUID().toString());
         captcha.setType(CaptchaType.MATH);
         captcha.setImage(genImageBase64(width, height, show));

@@ -2,7 +2,7 @@ package org.caesar.common.client;
 
 import org.caesar.common.client.fallback.SearchClientFallback;
 import org.caesar.common.log.Logger;
-import org.caesar.domain.common.vo.PageVO;
+import org.caesar.domain.search.vo.PageVO;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.search.enums.DataSource;
 import org.caesar.domain.search.enums.SortField;

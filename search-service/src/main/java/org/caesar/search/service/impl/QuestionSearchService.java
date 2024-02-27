@@ -1,13 +1,17 @@
 package org.caesar.search.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import org.caesar.common.exception.ThrowUtil;
+import org.caesar.common.log.Logger;
+import org.caesar.common.str.StrUtil;
+import org.caesar.common.util.ListUtil;
 import org.caesar.domain.search.enums.DataSource;
 import org.caesar.domain.search.enums.QuestionSortField;
 import org.caesar.domain.search.enums.SortField;
 import org.caesar.domain.search.vo.QuestionIndexVO;
 import org.caesar.search.model.MsQuestionStruct;
 import org.caesar.search.model.entity.QuestionIndex;
-import org.caesar.domain.common.vo.PageVO;
+import org.caesar.domain.search.vo.PageVO;
 import org.caesar.search.service.SearchService;
 import org.caesar.search.util.EsUtil;
 import org.elasticsearch.action.search.SearchResponse;
@@ -36,7 +40,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class QuestionSearchService implements SearchService<QuestionIndexVO> {
@@ -59,7 +62,8 @@ public class QuestionSearchService implements SearchService<QuestionIndexVO> {
 
     public static final String[] RESULT_FIELDS = new String[]{
             QuestionIndex.Fields.id, QuestionIndex.Fields.title, QuestionIndex.Fields.tag,
-            QuestionIndex.Fields.favorNum, QuestionIndex.Fields.submitNum, QuestionIndex.Fields.likeNum
+            QuestionIndex.Fields.favorNum, QuestionIndex.Fields.submitNum, QuestionIndex.Fields.likeNum,
+            QuestionIndex.Fields.difficulty, QuestionIndex.Fields.passNum
     };
 
     private Map<String, Object> scriptParams;
@@ -72,12 +76,12 @@ public class QuestionSearchService implements SearchService<QuestionIndexVO> {
         scriptParams.put("submitFactor", SUBMIT_FACTOR);
     }
 
-    //TODO: es改成防腐层设计
+    @Logger(value = "/searchQuestion", args = true, result = true)
     @Override
     public PageVO<QuestionIndexVO> search(String text, int from, int size) {
 
         NativeSearchQuery query = new NativeSearchQueryBuilder()
-                .withQuery(buildScoreQuery(text))
+                .withQuery(buildDefaultScoreQuery(text))
                 .withPageable(PageRequest.of(from, size))
                 .withFields(RESULT_FIELDS)
                 .build();
@@ -85,14 +89,15 @@ public class QuestionSearchService implements SearchService<QuestionIndexVO> {
         return doSearch(query);
     }
 
+    @Logger(value = "/searchQuestion", args = true, result = true)
     @Override
     public PageVO<QuestionIndexVO> sortSearch(String text, SortField field, int from, int size) {
 
         ThrowUtil.ifFalse(
-                field instanceof QuestionSortField, "排序字段错误：不支持该排序字段");
+                field instanceof QuestionSortField, "Invalid sort field");
 
         NativeSearchQuery query = new NativeSearchQueryBuilder()
-                .withQuery(QueryBuilders.fuzzyQuery(QuestionIndex.Fields.all, text))
+                .withQuery(buildQuery(text))
                 .withPageable(PageRequest.of(from, size))
                 .withSort(SortBuilders.fieldSort(field.getValue()).order(SortOrder.DESC))
                 .withFields(RESULT_FIELDS)
@@ -105,8 +110,10 @@ public class QuestionSearchService implements SearchService<QuestionIndexVO> {
 
         SearchHits<QuestionIndex> searchHits = operations.search(query, QuestionIndex.class);
 
-        List<QuestionIndexVO> data = EsUtil.handleSearchHits(searchHits)
-                .stream().map(QuestionIndex::toQuestionIndexVO).collect(Collectors.toList());
+        List<QuestionIndexVO> data = ListUtil.convert(EsUtil.handleSearchHits(searchHits),
+                QuestionIndex::toQuestionIndexVO);
+
+        if(CollectionUtil.isEmpty(data)) return new PageVO<>(data, 0);
 
         return new PageVO<>(data, data.size());
     }
@@ -129,18 +136,16 @@ public class QuestionSearchService implements SearchService<QuestionIndexVO> {
     }
 
     @Override
-    public boolean insertIndex(List<QuestionIndexVO> indices) {
-        List<QuestionIndex> indicesDO = indices.stream()
-                .map(QuestionIndex::new).collect(Collectors.toList());
-        operations.save(indices);
-        return true;
+    public void insertIndex(List<QuestionIndexVO> indices) {
+
+        List<QuestionIndex> indicesDO = ListUtil.convert(indices, QuestionIndex::new);
+        operations.save(indicesDO);
     }
 
     @Override
-    public boolean deleteIndex(List<Long> ids) {
+    public void deleteIndex(List<Long> ids) {
         Criteria criteria = new Criteria("id").in(ids);
         operations.delete(criteria);
-        return true;
     }
 
     @Override
@@ -152,10 +157,9 @@ public class QuestionSearchService implements SearchService<QuestionIndexVO> {
      * @param text 用户输入的关键词
      * @return 默认规则对应的查询
      */
-    private QueryBuilder buildScoreQuery(String text) {
+    private QueryBuilder buildDefaultScoreQuery(String text) {
 
-        BoolQueryBuilder query = QueryBuilders.boolQuery()
-                .must(QueryBuilders.fuzzyQuery(QuestionIndex.Fields.all, text));
+        QueryBuilder query = buildQuery(text);
 
         Script script = new Script(ScriptType.INLINE,
                 Script.DEFAULT_SCRIPT_LANG, searchScript, scriptParams);
@@ -165,4 +169,9 @@ public class QuestionSearchService implements SearchService<QuestionIndexVO> {
                 .boostMode(CombineFunction.SUM);
     }
 
+    private QueryBuilder buildQuery(String text) {
+        return StrUtil.isBlank(text)
+                ? QueryBuilders.matchAllQuery()
+                : QueryBuilders.fuzzyQuery(QuestionIndex.Fields.all, text);
+    }
 }

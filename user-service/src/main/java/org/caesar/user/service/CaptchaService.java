@@ -6,9 +6,9 @@ import javax.servlet.http.HttpSession;
 
 public interface CaptchaService {
 
-    void validate(String result, HttpSession session);
+    void validate(String id, String answer);
 
-    boolean validated(HttpSession session);
+    boolean validated(String id);
 
-    Captcha refreshCaptcha(int width, int height, HttpSession session);
+    Captcha refreshCaptcha(int width, int height);
 }

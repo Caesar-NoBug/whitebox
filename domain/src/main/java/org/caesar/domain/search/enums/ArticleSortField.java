@@ -8,10 +8,20 @@ import org.caesar.domain.search.vo.ArticleIndexVO;
 @AllArgsConstructor
 public enum ArticleSortField implements SortField{
 
-    LIKE_NUM(ArticleIndexVO.Fields.likeNum),
-    FAVOR_NUM(ArticleIndexVO.Fields.favorNum),
-    VIEW_NUM(ArticleIndexVO.Fields.viewNum),
-    UPDATE_AT(ArticleIndexVO.Fields.updateAt);
+    LIKE_NUM("LIKE_NUM"),
+    FAVOR_NUM("FAVOR_NUM"),
+    VIEW_NUM("VIEW_NUM"),
+    UPDATE_AT("UPDATE_AT");
 
     private final String value;
+
+    public static ArticleSortField of(String value) {
+        for (ArticleSortField sortField : ArticleSortField.values()) {
+            if (sortField.getValue().equals(value)) {
+                return sortField;
+            }
+        }
+        return null;
+    }
+
 }

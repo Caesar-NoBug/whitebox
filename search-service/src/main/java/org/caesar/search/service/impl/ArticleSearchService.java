@@ -3,8 +3,10 @@ package org.caesar.search.service.impl;
 import org.caesar.common.exception.BusinessException;
 import org.caesar.common.exception.ThrowUtil;
 import org.caesar.common.log.LogUtil;
+import org.caesar.common.str.StrUtil;
+import org.caesar.common.util.ListUtil;
 import org.caesar.domain.common.enums.ErrorCode;
-import org.caesar.domain.common.vo.PageVO;
+import org.caesar.domain.search.vo.PageVO;
 import org.caesar.domain.search.enums.ArticleSortField;
 import org.caesar.domain.search.enums.DataSource;
 import org.caesar.domain.search.enums.SortField;
@@ -14,7 +16,6 @@ import org.caesar.search.service.SearchService;
 import org.caesar.search.util.EsUtil;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.lucene.search.function.CombineFunction;
-import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
@@ -76,7 +77,7 @@ public class ArticleSearchService implements SearchService<ArticleIndexVO> {
     public PageVO<ArticleIndexVO> search(String text, int from, int size) {
 
         NativeSearchQuery query = new NativeSearchQueryBuilder()
-                .withQuery(buildScoreQuery(text))
+                .withQuery(buildDefaultScoreQuery(text))
                 .withPageable(PageRequest.of(from, size))
                 .withFields(RESULT_FIELDS)
                 .withSort(SortBuilders.fieldSort(ArticleIndex.Fields.updateAt).order(SortOrder.DESC))
@@ -92,7 +93,7 @@ public class ArticleSearchService implements SearchService<ArticleIndexVO> {
                 field instanceof ArticleSortField, "排序字段错误：不支持该排序字段");
 
         NativeSearchQuery query = new NativeSearchQueryBuilder()
-                .withQuery(QueryBuilders.fuzzyQuery(ArticleIndex.Fields.all, text))
+                .withQuery(buildQuery(text))
                 .withPageable(PageRequest.of(from, size))
                 .withFields(RESULT_FIELDS)
                 .withSort(SortBuilders.fieldSort(field.getValue()).order(SortOrder.DESC))
@@ -105,8 +106,8 @@ public class ArticleSearchService implements SearchService<ArticleIndexVO> {
 
         SearchHits<ArticleIndex> searchHits = operations.search(query, ArticleIndex.class);
 
-        List<ArticleIndexVO> data = EsUtil.handleSearchHits(searchHits)
-                .stream().map(ArticleIndex::toArticleIndexVO).collect(Collectors.toList());
+        List<ArticleIndexVO> data = ListUtil.convert(EsUtil.handleSearchHits(searchHits),
+                    ArticleIndex::toArticleIndexVO);
 
         return new PageVO<>(data, data.size());
     }
@@ -162,10 +163,9 @@ public class ArticleSearchService implements SearchService<ArticleIndexVO> {
      * @param text 用户输入的关键词
      * @return 默认规则对应的查询
      */
-    private QueryBuilder buildScoreQuery(String text) {
+    private QueryBuilder buildDefaultScoreQuery(String text) {
 
-        BoolQueryBuilder query = QueryBuilders.boolQuery()
-                .must(QueryBuilders.fuzzyQuery(ArticleIndex.Fields.all, text));
+        QueryBuilder query = buildQuery(text);
 
         Script script = new Script(ScriptType.INLINE,
                 Script.DEFAULT_SCRIPT_LANG, searchScript, scriptParams);
@@ -175,4 +175,9 @@ public class ArticleSearchService implements SearchService<ArticleIndexVO> {
                 .boostMode(CombineFunction.SUM);
     }
 
+    private QueryBuilder buildQuery(String text) {
+        return StrUtil.isBlank(text)
+                ? QueryBuilders.matchAllQuery()
+                : QueryBuilders.fuzzyQuery(ArticleIndex.Fields.all, text);
+    }
 }

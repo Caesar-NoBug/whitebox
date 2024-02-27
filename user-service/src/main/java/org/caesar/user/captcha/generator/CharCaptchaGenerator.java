@@ -1,9 +1,9 @@
 package org.caesar.user.captcha.generator;
 
 import cn.hutool.core.lang.UUID;
+import org.caesar.common.log.LogUtil;
 import org.caesar.user.captcha.vo.Captcha;
 import org.caesar.user.captcha.vo.CaptchaType;
-import org.caesar.user.captcha.vo.CharCaptcha;
 import org.caesar.common.str.StrUtil;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +13,9 @@ public class CharCaptchaGenerator extends SimpleCaptchaGenerator {
     @Override
     public Captcha genCaptcha(int width, int height) {
 
-        String str = StrUtil.genRandStr(6);
+        String str = StrUtil.randStrCode(6);
 
-        CharCaptcha captcha = new CharCaptcha();
+        Captcha captcha = new Captcha();
         captcha.setId(UUID.fastUUID().toString());
         captcha.setType(CaptchaType.CHAR);
         captcha.setImage(genImageBase64(width, height, str));
@@ -26,7 +26,8 @@ public class CharCaptchaGenerator extends SimpleCaptchaGenerator {
 
     @Override
     public boolean validate(String result, String answer) {
-        return answer.equals(result);
+        LogUtil.bizLog("[CAPTCHA] result: {}, answer: {}", result, answer);
+        return answer.equalsIgnoreCase(result);
     }
 
     @Override

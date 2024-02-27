@@ -8,6 +8,7 @@ import org.caesar.common.resp.RespUtil;
 import org.caesar.common.vo.MessageDTO;
 import org.caesar.domain.common.vo.Response;
 import org.caesar.domain.executor.response.ExecuteCodeResponse;
+import org.caesar.question.service.JudgeService;
 import org.caesar.question.service.QuestionService;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,7 @@ import javax.annotation.Resource;
 public class ExecuteMessageSubscriber implements RocketMQListener<MessageDTO<Response<ExecuteCodeResponse>>> {
 
     @Resource
-    private QuestionService questionService;
+    private JudgeService judgeService;
 
     @Resource
     private ExceptionHandler exceptionHandler;
@@ -31,7 +32,7 @@ public class ExecuteMessageSubscriber implements RocketMQListener<MessageDTO<Res
         Long userId = ContextHolder.getUserId();
 
         exceptionHandler.handleException(() -> {
-            questionService.judgeCode(userId, response);
+            judgeService.judgeCode(userId, response);
             return Response.ok();
         });
     }

@@ -9,12 +9,6 @@ import javax.validation.constraints.Min;
 public class UpdateArticleRequest {
 
     /**
-     * 文章主键
-     */
-    @Min(0)
-    private Long id;
-
-    /**
      * 文章标题
      */
     @Length(max = 100)

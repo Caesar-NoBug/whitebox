@@ -30,7 +30,7 @@ public class IdRateLimiterFilter implements GlobalFilter, Ordered {
     private final int DEFAULT_LIMITER_EXPIRE = 60;
 
     @Resource
-    private RedissonReactiveClient redissonClient;
+    private RedissonReactiveClient redissonReactiveClient;
 
     @Resource
     private RateLimiterProperties rateLimiterProperties;
@@ -58,7 +58,7 @@ public class IdRateLimiterFilter implements GlobalFilter, Ordered {
     private Mono<RRateLimiterReactive> getIdRateLimiter(String uri, Long userId) {
         // id限流器的key的前缀
         String ID_RATE_LIMITER = "gateway:idRateLimiter:";
-        RRateLimiterReactive rateLimiter = redissonClient.getRateLimiter(ID_RATE_LIMITER + userId);
+        RRateLimiterReactive rateLimiter = redissonReactiveClient.getRateLimiter(ID_RATE_LIMITER + userId);
 
         return rateLimiter.isExists().flatMap(isExists -> {
             if (isExists) return Mono.just(rateLimiter);
